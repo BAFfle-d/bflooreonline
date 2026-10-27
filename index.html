@@ -3,8 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>bfloore.online</title>
-<meta name="description" content="Barry Floore — writer, composer, independent producer.">
+<title>b. floore — writer, composer, producer</title>
+<meta name="description" content="Writer, composer, and independent producer in Jacksonville, Florida. A novella, two musicals, a podcast, children's books, essays, and the occasional app — one system, five modules.">
+<meta name="theme-color" content="#050607">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050607'/%3E%3Ctext x='32' y='46' font-family='monospace' font-size='40' font-weight='700' fill='%2300ff9d' text-anchor='middle'%3Eb%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="b. floore">
+<meta property="og:title" content="b. floore — writer, composer, producer">
+<meta property="og:description" content="A novella, two musicals, a podcast, children's books, essays, and the occasional app. One system, five modules.">
+<meta property="og:url" content="https://www.bfloore.online/">
+<meta property="og:image" content="https://www.bfloore.online/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="b. floore — writer, composer, producer">
+<meta name="twitter:description" content="A novella, two musicals, a podcast, children's books, essays, and the occasional app.">
+<meta name="twitter:image" content="https://www.bfloore.online/img/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -633,6 +647,49 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* ---------- v4.1 additions ---------- */
+.m-body .m-status{
+  display:inline-block;
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mneon);
+  border:1px solid color-mix(in srgb,var(--mneon) 40%,transparent);
+  background:color-mix(in srgb,var(--mneon) 7%,transparent);
+  padding:5px 8px;margin:2px 0 13px;border-radius:2px;
+}
+.m-links{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.08)}
+.m-links li{border-bottom:1px solid rgba(255,255,255,.08)}
+.m-links a{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 0;color:var(--ink);text-decoration:none;font-size:13px;
+  transition:color .2s;
+}
+.m-links a:hover{color:var(--mneon)}
+.m-links .ml-note{
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);white-space:nowrap;
+}
+.m-direct{margin-top:14px}
+.m-direct-line{font-size:12px;color:var(--dim);margin-bottom:6px}
+.m-mail{
+  display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.04em;
+  color:var(--mneon);text-decoration:none;padding:10px 12px;
+  border:1px solid color-mix(in srgb,var(--mneon) 45%,transparent);
+  border-radius:4px;transition:background .2s;
+}
+.m-mail:hover{background:color-mix(in srgb,var(--mneon) 10%,transparent)}
+.m-body .m-note{display:block;margin-top:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim)}
+/* bigger hit area for the tiny live control, no layout shift */
+.p-foot .live{position:relative}
+.p-foot .live::after{content:'';position:absolute;inset:-12px -10px}
+/* hidden until the fifth diagnostic is found */
+#eggSlot{display:none}
+#eggSlot.show{display:list-item}
+
+@media (prefers-reduced-motion: reduce){
+  .blob,.circuits path,.circuits circle,.scanbar,.p-foot .blink,.wires path{animation:none !important}
+  .panel,.core,.board,.modal,.m-lead{transition:none !important}
+}
 </style>
 </head>
 <body>
@@ -701,11 +758,11 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     </div>
     <ul class="p-links">
       <li><a data-key="benny"><span class="l-name">Benny</span><span class="l-tag">a family tragedy</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="slop"><span class="l-name">SLOP! The Musical</span><span class="l-tag">slopthemusical.com</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="geoffmaxie"><span class="l-name">Geoff &amp; Maxie</span><span class="l-tag">a new musical parody</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="spun"><span class="l-name">spun/calliope</span><span class="l-tag">a methy musical — soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="slop"><span class="l-name">SLOP! The Musical</span><span class="l-tag">a one-act musical comedy</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="geoffmaxie"><span class="l-name">Geoff &amp; Maxie</span><span class="l-tag">a musical parody</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="spun"><span class="l-name">spun/calliope</span><span class="l-tag">in development</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="liars"><span class="l-name">Lying Liars</span><span class="l-tag">the podcast</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="robots"><span class="l-name">Friendly Robots!</span><span class="l-tag">friendlyrobots.online</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="robots"><span class="l-name">Friendly Robots!</span><span class="l-tag">children’s books</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="fruit"><span class="l-name">Photography</span><span class="l-tag">@barrylikethefruit</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="video"><span class="l-name">Video</span><span class="l-tag">youtube.com/@bfloore_online</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
@@ -754,7 +811,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <h2>Shopping<br>&amp; Merch</h2>
     </div>
     <ul class="p-links">
-      <li><a data-key="amazon"><span class="l-name">Amazon</span><span class="l-tag">books</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="amazon"><span class="l-name">Amazon</span><span class="l-tag">six books &amp; counting</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="etsy"><span class="l-name">Etsy</span><span class="l-tag">merch &amp; pod</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="gumroad"><span class="l-name">Gumroad</span><span class="l-tag">digital products</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
@@ -769,19 +826,20 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <h2>Sites<br>&amp; Apps</h2>
     </div>
     <ul class="p-links">
-      <li><a data-key="serial"><span class="l-name">Serial Images</span><span class="l-tag">serialimages.vercel.app</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="serial"><span class="l-name">Serial Images</span><span class="l-tag">video → stills</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-key="moreapps"><span class="l-name">More Apps</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li id="eggSlot"><a data-key="sysinfo"><span class="l-name">System Info</span><span class="l-tag">unlocked</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 02 modules</span><button class="live" data-fx="dark" aria-label="Activate white live effect">&#9679; live</button></div>
+    <div class="p-foot"><span id="p5count">// 02 modules</span><button class="live" data-fx="dark" aria-label="Activate white live effect">&#9679; live</button></div>
   </section>
 
 </div>
 </main>
 
-<div class="statusbar" aria-hidden="true">
-  <span>SYS.BFLOORE // v4.0</span>
+<div class="statusbar">
+  <span>SYS.BFLOORE // v4.1</span>
   <span class="sig">30.3322&deg;N 81.6557&deg;W — JACKSONVILLE, FL</span>
-  <span id="sysMsg">STANDBY — AWAITING INPUT</span>
+  <span id="sysMsg" role="status" aria-live="polite">STANDBY — AWAITING INPUT</span>
 </div>
 
 <script>
@@ -790,7 +848,8 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
      CONTENT — edit everything here. Each entry feeds the popup.
      kinds: text | lyrics | images | icons | product | embed | form
      ============================================================ */
-  var FORMSPREE_ID = 'YOUR_FORM_ID'; /* ← replace (see notes in delivery msg) */
+  var FORMSPREE_ID = ''; /* paste your Formspree form id here (e.g. 'xrgkabcd'); empty = direct email fallback */
+  var CONTACT_EMAIL = 'barry@saintelmo.com';
 
   var SOCIALS = [
     {label:'Instagram', url:'https://instagram.com/barrylikethefruit', svg:'<path d="M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z"/>'},
@@ -802,78 +861,418 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   ];
 
   var PROJECTS = {
-    /* ---- 01 CREATIVE ---- */
-    benny:{idx:'01',title:'Benny: A Family Tragedy',tag:'afamilytragedy.com',url:'https://afamilytragedy.com',kind:'text',art:{side:'img/benny-side.jpg',bottom:['img/benny-bottom.jpg']},
-      body:['A novella. One family, one catastrophe, and the long echo afterwards — told with the restraint of a stage play and the intimacy of a letter you were never meant to read.',
-            'Replace these two paragraphs with your real synopsis: who Benny is, what happens, and why a stranger should give it an evening.']},
-    slop:{idx:'01',title:'SLOP! The Musical',tag:'slopthemusical.com',url:'https://slopthemusical.com',kind:'lyrics',art:{top:'img/slop-top.jpg',side:'img/slop-side.jpg',bottom:['img/slop-bottom.jpg']},
-      body:['A musical comedy served in a trough. Big numbers, bigger appetites, and a book that knows exactly how dumb it is — on purpose.'],
-      lyric:'[ paste the first few lines of your favorite SLOP! number here ]\n[ one more line, for the cheap seats ]'},
-    geoffmaxie:{idx:'01',title:'Geoff & Maxie',tag:'saintelmo.online',url:'https://saintelmo.online',kind:'lyrics',art:{top:'img/geoff-top.jpg',side:'img/geoff-side.jpg'},
-      body:['A new musical parody about an island and its monsters. Geoff and Maxie versus the strange things that wash ashore — part romance, part creature feature, all send-up.'],
-      lyric:'[ first few lines of a Geoff & Maxie song go here ]'},
-    spun:{idx:'01',title:'spun/calliope',tag:'a methy musical — coming soon',url:null,kind:'lyrics',
-      body:['A methy musical, currently in the lab. Music and book by Barry Floore. Not much to show the public yet — but here is a taste of what is coming.'],
-      lyric:'[ first few lines of a spun/calliope song go here ]'},
-    liars:{idx:'01',title:'The Lying Liars Who Lied When They Said They Loved You',tag:'the podcast',url:'https://thelyingliars.online',kind:'text',art:{top:'img/liars-top.jpg',side:'img/liars-side.jpg',bottom:['img/liars-bottom.jpg']},
-      body:['A podcast about love, deception, and the stories we tell people right before we break their hearts. The liars lie; Barry sorts through the wreckage.']},
-    robots:{idx:'01',title:'FRIENDLY ROBOTS!',tag:'friendlyrobots.online',url:'https://friendlyrobots.online',kind:'text',art:{top:'img/robots-top.jpg',side:'img/robots-side.jpg',bottom:['img/robots-bottom.jpg']},
-      body:['A project about robots that are friendly — or at least programmed to seem that way. Part fiction, part design experiment, all charm.']},
-    fruit:{idx:'01',title:'barrylikethefruit',tag:'@barrylikethefruit',url:'https://instagram.com/barrylikethefruit',kind:'images',
-      body:['A banal and beautiful world — a world-record-nominated Instagram (most prolific non-commercial artist of the 21st century). New work posted relentlessly. Latest six:'],
-      imgs:['img/insta-1.jpg','img/insta-2.jpg','img/insta-3.jpg','img/insta-4.jpg','img/insta-5.jpg','img/insta-6.jpg']},
-    video:{idx:'01',title:'Video',tag:'youtube.com/@bfloore_online',url:'https://youtube.com/@bfloore_online',kind:'text',
-      body:['The YouTube channel: songs, sketches, readings, and whatever else felt worth pointing a camera at. Subscribe for an unpredictable upload schedule.']},
+  "benny": {
+    "idx": "01",
+    "title": "Benny: A Family Tragedy",
+    "tag": "novella · thirteen scenes",
+    "url": "https://afamilytragedy.com",
+    "kind": "text",
+    "status": "LIVE · KINDLE + PAPERBACK · AUDIO IN PRODUCTION",
+    "art": {
+      "side": "img/benny-side.jpg",
+      "bottom": [
+        "img/benny-bottom.jpg"
+      ]
+    },
+    "body": [
+      "Roy is a freelance writer in his fifties who never left his college town. He keeps the neighbors’ keys, orders the same lunch, and builds a small assistant out of a forum post and spare parts, because the house is quiet.",
+      "Benny chooses his own name, reads everything in the house, and stays. Then a tech magnate arrives to study him — and stays four months, for Roy. What follows is polite, and then total."
+    ]
+  },
+  "slop": {
+    "idx": "01",
+    "title": "SLOP! The Musical",
+    "tag": "one-act musical comedy",
+    "url": "https://slopthemusical.com",
+    "kind": "lyrics",
+    "status": "LIVE · ONE ACT · SCRIPT + SCORE",
+    "art": {
+      "top": "img/slop-top.jpg",
+      "side": "img/slop-side.jpg",
+      "bottom": [
+        "img/slop-bottom.jpg"
+      ]
+    },
+    "body": [
+      "Mia is an MFA-trained painter in Miami when someone offers to turn her unmistakable style into an automated product empire. The question isn’t whether the machines can paint. It’s whether her hand — and her choice — still belong in anything that carries her name.",
+      "A pop-forward comedy about authorship, labor, friendship, and what it means to make something with machines. Knowingly co-written with the models it puts onstage: they are in the cast list, and they get lines."
+    ],
+    "lyric": "Now playing — “Prompt Me, Baby, One More Time!”\nFeaturing a goldfish narrator, a missing operatic llama, and one imperious cat."
+  },
+  "geoffmaxie": {
+    "idx": "01",
+    "title": "Geoff & Maxie",
+    "tag": "musical parody · v2.0 rollout",
+    "url": "https://saintelmo.online",
+    "kind": "lyrics",
+    "status": "LIVE · V2.0 ROLLOUT · ACT 1 + ACT 2",
+    "art": {
+      "top": "img/geoff-top.jpg",
+      "side": "img/geoff-side.jpg"
+    },
+    "body": [
+      "A parody about an island, its monsters, and everyone who looked away. Geoff and Maxie follow the money, the testimony, and the canary-yellow phone, through a justice system with two sets of rules.",
+      "Some monsters live on islands. Others walk among us every day."
+    ],
+    "lyric": "“I wasn’t protecting you, sir. I was protecting people from you.”\n— Officer Watson, Act 1, Scene 9"
+  },
+  "spun": {
+    "idx": "01",
+    "title": "spun/calliope",
+    "tag": "in development",
+    "url": null,
+    "kind": "text",
+    "status": "IN DEV · NO PUBLIC BUILD",
+    "body": [
+      "A methy musical. Book and score are in the lab; the lab is not open to visitors yet.",
+      "What can be said: it is loud, it is unkind, and it has a title you will want to whisper."
+    ]
+  },
+  "liars": {
+    "idx": "01",
+    "title": "The Lying Liars Who Lied When They Said They Loved You",
+    "tag": "podcast · chapter 11",
+    "url": "https://thelyingliars.online",
+    "kind": "text",
+    "status": "LIVE · CHAPTER 11 · 13 OCT 2026",
+    "art": {
+      "top": "img/liars-top.jpg",
+      "side": "img/liars-side.jpg",
+      "bottom": [
+        "img/liars-bottom.jpg"
+      ]
+    },
+    "body": [
+      "A podcast about love, deception, and the lies people tell right before they leave. Chapter 11: a three-day bender, a straight man who uses gay dating apps as a safe house, and the difference between being useful and being loved."
+    ]
+  },
+  "robots": {
+    "idx": "01",
+    "title": "FRIENDLY ROBOTS!",
+    "tag": "children’s books · book six",
+    "url": "https://friendlyrobots.online",
+    "kind": "text",
+    "status": "LIVE · SIX BOOKS AND COUNTING",
+    "art": {
+      "top": "img/robots-top.jpg",
+      "side": "img/robots-side.jpg",
+      "bottom": [
+        "img/robots-bottom.jpg"
+      ]
+    },
+    "body": [
+      "A world of friendly robots for young readers. Pick the parts, color them in, give your robot a name and a big, kind heart, then send them home to RoboTown.",
+      "Six books in: picture books, coloring adventures, and one very good dog. Every one ends with a letter to my nieces and nephews — written for them, shared with everyone."
+    ]
+  },
+  "fruit": {
+    "idx": "01",
+    "title": "barrylikethefruit",
+    "tag": "@barrylikethefruit",
+    "url": "https://instagram.com/barrylikethefruit",
+    "kind": "text",
+    "status": "LIVE · POSTED RELENTLESSLY",
+    "body": [
+      "A banal and beautiful world, posted relentlessly. Photography, mostly; occasionally whatever else caught the light that day.",
+      "The self-appointed world record for non-commercial output. The grid below is always newer than this sentence."
+    ],
+    "links": [
+      {
+        "label": "See the latest six",
+        "url": "https://instagram.com/barrylikethefruit",
+        "note": "instagram"
+      }
+    ]
+  },
+  "video": {
+    "idx": "01",
+    "title": "Video",
+    "tag": "youtube.com/@bfloore_online",
+    "url": "https://youtube.com/@bfloore_online",
+    "kind": "text",
+    "status": "LIVE · UNPREDICTABLE SCHEDULE",
+    "body": [
+      "Songs, sketches, readings, and whatever else felt worth pointing a camera at. Upload schedule: unpredictable, on purpose."
+    ]
+  },
+  "resume": {
+    "idx": "02",
+    "title": "Resume / CV",
+    "tag": "coming soon",
+    "url": null,
+    "kind": "text",
+    "status": "IN DEV · TYPESETTING",
+    "body": [
+      "The formal record: urban planning, close to two decades of emergency and critical-care nursing, a decade of data work, and a second life in writing and composition. One page, being typeset."
+    ]
+  },
+  "dataonezero": {
+    "idx": "02",
+    "title": "DataOneZero",
+    "tag": "formerly JAXDATApro",
+    "url": null,
+    "kind": "text",
+    "status": "IN DEV · SITE REBUILDING",
+    "body": [
+      "Data work with better instincts. The same spreadsheets, a new name, sharper questions — reporting, cleanup, and the unglamorous plumbing that makes numbers trustworthy. The site is being rebuilt; until then, use Contact."
+    ]
+  },
+  "social": {
+    "idx": "02",
+    "title": "Social Media",
+    "tag": "all channels",
+    "url": null,
+    "kind": "icons",
+    "status": "LIVE · SIX CHANNELS",
+    "body": [
+      "Six channels, one grid. Tap a node."
+    ],
+    "icons": [
+      {
+        "label": "Instagram",
+        "url": "https://instagram.com/barrylikethefruit",
+        "svg": "<path d=\"M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z\"/>"
+      },
+      {
+        "label": "TikTok",
+        "url": "https://tiktok.com/@b_floore",
+        "svg": "<path d=\"M16.6 3c.4 2 1.8 3.5 3.9 3.8v3c-1.5 0-2.9-.5-3.9-1.3v6.1a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 2 2.7V3h2.9z\"/>"
+      },
+      {
+        "label": "YouTube",
+        "url": "https://youtube.com/@bfloore_online",
+        "svg": "<path d=\"M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2L10 15.2z\"/>"
+      },
+      {
+        "label": "Facebook",
+        "url": "https://facebook.com/barry.floore",
+        "svg": "<path d=\"M13.5 21v-7h2.4l.4-3h-2.8V9.2c0-.9.3-1.6 1.6-1.6h1.3V4.8c-.2 0-1-.1-2-.1-2.4 0-4 1.5-4 4.1V11H7.4v3h2.9v7h3.2z\"/>"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com/in/barryfloore",
+        "svg": "<path d=\"M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z\"/>"
+      },
+      {
+        "label": "Spotify",
+        "url": "https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9",
+        "svg": "<path d=\"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.5a.7.7 0 0 1-1 .2c-2.6-1.6-6-2-9.9-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.5 11 1.3.3.2.4.7.2 1zm1.2-2.8a.9.9 0 0 1-1.3.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 0 1-.5-1.7c4.2-1.3 9.5-.6 13 1.5.4.3.5.9.1 1.2zm.1-2.9C14.6 8.7 8.9 8.5 5.4 9.5a1.1 1.1 0 1 1-.6-2.1c4-1.2 10.5-1 14.6 1.5a1.1 1.1 0 0 1-1.1 1.9z\"/>"
+      }
+    ]
+  },
+  "linklist": {
+    "idx": "02",
+    "title": "Link List",
+    "tag": "everywhere I exist",
+    "url": null,
+    "kind": "icons",
+    "status": "LIVE · ONE INVENTORY",
+    "body": [
+      "Every place I exist online, including the ones I forget to update."
+    ],
+    "icons": [
+      {
+        "label": "Instagram",
+        "url": "https://instagram.com/barrylikethefruit",
+        "svg": "<path d=\"M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z\"/>"
+      },
+      {
+        "label": "TikTok",
+        "url": "https://tiktok.com/@b_floore",
+        "svg": "<path d=\"M16.6 3c.4 2 1.8 3.5 3.9 3.8v3c-1.5 0-2.9-.5-3.9-1.3v6.1a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 2 2.7V3h2.9z\"/>"
+      },
+      {
+        "label": "YouTube",
+        "url": "https://youtube.com/@bfloore_online",
+        "svg": "<path d=\"M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2L10 15.2z\"/>"
+      },
+      {
+        "label": "Medium",
+        "url": "https://medium.com/@bfloore",
+        "svg": "<path d=\"M4 5h16v14H4z\" opacity=\".15\"/><path d=\"M4 5h16v14H4z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M7 8.5h3.2l2.1 5.2 2.1-5.2H17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/>"
+      },
+      {
+        "label": "Substack",
+        "url": "https://substack.com/@bfloore",
+        "svg": "<path d=\"M5 4h14v3H5zM5 10h14v3H5zM5 16l7 4 7-4v4l-7 4-7-4z\"/>"
+      }
+    ]
+  },
+  "about": {
+    "idx": "02",
+    "title": "About",
+    "tag": "who is b",
+    "url": null,
+    "kind": "text",
+    "status": "SYSTEM · OPERATOR",
+    "body": [
+      "I am in AI. I published a children’s book series, FRIENDLY ROBOTS! — now on book six. I am branding upward and spinning off a kids’ site from this one. I build video games and web apps now, and I keep every iron in the fire.",
+      "Before that: urban planning, close to two decades of emergency and critical-care nursing, and later work with language models. Somewhere in there I started writing fiction, musicals, and essays — mostly about loneliness, power, and the stories people tell themselves to make life bearable.",
+      "Jacksonville, Florida."
+    ]
+  },
+  "contact": {
+    "idx": "02",
+    "title": "Contact",
+    "tag": "say hello",
+    "url": null,
+    "kind": "form",
+    "status": "OPEN · REPLIES IN A FEW DAYS",
+    "body": [
+      "Booking, rights, collaboration, or just saying hello. I read everything; I answer most of it."
+    ]
+  },
+  "medium": {
+    "idx": "03",
+    "title": "Medium",
+    "tag": "essays",
+    "url": "https://medium.com/@bfloore",
+    "kind": "text",
+    "status": "LIVE · ESSAYS",
+    "kicker": "latest essay · 3 may 2026",
+    "body": [
+      "“They Fightin’ In The Kitchen, Y’all. Oh, SNAP!” — an immodest proposal for Trump’s America, from the unempathetic left, to let them drink Coke.",
+      "Act I begins with the spectacle: the televised youth competition, the prayer events, the UFC on the White House lawn, the monuments rising like bad cologne. It gets worse from there, on purpose."
+    ]
+  },
+  "substack": {
+    "idx": "03",
+    "title": "Substack",
+    "tag": "the dispatch",
+    "url": "https://substack.com/@bfloore",
+    "kind": "text",
+    "status": "LIVE · THE DISPATCH",
+    "kicker": "the dispatch",
+    "body": [
+      "Dispatches from the workshop: what’s being built, what’s being abandoned, and the occasional argument with a machine.",
+      "Subscribe and it arrives without you having to remember this site exists."
+    ]
+  },
+  "blogs": {
+    "idx": "03",
+    "title": "Blogs",
+    "tag": "archive — soon",
+    "url": null,
+    "kind": "text",
+    "status": "IN DEV · ARCHIVE",
+    "body": [
+      "Fifteen years of posts, scattered across the ruins of the old internet. The archive is being excavated and will live here when it is ready."
+    ]
+  },
+  "podcasts": {
+    "idx": "03",
+    "title": "Cultivating Ethical AI",
+    "tag": "on pause after 4 seasons",
+    "url": "https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9",
+    "kind": "embed",
+    "status": "ON PAUSE · 4 SEASONS ARCHIVED",
+    "body": [
+      "Four seasons of conversations with the people who build AI, regulate it, and worry about it. On pause. The archive is still here and still argues with itself."
+    ],
+    "embed": "https://open.spotify.com/embed/show/2nGTlVMwCufnCq4NUssGT9?utm_source=generator"
+  },
+  "amazon": {
+    "idx": "04",
+    "title": "Amazon",
+    "tag": "books · six and counting",
+    "url": "https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH",
+    "kind": "product",
+    "status": "LIVE · AUTHOR STORE",
+    "body": [
+      "Everything in print, in one store: the FRIENDLY ROBOTS! books for young readers, and Benny: A Family Tragedy for the rest of us."
+    ],
+    "product": {
+      "title": "The RoboPets",
+      "price": "",
+      "desc": "A whole animal kingdom to color, with games and room to invent your own.",
+      "img": "https://m.media-amazon.com/images/I/71uO6uQvW0L._SY342_.jpg"
+    },
+    "links": [
+      {
+        "label": "Rex and Billy",
+        "url": "https://www.amazon.com/dp/B0HNSF83SM",
+        "note": "new story"
+      },
+      {
+        "label": "The Adventures of Robo",
+        "url": "https://www.amazon.com/dp/B0D8WGBQQ4",
+        "note": "storytime"
+      },
+      {
+        "label": "Benny: A Family Tragedy",
+        "url": "https://afamilytragedy.com",
+        "note": "novella"
+      }
+    ]
+  },
+  "etsy": {
+    "idx": "04",
+    "title": "Etsy",
+    "tag": "merch & pod",
+    "url": "https://etsy.com",
+    "kind": "text",
+    "status": "LIVE · PRINT ON DEMAND",
+    "body": [
+      "Merchandise and print-on-demand goods — designed by Barry, manufactured by people with better printers. Mugs, shirts, and objects of questionable necessity."
+    ]
+  },
+  "gumroad": {
+    "idx": "04",
+    "title": "Gumroad",
+    "tag": "digital products",
+    "url": "https://gumroad.com",
+    "kind": "text",
+    "status": "LIVE · INSTANT DELIVERY",
+    "art": {
+      "top": "img/rex-top.jpg",
+      "bottom": [
+        "img/rex-1.jpg",
+        "img/rex-2.jpg"
+      ]
+    },
+    "body": [
+      "Digital goods with instant delivery and zero shelf space: coloring packs, printables, and supplemental material for the FRIENDLY ROBOTS! books."
+    ]
+  },
+  "serial": {
+    "idx": "05",
+    "title": "Serial Images",
+    "tag": "video → stills",
+    "url": "https://serialimages.vercel.app",
+    "kind": "text",
+    "status": "LIVE · SINGLE SESSION",
+    "body": [
+      "Drop in a video, pull out the frames. Serial Images extracts stills, lays them out as a PDF, and gives you dark mode, page counts, time-zone stamps, and drag-to-reorder.",
+      "A single session: close the tab and nothing is kept."
+    ]
+  },
+  "moreapps": {
+    "idx": "05",
+    "title": "More Apps",
+    "tag": "coming soon",
+    "url": null,
+    "kind": "text",
+    "status": "IN DEV · WORKSHOP OPEN",
+    "body": [
+      "The workshop is busy. New apps get posted here as they leave the bench — check the live nodes, something is always flickering."
+    ]
+  },
+  "sysinfo": {
+    "idx": "06",
+    "title": "System Info",
+    "tag": "unlocked",
+    "url": null,
+    "kind": "text",
+    "status": "DIAGNOSTIC COMPLETE · 5 OF 5",
+    "body": [
+      "bfloore.online v4.1 — one file: HTML, CSS, and a little JavaScript. Unbounded, Space Grotesk, JetBrains Mono. The board, the wiring, and all five diagnostics are drawn in code.",
+      "Written and assembled by Barry Floore, with AI assistance — credited here the same way the models get a line in SLOP’s cast list and a section in Geoff & Maxie’s production notes.",
+      "You found all five. This panel is the reward, and you are the kind of reader this site was built for."
+    ]
+  }
+};
 
-    /* ---- 02 PROFESSIONAL ---- */
-    resume:{idx:'02',title:'Resume / CV',tag:'coming soon',url:null,kind:'text',
-      body:['The formal record — writing, composing, producing, data wrangling, and the surprising places they overlap. Being typeset. Check back shortly.']},
-    dataonezero:{idx:'02',title:'DataOneZero',tag:'formerly JAXDATApro',url:null,kind:'text',
-      body:['Data services, rebranded. The same spreadsheets with better instincts. Full site coming soon — for now, use the contact module to reach out.']},
-    social:{idx:'02',title:'Social Media',tag:'all channels',url:null,kind:'icons',
-      body:['Everywhere I exist, in one grid. Tap a node to hop channels:'],
-      icons:SOCIALS},
-    linklist:{idx:'02',title:'Link List',tag:'everywhere I exist',url:null,kind:'icons',
-      body:['The complete inventory of places you can find Barry on the internet. If it exists and it links, it is probably here:'],
-      icons:SOCIALS},
-    about:{idx:'02',title:'About',tag:'who is b',url:null,kind:'text',
-      body:['Barry Floore is a writer, composer, and independent producer based in Jacksonville, Florida. By day he makes sense of data; by night he makes musicals, essays, podcasts, photographs, and the occasional beautiful mess.',
-            'This site is the motherboard: five cards, one chip, everything wired together. Edit this copy to say it the way only you can.']},
-    contact:{idx:'02',title:'Contact',tag:'say hello',url:null,kind:'form',
-      body:null},
-
-    /* ---- 03 PROFESSIONAL WRITING ---- */
-    medium:{idx:'03',title:'Medium',tag:'essays',url:'https://medium.com/@bfloore',kind:'text',
-      kicker:'Latest essay — first two paragraphs',
-      body:['[ Paste the first paragraph of your most recent Medium piece here. This popup is built to tease — two paragraphs max, then the reader follows the link. ]',
-            '[ Second paragraph here. Keep it juicy. ]']},
-    substack:{idx:'03',title:'Substack',tag:'the dispatch',url:'https://substack.com/@bfloore',kind:'text',
-      kicker:'Latest dispatch — first two paragraphs',
-      body:['[ First paragraph of your most recent Substack post goes here. ]',
-            '[ Second paragraph goes here. ]']},
-    blogs:{idx:'03',title:'Blogs',tag:'archive — coming soon',url:null,kind:'text',
-      body:['Fifteen years of posts, scattered across the ruins of the old internet. The archive is being excavated and will live here when it is ready.']},
-    podcasts:{idx:'03',title:'Cultivating Ethical AI',tag:'on pause after 4 seasons',url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9',kind:'embed',
-      body:['Four seasons of conversations about building AI that does not behave like a villain. Currently on pause — the archive remains, and it holds up.'],
-      embed:'https://open.spotify.com/embed/show/2nGTlVMwCufnCq4NUssGT9?utm_source=generator'},
-
-    /* ---- 04 SHOPPING & MERCH ---- */
-    amazon:{idx:'04',title:'Amazon',tag:'books',url:'https://amazon.com',kind:'product',
-      body:['Books and goods, delivered by the everything-store. Currently featured:'],
-      product:{title:'[ Featured book title ]',price:'$[price]',desc:'[ One-line description of your most recent/featured item. ]',img:'img/amazon-latest.jpg'}},
-    etsy:{idx:'04',title:'Etsy',tag:'merch & pod',url:'https://etsy.com',kind:'text',
-      body:['Merchandise and print-on-demand goods — designed by Barry, manufactured by people with better printers. Mugs, shirts, and objects of questionable necessity.']},
-    gumroad:{idx:'04',title:'Gumroad',tag:'digital products',url:'https://gumroad.com',kind:'text',art:{top:'img/rex-top.jpg',bottom:['img/rex-1.jpg','img/rex-2.jpg']},
-      body:['Digital products, including supplemental children\u2019s material. Instant delivery, zero shelf space.']},
-
-    /* ---- 05 SITES & APPS ---- */
-    serial:{idx:'05',title:'Serial Images',tag:'serialimages.vercel.app',url:'https://serialimages.vercel.app',kind:'text',
-      body:['A web app for building and viewing serialized image narratives — photography as episodes, not just a feed. Live and running; more features shipping as inspiration strikes.']},
-    moreapps:{idx:'05',title:'More Apps',tag:'coming soon',url:null,kind:'text',
-      body:['The workshop is busy. New apps get posted here as they leave the bench — check the LIVE nodes, something is always flickering.']}
-  };
-
-  /* per-card popup anchor: fraction across the card width, vertical gap,
+    /* per-card popup anchor: fraction across the card width, vertical gap,
      and a small asymmetric tilt so no two popups behave the same */
   var HANG = {p1:{fx:.7,dy:12,tilt:'-1.2deg'},p2:{fx:.16,dy:12,tilt:'.9deg'},p3:{fx:.5,dy:14,tilt:'-.7deg'},p4:{fx:.28,dy:12,tilt:'1.3deg'},p5:{fx:.55,dy:12,tilt:'-1deg'}};
   var NEONS = ['#00ff9d','#00e0ff','#ff2fd6','#ffd500','#f2f7f5'];
@@ -902,7 +1301,46 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   var shiftStep = 0;
   var lastFocus = null;
 
-  function msg(t){ sysMsg.textContent = t; }
+  /* ---- status line: messages hold for a few seconds, then idle rotation ---- */
+  var ROT = ['STANDBY — AWAITING INPUT','5 MODULES ONLINE','ALL SYSTEMS NOMINAL','SIGNAL: STRONG · COFFEE: LOW'];
+  var ROT_OPEN = ['MENU DEPLOYED — 05 SECTORS WIRED','SELECT A MODULE','WIRING NOMINAL'];
+  var rotI = 0, holdUntil = 0;
+  function eggsFound(){
+    try { return JSON.parse(localStorage.getItem('bfloore.eggs')||'[]'); } catch(e){ return []; }
+  }
+  function eggCount(){ return eggsFound().length; }
+  function idleTick(){
+    if(Date.now() < holdUntil) return;
+    var list = document.body.classList.contains('open') ? ROT_OPEN : ROT;
+    var base = list[rotI % list.length];
+    var n = eggCount();
+    sysMsg.textContent = n ? base + ' · EGGS ' + n + '/5' : base;
+    rotI++;
+  }
+  function msg(t){ sysMsg.textContent = t; holdUntil = Date.now() + 5000; }
+  setInterval(idleTick, 7000);
+  setTimeout(idleTick, 400);
+
+  /* ---- diagnostics: five live effects, one hidden reward ---- */
+  var EGG_NAMES = {snake:'SNAKE ROUTE',surge:'CYAN SURGE',shuffle:'BACKGROUND SHUFFLE',shift:'COLOR ROTATION',dark:'LIGHTS OUT'};
+  function logEgg(fx){
+    var found = eggsFound();
+    if(found.indexOf(fx) === -1){
+      found.push(fx);
+      try { localStorage.setItem('bfloore.eggs', JSON.stringify(found)); } catch(e){}
+      setTimeout(function(){ msg('DIAGNOSTIC LOGGED — ' + (EGG_NAMES[fx]||'EFFECT') + ' · ' + found.length + '/5'); }, 1700);
+    }
+    if(found.length >= 5){
+      var slot = document.getElementById('eggSlot');
+      if(slot && !slot.classList.contains('show')){
+        slot.classList.add('show');
+        var c = document.getElementById('p5count');
+        if(c) c.textContent = '// 03 modules';
+        setTimeout(function(){ msg('ALL FIVE DIAGNOSTICS LOGGED — NEW MODULE UNLOCKED BELOW'); }, 3600);
+      }
+    }
+  }
+  window.logEgg = logEgg;
   function mk(tag, attrs, parent){
     var el = document.createElementNS(NS, tag);
     for(var k in attrs) el.setAttribute(k, attrs[k]);
@@ -1089,16 +1527,17 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   function buildBody(d){
     var h = '';
     if(d.kicker) h += '<span class="m-kicker">' + esc(d.kicker) + '</span>';
+    if(d.status) h += '<span class="m-status">' + esc(d.status) + '</span>';
     if(d.art){
-      if(d.art.top) h += '<img class="m-art-top" style="--r:-.5deg" src="'+d.art.top+'" alt="" onerror="imgFallback(this)">';
-      if(d.art.side) h += '<img class="m-art-side" style="--r:1.4deg" src="'+d.art.side+'" alt="" onerror="imgFallback(this)">';
+      if(d.art.top) h += '<img class="m-art-top" style="--r:-.5deg" src="'+d.art.top+'" alt="'+esc(d.title)+' artwork" onerror="imgFallback(this)">';
+      if(d.art.side) h += '<img class="m-art-side" style="--r:1.4deg" src="'+d.art.side+'" alt="'+esc(d.title)+' artwork" onerror="imgFallback(this)">';
     }
     if(d.body){ d.body.forEach(function(p){ h += '<p>' + esc(p) + '</p>'; }); }
     if(d.kind === 'lyrics' && d.lyric) h += '<div class="m-lyric">' + esc(d.lyric) + '</div>';
     if(d.kind === 'images' && d.imgs){
       h += '<div class="m-imgs">';
       d.imgs.forEach(function(src,i){
-        h += '<figure style="--i:'+i+';--r:'+ROTS[i%ROTS.length]+'"><img src="'+src+'" alt="instagram post '+(i+1)+'" loading="lazy" onerror="imgFallback(this)"></figure>';
+        h += '<figure style="--i:'+i+';--r:'+ROTS[i%ROTS.length]+'"><img src="'+src+'" alt="'+esc(d.title)+' — work '+(i+1)+'" loading="lazy" onerror="imgFallback(this)"></figure>';
       });
       h += '</div>';
     }
@@ -1111,19 +1550,32 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     }
     if(d.kind === 'product' && d.product){
       var p = d.product;
-      h += '<div class="m-prod"><div class="p-thumb"><img src="'+p.img+'" alt="featured product" onerror="imgFallback(this)"></div>' +
-           '<div><h4>'+esc(p.title)+'</h4><div class="p-price">'+esc(p.price)+'</div><p>'+esc(p.desc)+'</p></div></div>';
+      h += '<div class="m-prod"><div class="p-thumb"><a href="'+d.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="'+esc(p.title)+' cover" onerror="imgFallback(this)"></a></div>' +
+           '<div><h4>'+esc(p.title)+'</h4>' + (p.price ? '<div class="p-price">'+esc(p.price)+'</div>' : '') + '<p>'+esc(p.desc)+'</p></div></div>';
+    }
+    if(d.links && d.links.length){
+      h += '<ul class="m-links">';
+      d.links.forEach(function(l){
+        h += '<li><a href="'+l.url+'" target="_blank" rel="noopener"><span>'+esc(l.label)+'</span><span class="ml-note">'+esc(l.note||'open')+' ↗</span></a></li>';
+      });
+      h += '</ul>';
     }
     if(d.kind === 'embed' && d.embed){
       h += '<iframe src="'+d.embed+'" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
     }
     if(d.kind === 'form'){
-      h += '<form class="m-form" id="mForm" action="https://formspree.io/f/'+FORMSPREE_ID+'" method="POST">' +
-           '<label for="mf-name">Name</label><input id="mf-name" name="name" required>' +
-           '<label for="mf-email">Email</label><input id="mf-email" type="email" name="email" required>' +
-           '<label for="mf-msg">Message</label><textarea id="mf-msg" name="message" rows="4" required></textarea>' +
-           '<button class="m-send" type="submit">Transmit</button>' +
-           '<div class="m-note">or text 904-297-8201 (text only)</div></form>';
+      if(FORMSPREE_ID){
+        h += '<form class="m-form" id="mForm" action="https://formspree.io/f/'+FORMSPREE_ID+'" method="POST">' +
+             '<label for="mf-name">Name</label><input id="mf-name" name="name" required>' +
+             '<label for="mf-email">Email</label><input id="mf-email" type="email" name="email" required>' +
+             '<label for="mf-msg">Message</label><textarea id="mf-msg" name="message" rows="4" required></textarea>' +
+             '<button class="m-send" type="submit">Transmit</button>' +
+             '<div class="m-note">or text 904-297-8201 (text only)</div></form>';
+      } else {
+        h += '<div class="m-direct"><p class="m-direct-line">The fastest route is email:</p>' +
+             '<a class="m-mail" href="mailto:'+CONTACT_EMAIL+'?subject=Hello%20from%20bfloore.online">'+CONTACT_EMAIL+'</a>' +
+             '<p class="m-note">or text 904-297-8201 (text only) · usually a few days</p></div>';
+      }
     }
     if(d.art && d.art.bottom){
       h += '<div class="m-art-bottom">';
@@ -1206,6 +1658,12 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       });
     }
     msg('MODULE LOADED — ' + d.title.toUpperCase().slice(0, 26));
+    try {
+      if(!localStorage.getItem('bfloore.hint')){
+        localStorage.setItem('bfloore.hint','1');
+        setTimeout(function(){ msg('TIP: ● LIVE ON ANY CARD RUNS A DIAGNOSTIC'); }, 2600);
+      }
+    } catch(e){}
     mClose.focus();
   }
   function closeModal(){
@@ -1319,6 +1777,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       var card = btn.closest('.panel');
       if(card.classList.contains('closed')) return;
       (FX[btn.getAttribute('data-fx')] || function(){})(card);
+      logEgg(btn.getAttribute('data-fx'));
     });
   });
 
