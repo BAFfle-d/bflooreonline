@@ -10,12 +10,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   BFLOORE.ONLINE — v3 "MOTHERBOARD"
-   The "b" is the CPU. Four components are wired to it with PCB
-   traces — deliberately uneven: different sizes, positions, and
-   routing (a 3-lane bus, a 2-lane bus, single traces, dead-end
-   stubs). Links intentionally unwired — baseline preview build.
+   BFLOORE.ONLINE — v4 "FULLY WIRED"
+   The "b" CPU boots five components. Every link spawns a popup
+   that hangs off its home card on a neon lead. Cards can be
+   closed individually (X) or all at once (the CPU). Each card's
+   LIVE node runs a small signature effect.
    ============================================================ */
+@property --neon{syntax:'<color>';inherits:false;initial-value:#00ff9d}
 :root{
   --black:#050607;
   --ink:#e8ecef;
@@ -24,6 +25,7 @@
   --cyan:#00e0ff;
   --magenta:#ff2fd6;
   --amber:#ffd500;
+  --white:#f2f7f5;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --grot:'Space Grotesk',system-ui,sans-serif;
   --disp:'Unbounded',sans-serif;
@@ -48,13 +50,14 @@ body{
   background-size:56px 56px;
   mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,#000 30%,transparent 100%);
   -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,#000 30%,transparent 100%);
+  transition:opacity .5s ease;
 }
-.blob{position:fixed;border-radius:50%;filter:blur(110px);opacity:.16;z-index:0;pointer-events:none;animation:drift 18s ease-in-out infinite alternate}
+.blob{position:fixed;border-radius:50%;filter:blur(110px);opacity:.16;z-index:0;pointer-events:none;animation:drift 18s ease-in-out infinite alternate;transition:background .3s ease,opacity .5s ease}
 .blob.g{width:52vmax;height:52vmax;left:-18vmax;top:-18vmax;background:var(--green)}
 .blob.b{width:46vmax;height:46vmax;right:-16vmax;bottom:-16vmax;background:var(--cyan);animation-delay:-9s}
 @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vmax,4vmax) scale(1.15)}}
 
-.circuits{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.circuits{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;transition:opacity .5s ease}
 .circuits path{fill:none;stroke-width:1.5;stroke-linecap:round;stroke-dasharray:14 200;animation:flow 9s linear infinite}
 .circuits .c1{stroke:rgba(0,255,157,.35)}
 .circuits .c2{stroke:rgba(0,224,255,.3);animation-delay:-3s}
@@ -70,17 +73,17 @@ body{
   position:fixed;left:0;right:0;height:120px;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,transparent,rgba(0,255,157,.045),transparent);
   animation:scan 7s linear infinite;
+  transition:opacity .5s ease;
 }
 @keyframes scan{from{top:-15%}to{top:110%}}
 
-/* ---------- stage + board ----------
-   The board is a fixed 1000x800 design space. JS scales it to fit the
-   window (--fit) and slides it so the CPU sits dead-centre while closed.  */
+/* ---------- stage + board ---------- */
 .stage{
   position:relative;z-index:10;height:100dvh;width:100vw;
   display:flex;align-items:center;justify-content:center;
   padding-bottom:34px;
   cursor:crosshair;
+  transition:filter .35s ease;
 }
 .board{
   position:relative;flex:none;width:1000px;height:800px;
@@ -110,14 +113,14 @@ body.open .wires{opacity:1;transition-delay:.1s}
   perspective:900px;
   animation:boot .9s var(--ease) both;
   -webkit-tap-highlight-color:transparent;
+  transition:opacity .5s ease;
 }
 @keyframes boot{from{opacity:0;transform:scale(.4) rotate(-8deg)}to{opacity:1;transform:none}}
 
-/* socket outline + silkscreen */
 .core::after{
   content:'';position:absolute;inset:-19px;pointer-events:none;
   border:1px solid rgba(255,255,255,.1);border-radius:8px;
-  transition:border-color .3s;
+  transition:border-color .3s, box-shadow .5s ease;
 }
 .core:hover::after{border-color:rgba(0,255,157,.35)}
 .silk{
@@ -125,7 +128,6 @@ body.open .wires{opacity:1;transition-delay:.1s}
   font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--dim);
   text-transform:uppercase;white-space:nowrap;pointer-events:none;
 }
-/* the pins: four strips of contacts around the package */
 .pins{
   position:absolute;inset:-9px;pointer-events:none;
   --pin:rgba(150,170,185,.75);
@@ -154,6 +156,7 @@ body.open .pins{--pin:rgba(0,255,157,.8)}
   display:flex;align-items:center;justify-content:center;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   border-radius:6px;
+  transition:border-color .3s,box-shadow .5s ease;
 }
 .face .b{
   font-family:var(--disp);font-weight:900;
@@ -165,9 +168,7 @@ body.open .pins{--pin:rgba(0,255,157,.8)}
   border:1px solid rgba(255,255,255,.24);
   box-shadow:0 0 0 1px rgba(0,0,0,.8),0 10px 40px rgba(0,0,0,.7),inset 0 0 0 5px rgba(255,255,255,.03),inset 0 0 22px rgba(0,0,0,.9);
   color:#fff;
-  transition:border-color .3s,box-shadow .3s;
 }
-/* pin-1 marker */
 .face.front::after{
   content:'';position:absolute;left:6px;top:6px;
   border:5px solid transparent;
@@ -196,9 +197,7 @@ body.open .pins{--pin:rgba(0,255,157,.8)}
 }
 body.open .core-hint{display:none}
 
-/* ---------- the four components ----------
-   Positioned on the board by hand — different widths, different heights,
-   staggered edges. Each one grows out of the CPU when the menu opens.     */
+/* ---------- the five components ---------- */
 .panel{
   position:absolute;
   display:flex;flex-direction:column;
@@ -215,21 +214,30 @@ body.open .core-hint{display:none}
   backdrop-filter:blur(6px);
   opacity:0;pointer-events:none;
   transform:scale(.05);
-  transition:transform .75s var(--ease),opacity .4s ease,box-shadow .3s ease;
+  transition:transform .75s var(--ease),opacity .4s ease,box-shadow .3s ease,--neon .6s ease;
   will-change:transform,opacity;
   z-index:20;
 }
 /* transform-origin = the CPU's centre (300,400) in each panel's own space */
-.p1{--neon:var(--green);  left:60px; top:30px; width:380px;transform-origin:240px 370px}
-.p2{--neon:var(--cyan);   left:540px;top:70px; width:340px;transform-origin:-240px 330px}
-.p3{--neon:var(--magenta);left:200px;top:515px;width:330px;transform-origin:100px -115px}
-.p4{--neon:var(--amber);  left:600px;top:470px;width:350px;transform-origin:-300px -70px}
+.p1{--neon:var(--green);  left:10px; top:25px; width:215px;transform-origin:290px 375px}
+.p2{--neon:var(--cyan);   left:560px;top:30px; width:380px;transform-origin:-260px 370px}
+.p3{--neon:var(--magenta);left:300px;top:545px;width:330px;transform-origin:0px -145px}
+.p4{--neon:var(--amber);  left:650px;top:400px;width:340px;transform-origin:-350px 0px}
+.p5{--neon:var(--white);  left:20px; top:500px;width:230px;transform-origin:280px -100px}
+/* 01 is the tall narrow one — compact rows so it clears the socket's north edge */
+.panel.slim .p-head{min-height:36px;margin-bottom:8px}
+.panel.slim .p-links a{padding:3px 6px}
+.panel.slim .p-foot{margin-top:8px;padding-top:7px}
+.panel.slim .l-tag{font-size:9px}
 
 body.open .panel{opacity:1;pointer-events:auto;transform:none}
 body.open .p1{transition-delay:.05s}
 body.open .p2{transition-delay:.16s}
 body.open .p3{transition-delay:.27s}
 body.open .p4{transition-delay:.38s}
+body.open .p5{transition-delay:.49s}
+/* individually closed cards collapse back toward the CPU */
+body.open .panel.closed{opacity:0;pointer-events:none;transform:scale(.05);transition-delay:0s}
 body.open .panel:hover{
   box-shadow:
     0 0 44px color-mix(in srgb,var(--neon) 38%,transparent),
@@ -238,7 +246,24 @@ body.open .panel:hover{
   z-index:25;
 }
 
-.p-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;min-height:44px}
+/* per-card close button */
+.p-x{
+  position:absolute;top:9px;right:9px;z-index:6;
+  width:22px;height:22px;flex:none;
+  background:none;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--neon) 40%,transparent);
+  border-radius:4px;
+  color:var(--neon);font-family:var(--mono);font-size:11px;line-height:1;
+  opacity:.5;transition:.2s;padding:0;
+}
+.p-x:hover{
+  opacity:1;
+  background:color-mix(in srgb,var(--neon) 15%,transparent);
+  box-shadow:0 0 12px color-mix(in srgb,var(--neon) 45%,transparent);
+  transform:rotate(90deg);
+}
+
+.p-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;min-height:44px;padding-right:22px}
 .p-index{
   font-family:var(--mono);font-size:11px;font-weight:700;color:var(--neon);
   border:1px solid color-mix(in srgb,var(--neon) 55%,transparent);
@@ -252,7 +277,6 @@ body.open .panel:hover{
   flex:1;align-self:center;
 }
 
-/* sub-links as bus-tapped nodes */
 .p-links{list-style:none;display:flex;flex-direction:column;gap:2px;flex:1;position:relative;padding-left:17px}
 .p-links::before{
   content:'';position:absolute;left:6px;top:11px;bottom:15px;width:1px;
@@ -299,6 +323,244 @@ body.open .panel:hover{
   display:flex;justify-content:space-between;
 }
 .p-foot .blink{animation:pulse 1.6s steps(2) infinite}
+.p-foot .live{
+  background:none;border:0;cursor:pointer;padding:0;
+  font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;
+  transition:text-shadow .2s;
+}
+.p-foot .live:hover{text-shadow:0 0 10px var(--neon)}
+
+/* ---------- popup modal ---------- */
+.veil{
+  position:fixed;inset:0;z-index:65;
+  background:radial-gradient(ellipse at center,rgba(3,5,6,.2),rgba(3,5,6,.55));
+  opacity:0;pointer-events:none;transition:opacity .35s ease;
+}
+.veil.show{opacity:1;pointer-events:auto}
+.modal{
+  position:fixed;z-index:70;
+  width:min(460px,calc(100vw - 32px));
+  --mneon:#00ff9d;--tilt:0deg;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.06),transparent 40%),
+    rgba(7,10,12,.97);
+  border:1px solid color-mix(in srgb,var(--mneon) 60%,transparent);
+  border-radius:10px;
+  box-shadow:
+    0 0 40px color-mix(in srgb,var(--mneon) 25%,transparent),
+    0 24px 80px rgba(0,0,0,.7),
+    inset 0 0 30px color-mix(in srgb,var(--mneon) 6%,transparent);
+  backdrop-filter:blur(10px);
+  padding:18px 20px 16px;
+  opacity:0;pointer-events:none;
+  transform-origin:var(--nx,50%) 0;
+  transform:translateY(18px) rotate(var(--tilt)) scale(.94);
+}
+.modal.show{
+  opacity:1;pointer-events:auto;transform:none;
+  transition:transform .5s var(--ease),opacity .3s ease;
+}
+.m-notch{
+  position:absolute;top:-1px;left:var(--nx,50%);
+  width:34px;height:3px;transform:translateX(-50%);
+  background:var(--mneon);box-shadow:0 0 8px var(--mneon);
+}
+.m-lead{
+  position:fixed;z-index:69;height:2px;
+  background:var(--mneon);box-shadow:0 0 6px var(--mneon);
+  opacity:0;pointer-events:none;
+  transform-origin:0 50%;
+  transition:opacity .3s ease;
+}
+.m-lead.show{opacity:.8;transition:opacity .4s ease .15s}
+.m-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.m-index{
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--mneon);
+  border:1px solid color-mix(in srgb,var(--mneon) 55%,transparent);
+  padding:2px 6px;border-radius:3px;
+}
+.m-head h3{
+  font-family:var(--grot);font-weight:700;font-size:16px;
+  letter-spacing:.05em;text-transform:uppercase;color:#fff;flex:1;
+  text-shadow:0 0 16px color-mix(in srgb,var(--mneon) 50%,transparent);
+}
+.m-tag{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.m-body{
+  margin:12px 0 14px;
+  font-size:13.5px;line-height:1.6;color:#c9d2d8;
+  max-height:min(52vh,430px);overflow:auto;
+}
+.m-body p+p{margin-top:8px}
+.m-body .m-kicker{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--mneon) 80%,var(--dim));
+  display:block;margin-bottom:8px;
+}
+/* popup art layouts: wide bar, side square, bottom row */
+.m-art-top{
+  display:block;width:calc(100% + 10px);height:110px;margin:-8px -5px 12px;
+  object-fit:cover;border-radius:6px;
+  border:1px solid color-mix(in srgb,var(--mneon) 32%,transparent);
+  transform:rotate(-.5deg);box-shadow:0 8px 22px rgba(0,0,0,.45);
+  opacity:0;animation:img-in .5s var(--ease) forwards;
+}
+.m-art-side{
+  float:right;width:42%;margin:2px 0 8px 14px;aspect-ratio:1;object-fit:cover;
+  border-radius:8px;border:1px solid rgba(255,255,255,.14);
+  transform:rotate(1.4deg);box-shadow:0 10px 26px rgba(0,0,0,.5);
+  opacity:0;animation:img-in .5s var(--ease) .08s forwards;
+}
+.m-art-bottom{display:flex;gap:12px;margin-top:12px}
+.m-art-bottom img{
+  flex:1;min-width:0;aspect-ratio:1;object-fit:cover;border-radius:8px;
+  border:1px solid rgba(255,255,255,.14);
+  transform:rotate(var(--r,0deg));box-shadow:0 10px 26px rgba(0,0,0,.5);
+  opacity:0;animation:img-in .5s var(--ease) forwards;
+  animation-delay:calc(.12s + var(--i,0)*.09s);
+}
+.m-body::after{content:'';display:block;clear:both}
+.m-lyric{
+  font-family:var(--mono);font-style:italic;font-size:12.5px;line-height:1.8;
+  color:#e6ecf0;white-space:pre-line;
+  border-left:2px solid var(--mneon);
+  padding:4px 0 4px 14px;margin-top:10px;
+}
+/* instagram grid — fun alignment, staggered arrival */
+.m-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.m-imgs figure{
+  margin:0;background:#0b0e10;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+  transform:rotate(var(--r,0deg));
+  opacity:0;
+  animation:img-in .55s var(--ease) forwards;
+  animation-delay:calc(.18s + var(--i)*.09s);
+}
+.m-imgs figure:nth-child(odd){margin-top:8px}
+@keyframes img-in{
+  from{opacity:0;transform:rotate(var(--r,0deg)) translateY(22px) scale(.82)}
+  to{opacity:1;transform:rotate(var(--r,0deg)) translateY(0) scale(1)}
+}
+.m-imgs img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.img-slot{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:1;padding:6px;text-align:center;
+  font-family:var(--mono);font-size:9px;line-height:1.5;color:var(--dim);
+}
+/* social icon field */
+.m-icons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.m-icons a{
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  padding:13px 6px;text-decoration:none;color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--mneon) 25%,transparent);
+  border-radius:8px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;
+  transition:.2s;
+}
+.m-icons a:hover{
+  border-color:var(--mneon);
+  background:color-mix(in srgb,var(--mneon) 10%,transparent);
+  transform:translateY(-3px);
+  box-shadow:0 6px 18px color-mix(in srgb,var(--mneon) 20%,transparent);
+}
+.m-icons svg{width:22px;height:22px;fill:var(--mneon)}
+/* featured product slot */
+.m-prod{
+  display:flex;gap:12px;margin-top:12px;
+  border:1px dashed color-mix(in srgb,var(--mneon) 35%,transparent);
+  border-radius:8px;padding:10px;align-items:center;
+}
+.m-prod .p-thumb{flex:none;width:74px;height:74px;border-radius:6px;overflow:hidden;background:#0b0e10;border:1px solid rgba(255,255,255,.1)}
+.m-prod .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.m-prod h4{font-size:13px;color:#fff;letter-spacing:.03em}
+.m-prod .p-price{font-family:var(--mono);font-size:11px;color:var(--mneon);margin-top:3px}
+.m-prod p{font-size:12px;color:#a9b4bc;margin-top:4px;line-height:1.45}
+/* spotify embed */
+.m-embed iframe{
+  width:100%;height:152px;border:0;border-radius:8px;margin-top:12px;background:#000;
+}
+/* contact form */
+.m-form label{
+  display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim);margin-top:10px;
+}
+.m-form input,.m-form textarea{
+  width:100%;margin-top:5px;padding:9px 11px;
+  background:rgba(255,255,255,.04);color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--mneon) 30%,transparent);
+  border-radius:6px;font-family:var(--grot);font-size:13px;resize:vertical;
+}
+.m-form input:focus,.m-form textarea:focus{
+  outline:none;border-color:var(--mneon);
+  box-shadow:0 0 10px color-mix(in srgb,var(--mneon) 25%,transparent);
+}
+.m-form .m-send{
+  margin-top:14px;width:100%;padding:11px;
+  background:color-mix(in srgb,var(--mneon) 14%,transparent);
+  border:1px solid color-mix(in srgb,var(--mneon) 55%,transparent);
+  border-radius:6px;color:#fff;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  transition:.2s;
+}
+.m-form .m-send:hover{
+  background:color-mix(in srgb,var(--mneon) 26%,transparent);
+  box-shadow:0 0 16px color-mix(in srgb,var(--mneon) 30%,transparent);
+}
+.m-form .m-note{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px;text-align:center}
+.m-success{
+  font-family:var(--mono);font-size:12px;color:var(--mneon);
+  text-align:center;padding:22px 0;letter-spacing:.1em;
+}
+.m-actions{
+  display:flex;gap:10px;justify-content:flex-end;
+  border-top:1px dashed color-mix(in srgb,var(--mneon) 30%,transparent);
+  padding-top:12px;
+}
+.m-btn{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 14px;border-radius:5px;cursor:pointer;text-decoration:none;transition:.2s;
+}
+.m-close{
+  background:none;border:1px solid color-mix(in srgb,var(--mneon) 45%,transparent);
+  color:var(--mneon);
+}
+.m-close:hover{background:color-mix(in srgb,var(--mneon) 10%,transparent)}
+.m-open{
+  background:color-mix(in srgb,var(--mneon) 16%,transparent);
+  border:1px solid color-mix(in srgb,var(--mneon) 60%,transparent);
+  color:#fff;
+}
+.m-open:hover{box-shadow:0 0 14px color-mix(in srgb,var(--mneon) 35%,transparent)}
+
+/* ---------- LIVE effects ---------- */
+#fxlayer{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none}
+#fxlayer path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#surge{
+  position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at var(--sx,50%) var(--sy,40%),rgba(0,224,255,.42),rgba(0,224,255,.07) 45%,transparent 72%);
+}
+body.surge #surge{animation:surge 1.5s ease}
+body.surge .stage{filter:saturate(1.7) brightness(1.22)}
+@keyframes surge{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
+
+body.lights-out .panel,
+body.lights-out .bg-grid,
+body.lights-out .circuits,
+body.lights-out .blob,
+body.lights-out .scanbar,
+body.lights-out .wires,
+body.lights-out .statusbar,
+body.lights-out .veil{opacity:0!important;pointer-events:none!important}
+body.lights-out .panel,
+body.lights-out .bg-grid,
+body.lights-out .circuits,
+body.lights-out .blob,
+body.lights-out .scanbar{transition:opacity .5s ease}
+body.lights-out .core .face.front{
+  border-color:rgba(255,255,255,.65);
+  box-shadow:0 0 60px rgba(255,255,255,.4),0 0 140px rgba(255,255,255,.18),inset 0 0 22px rgba(0,0,0,.9);
+}
+body.lights-out .core-hint{display:block;color:#fff;animation:none}
 
 /* ---------- status bar ---------- */
 .statusbar{
@@ -312,8 +574,7 @@ body.open .panel:hover{
 }
 .statusbar .sig{color:var(--green)}
 
-/* ---------- stacked layout: phones, narrow or short windows ----------
-   One column; CPU on top, components chained below it by a single trace. */
+/* ---------- stacked layout ---------- */
 @media (max-width:820px),(max-height:600px){
   body{overflow:auto}
   .stage{
@@ -337,24 +598,26 @@ body.open .panel:hover{
     flex:none;
     border-radius:12px;
     display:none;
-    opacity:1;transform:none;transition:box-shadow .3s ease;
+    opacity:1;transform:none;transition:box-shadow .3s ease,--neon .6s ease;
     will-change:auto;
   }
   body.open .panel{display:flex;pointer-events:auto;animation:rise .6s var(--ease) both}
+  body.open .panel.closed{display:none}
   body.open .p1{animation-delay:.05s}
   body.open .p2{animation-delay:.14s}
   body.open .p3{animation-delay:.23s}
   body.open .p4{animation-delay:.32s}
-  .p4{margin-bottom:0}
+  body.open .p5{animation-delay:.4s}
+  .p5{margin-bottom:0}
 
   .p-head{min-height:0}
 
-  /* two-line rows: name over tag, arrow on the right — no wrapping, no clipping */
   .p-links a{
     display:grid;grid-template-columns:minmax(0,1fr) auto;
     column-gap:10px;row-gap:1px;align-items:center;
     padding:9px 10px;
   }
+  .panel.slim .p-links a{padding:9px 10px}
   .l-name{grid-column:1;grid-row:1;font-size:14px}
   .l-tag{grid-column:1;grid-row:2;text-align:left;font-size:10.5px}
   .l-arrow{grid-column:2;grid-row:1 / span 2;opacity:.45;transform:none}
@@ -374,8 +637,8 @@ body.open .panel:hover{
 </head>
 <body>
 
-<div class="blob g"></div>
-<div class="blob b"></div>
+<div class="blob g" id="blobG"></div>
+<div class="blob b" id="blobB"></div>
 <div class="bg-grid"></div>
 <div class="scanbar"></div>
 
@@ -389,6 +652,25 @@ body.open .panel:hover{
   <circle class="n1" cx="1150" cy="300" r="5"/>
   <circle class="n2" cx="220" cy="500" r="5"/>
 </svg>
+
+<svg id="fxlayer" aria-hidden="true"></svg>
+<div id="surge" aria-hidden="true"></div>
+<div class="veil" id="veil"></div>
+<div class="m-lead" id="lead"></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <span class="m-notch"></span>
+  <div class="m-head">
+    <span class="m-index" id="mIndex"></span>
+    <h3 id="mTitle"></h3>
+    <span class="m-tag" id="mTag"></span>
+  </div>
+  <div class="m-body" id="mBody"></div>
+  <div class="m-actions">
+    <button class="m-btn m-close" id="mClose">close</button>
+    <a class="m-btn m-open" id="mOpen" href="#" target="_blank" rel="noopener">open in new tab &#8599;</a>
+  </div>
+</div>
 
 <main class="stage" id="stage">
 <div class="board" id="board">
@@ -411,90 +693,216 @@ body.open .panel:hover{
   </button>
 
   <!-- ============ 01 · CREATIVE CONTENT ============ -->
-  <section class="panel p1" aria-label="Creative content">
+  <section class="panel p1 slim" data-i="0" aria-label="Creative content">
+    <button class="p-x" aria-label="Close creative content card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">01</span>
       <h2>Creative<br>Content</h2>
     </div>
     <ul class="p-links">
-      <li><a><span class="l-name">Writing</span><span class="l-tag">BENNY — a novella</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Theatre</span><span class="l-tag">SLOP! The Musical</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Photography</span><span class="l-tag">@barrylikethefruit</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Video</span><span class="l-tag">youtube.com/@bfloore_online</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="benny"><span class="l-name">Benny</span><span class="l-tag">a family tragedy</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="slop"><span class="l-name">SLOP! The Musical</span><span class="l-tag">slopthemusical.com</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="geoffmaxie"><span class="l-name">Geoff &amp; Maxie</span><span class="l-tag">a new musical parody</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="spun"><span class="l-name">spun/calliope</span><span class="l-tag">a methy musical — soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="liars"><span class="l-name">Lying Liars</span><span class="l-tag">the podcast</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="robots"><span class="l-name">Friendly Robots!</span><span class="l-tag">friendlyrobots.online</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="fruit"><span class="l-name">Photography</span><span class="l-tag">@barrylikethefruit</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="video"><span class="l-name">Video</span><span class="l-tag">youtube.com/@bfloore_online</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+    <div class="p-foot"><span>// 08 modules</span><button class="live" data-fx="snake" aria-label="Activate green live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 02 · PROFESSIONAL ============ -->
-  <section class="panel p2" aria-label="Professional">
+  <section class="panel p2" data-i="1" aria-label="Professional">
+    <button class="p-x" aria-label="Close professional card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">02</span>
       <h2>Professional</h2>
     </div>
     <ul class="p-links">
-      <li><a><span class="l-name">Resume / CV</span><span class="l-tag">linkedin</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Social Media</span><span class="l-tag">all channels</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">JAXDataPro</span><span class="l-tag">data services</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Link List</span><span class="l-tag">everywhere I exist</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">About</span><span class="l-tag">who is b</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Contact</span><span class="l-tag">hello@bfloore.online</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="resume"><span class="l-name">Resume / CV</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="dataonezero"><span class="l-name">DataOneZero</span><span class="l-tag">formerly JAXDATApro</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="social"><span class="l-name">Social Media</span><span class="l-tag">all channels</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="linklist"><span class="l-name">Link List</span><span class="l-tag">everywhere I exist</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="about"><span class="l-name">About</span><span class="l-tag">who is b</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="contact"><span class="l-name">Contact</span><span class="l-tag">say hello</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 06 modules</span><span class="blink">● live</span></div>
+    <div class="p-foot"><span>// 06 modules</span><button class="live" data-fx="surge" aria-label="Activate blue live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 03 · PROFESSIONAL WRITING ============ -->
-  <section class="panel p3" aria-label="Professional writing">
+  <section class="panel p3" data-i="2" aria-label="Professional writing">
+    <button class="p-x" aria-label="Close professional writing card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">03</span>
       <h2>Professional<br>Writing</h2>
     </div>
     <ul class="p-links">
-      <li><a><span class="l-name">Medium</span><span class="l-tag">essays</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Substack</span><span class="l-tag">the dispatch</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Blogs</span><span class="l-tag">archive</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Podcasts</span><span class="l-tag">audio / appearances</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="medium"><span class="l-name">Medium</span><span class="l-tag">essays</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="substack"><span class="l-name">Substack</span><span class="l-tag">the dispatch</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="blogs"><span class="l-name">Blogs</span><span class="l-tag">archive — soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="podcasts"><span class="l-name">Podcasts</span><span class="l-tag">ethical ai · 4 seasons</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+    <div class="p-foot"><span>// 04 modules</span><button class="live" data-fx="shift" aria-label="Activate pink live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 04 · SHOPPING & MERCH ============ -->
-  <section class="panel p4" aria-label="Shopping and merch">
+  <section class="panel p4" data-i="3" aria-label="Shopping and merch">
+    <button class="p-x" aria-label="Close shopping and merch card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">04</span>
       <h2>Shopping<br>&amp; Merch</h2>
     </div>
     <ul class="p-links">
-      <li><a><span class="l-name">Amazon</span><span class="l-tag">books &amp; goods</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Etsy</span><span class="l-tag">handmade</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Affiliate Articles</span><span class="l-tag">picks &amp; reviews</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a><span class="l-name">Gumroad</span><span class="l-tag">digital products</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="amazon"><span class="l-name">Amazon</span><span class="l-tag">books</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="etsy"><span class="l-name">Etsy</span><span class="l-tag">merch &amp; pod</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="gumroad"><span class="l-name">Gumroad</span><span class="l-tag">digital products</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+    <div class="p-foot"><span>// 03 modules</span><button class="live" data-fx="shuffle" aria-label="Activate yellow live effect">&#9679; live</button></div>
+  </section>
+
+  <!-- ============ 05 · SITES & APPS ============ -->
+  <section class="panel p5" data-i="4" aria-label="Sites and apps">
+    <button class="p-x" aria-label="Close sites and apps card">&#10005;</button>
+    <div class="p-head">
+      <span class="p-index">05</span>
+      <h2>Sites<br>&amp; Apps</h2>
+    </div>
+    <ul class="p-links">
+      <li><a data-key="serial"><span class="l-name">Serial Images</span><span class="l-tag">serialimages.vercel.app</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-key="moreapps"><span class="l-name">More Apps</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 02 modules</span><button class="live" data-fx="dark" aria-label="Activate white live effect">&#9679; live</button></div>
   </section>
 
 </div>
 </main>
 
 <div class="statusbar" aria-hidden="true">
-  <span>SYS.BFLOORE // v3.0</span>
-  <span class="sig">30.3322°N 81.6557°W — JACKSONVILLE, FL</span>
+  <span>SYS.BFLOORE // v4.0</span>
+  <span class="sig">30.3322&deg;N 81.6557&deg;W — JACKSONVILLE, FL</span>
   <span id="sysMsg">STANDBY — AWAITING INPUT</span>
 </div>
 
 <script>
 (function(){
+  /* ============================================================
+     CONTENT — edit everything here. Each entry feeds the popup.
+     kinds: text | lyrics | images | icons | product | embed | form
+     ============================================================ */
+  var FORMSPREE_ID = 'YOUR_FORM_ID'; /* ← replace (see notes in delivery msg) */
+
+  var SOCIALS = [
+    {label:'Instagram', url:'https://instagram.com/barrylikethefruit', svg:'<path d="M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z"/>'},
+    {label:'TikTok', url:'https://tiktok.com/@b_floore', svg:'<path d="M16.6 3c.4 2 1.8 3.5 3.9 3.8v3c-1.5 0-2.9-.5-3.9-1.3v6.1a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 2 2.7V3h2.9z"/>'},
+    {label:'YouTube', url:'https://youtube.com/@bfloore_online', svg:'<path d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2L10 15.2z"/>'},
+    {label:'Facebook', url:'https://facebook.com/barry.floore', svg:'<path d="M13.5 21v-7h2.4l.4-3h-2.8V9.2c0-.9.3-1.6 1.6-1.6h1.3V4.8c-.2 0-1-.1-2-.1-2.4 0-4 1.5-4 4.1V11H7.4v3h2.9v7h3.2z"/>'},
+    {label:'LinkedIn', url:'https://linkedin.com/in/barryfloore', svg:'<path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z"/>'},
+    {label:'Spotify', url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', svg:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.5a.7.7 0 0 1-1 .2c-2.6-1.6-6-2-9.9-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.5 11 1.3.3.2.4.7.2 1zm1.2-2.8a.9.9 0 0 1-1.3.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 0 1-.5-1.7c4.2-1.3 9.5-.6 13 1.5.4.3.5.9.1 1.2zm.1-2.9C14.6 8.7 8.9 8.5 5.4 9.5a1.1 1.1 0 1 1-.6-2.1c4-1.2 10.5-1 14.6 1.5a1.1 1.1 0 0 1-1.1 1.9z"/>'}
+  ];
+
+  var PROJECTS = {
+    /* ---- 01 CREATIVE ---- */
+    benny:{idx:'01',title:'Benny: A Family Tragedy',tag:'afamilytragedy.com',url:'https://afamilytragedy.com',kind:'text',art:{side:'img/benny-side.jpg',bottom:['img/benny-bottom.jpg']},
+      body:['A novella. One family, one catastrophe, and the long echo afterwards — told with the restraint of a stage play and the intimacy of a letter you were never meant to read.',
+            'Replace these two paragraphs with your real synopsis: who Benny is, what happens, and why a stranger should give it an evening.']},
+    slop:{idx:'01',title:'SLOP! The Musical',tag:'slopthemusical.com',url:'https://slopthemusical.com',kind:'lyrics',art:{top:'img/slop-top.jpg',side:'img/slop-side.jpg',bottom:['img/slop-bottom.jpg']},
+      body:['A musical comedy served in a trough. Big numbers, bigger appetites, and a book that knows exactly how dumb it is — on purpose.'],
+      lyric:'[ paste the first few lines of your favorite SLOP! number here ]\n[ one more line, for the cheap seats ]'},
+    geoffmaxie:{idx:'01',title:'Geoff & Maxie',tag:'saintelmo.online',url:'https://saintelmo.online',kind:'lyrics',art:{top:'img/geoff-top.jpg',side:'img/geoff-side.jpg'},
+      body:['A new musical parody about an island and its monsters. Geoff and Maxie versus the strange things that wash ashore — part romance, part creature feature, all send-up.'],
+      lyric:'[ first few lines of a Geoff & Maxie song go here ]'},
+    spun:{idx:'01',title:'spun/calliope',tag:'a methy musical — coming soon',url:null,kind:'lyrics',
+      body:['A methy musical, currently in the lab. Music and book by Barry Floore. Not much to show the public yet — but here is a taste of what is coming.'],
+      lyric:'[ first few lines of a spun/calliope song go here ]'},
+    liars:{idx:'01',title:'The Lying Liars Who Lied When They Said They Loved You',tag:'the podcast',url:'https://thelyingliars.online',kind:'text',art:{top:'img/liars-top.jpg',side:'img/liars-side.jpg',bottom:['img/liars-bottom.jpg']},
+      body:['A podcast about love, deception, and the stories we tell people right before we break their hearts. The liars lie; Barry sorts through the wreckage.']},
+    robots:{idx:'01',title:'FRIENDLY ROBOTS!',tag:'friendlyrobots.online',url:'https://friendlyrobots.online',kind:'text',art:{top:'img/robots-top.jpg',side:'img/robots-side.jpg',bottom:['img/robots-bottom.jpg']},
+      body:['A project about robots that are friendly — or at least programmed to seem that way. Part fiction, part design experiment, all charm.']},
+    fruit:{idx:'01',title:'barrylikethefruit',tag:'@barrylikethefruit',url:'https://instagram.com/barrylikethefruit',kind:'images',
+      body:['A banal and beautiful world — a world-record-nominated Instagram (most prolific non-commercial artist of the 21st century). New work posted relentlessly. Latest six:'],
+      imgs:['img/insta-1.jpg','img/insta-2.jpg','img/insta-3.jpg','img/insta-4.jpg','img/insta-5.jpg','img/insta-6.jpg']},
+    video:{idx:'01',title:'Video',tag:'youtube.com/@bfloore_online',url:'https://youtube.com/@bfloore_online',kind:'text',
+      body:['The YouTube channel: songs, sketches, readings, and whatever else felt worth pointing a camera at. Subscribe for an unpredictable upload schedule.']},
+
+    /* ---- 02 PROFESSIONAL ---- */
+    resume:{idx:'02',title:'Resume / CV',tag:'coming soon',url:null,kind:'text',
+      body:['The formal record — writing, composing, producing, data wrangling, and the surprising places they overlap. Being typeset. Check back shortly.']},
+    dataonezero:{idx:'02',title:'DataOneZero',tag:'formerly JAXDATApro',url:null,kind:'text',
+      body:['Data services, rebranded. The same spreadsheets with better instincts. Full site coming soon — for now, use the contact module to reach out.']},
+    social:{idx:'02',title:'Social Media',tag:'all channels',url:null,kind:'icons',
+      body:['Everywhere I exist, in one grid. Tap a node to hop channels:'],
+      icons:SOCIALS},
+    linklist:{idx:'02',title:'Link List',tag:'everywhere I exist',url:null,kind:'icons',
+      body:['The complete inventory of places you can find Barry on the internet. If it exists and it links, it is probably here:'],
+      icons:SOCIALS},
+    about:{idx:'02',title:'About',tag:'who is b',url:null,kind:'text',
+      body:['Barry Floore is a writer, composer, and independent producer based in Jacksonville, Florida. By day he makes sense of data; by night he makes musicals, essays, podcasts, photographs, and the occasional beautiful mess.',
+            'This site is the motherboard: five cards, one chip, everything wired together. Edit this copy to say it the way only you can.']},
+    contact:{idx:'02',title:'Contact',tag:'say hello',url:null,kind:'form',
+      body:null},
+
+    /* ---- 03 PROFESSIONAL WRITING ---- */
+    medium:{idx:'03',title:'Medium',tag:'essays',url:'https://medium.com/@bfloore',kind:'text',
+      kicker:'Latest essay — first two paragraphs',
+      body:['[ Paste the first paragraph of your most recent Medium piece here. This popup is built to tease — two paragraphs max, then the reader follows the link. ]',
+            '[ Second paragraph here. Keep it juicy. ]']},
+    substack:{idx:'03',title:'Substack',tag:'the dispatch',url:'https://substack.com/@bfloore',kind:'text',
+      kicker:'Latest dispatch — first two paragraphs',
+      body:['[ First paragraph of your most recent Substack post goes here. ]',
+            '[ Second paragraph goes here. ]']},
+    blogs:{idx:'03',title:'Blogs',tag:'archive — coming soon',url:null,kind:'text',
+      body:['Fifteen years of posts, scattered across the ruins of the old internet. The archive is being excavated and will live here when it is ready.']},
+    podcasts:{idx:'03',title:'Cultivating Ethical AI',tag:'on pause after 4 seasons',url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9',kind:'embed',
+      body:['Four seasons of conversations about building AI that does not behave like a villain. Currently on pause — the archive remains, and it holds up.'],
+      embed:'https://open.spotify.com/embed/show/2nGTlVMwCufnCq4NUssGT9?utm_source=generator'},
+
+    /* ---- 04 SHOPPING & MERCH ---- */
+    amazon:{idx:'04',title:'Amazon',tag:'books',url:'https://amazon.com',kind:'product',
+      body:['Books and goods, delivered by the everything-store. Currently featured:'],
+      product:{title:'[ Featured book title ]',price:'$[price]',desc:'[ One-line description of your most recent/featured item. ]',img:'img/amazon-latest.jpg'}},
+    etsy:{idx:'04',title:'Etsy',tag:'merch & pod',url:'https://etsy.com',kind:'text',
+      body:['Merchandise and print-on-demand goods — designed by Barry, manufactured by people with better printers. Mugs, shirts, and objects of questionable necessity.']},
+    gumroad:{idx:'04',title:'Gumroad',tag:'digital products',url:'https://gumroad.com',kind:'text',art:{top:'img/rex-top.jpg',bottom:['img/rex-1.jpg','img/rex-2.jpg']},
+      body:['Digital products, including supplemental children\u2019s material. Instant delivery, zero shelf space.']},
+
+    /* ---- 05 SITES & APPS ---- */
+    serial:{idx:'05',title:'Serial Images',tag:'serialimages.vercel.app',url:'https://serialimages.vercel.app',kind:'text',
+      body:['A web app for building and viewing serialized image narratives — photography as episodes, not just a feed. Live and running; more features shipping as inspiration strikes.']},
+    moreapps:{idx:'05',title:'More Apps',tag:'coming soon',url:null,kind:'text',
+      body:['The workshop is busy. New apps get posted here as they leave the bench — check the LIVE nodes, something is always flickering.']}
+  };
+
+  /* per-card popup anchor: fraction across the card width, vertical gap,
+     and a small asymmetric tilt so no two popups behave the same */
+  var HANG = {p1:{fx:.7,dy:12,tilt:'-1.2deg'},p2:{fx:.16,dy:12,tilt:'.9deg'},p3:{fx:.5,dy:14,tilt:'-.7deg'},p4:{fx:.28,dy:12,tilt:'1.3deg'},p5:{fx:.55,dy:12,tilt:'-1deg'}};
+  var NEONS = ['#00ff9d','#00e0ff','#ff2fd6','#ffd500','#f2f7f5'];
+
   var core = document.getElementById('core');
   var sysMsg = document.getElementById('sysMsg');
   var svg = document.getElementById('wires');
+  var fxlayer = document.getElementById('fxlayer');
   var board = document.getElementById('board');
+  var veil = document.getElementById('veil');
+  var lead = document.getElementById('lead');
+  var modal = document.getElementById('modal');
+  var mIndex = document.getElementById('mIndex');
+  var mTitle = document.getElementById('mTitle');
+  var mTag = document.getElementById('mTag');
+  var mBody = document.getElementById('mBody');
+  var mClose = document.getElementById('mClose');
+  var mOpen = document.getElementById('mOpen');
   var NS = 'http://www.w3.org/2000/svg';
   var TRUNK = '#7d8e99';
-  var PIN = 9;        /* traces start at the tips of the CPU pins */
-  var CHAMFER = 14;   /* 45-degree corner cut on every trace bend */
+  var PIN = 9;
+  var CHAMFER = 14;
 
-  /* must match the stacked-layout media query in the CSS */
   var stacked = window.matchMedia('(max-width:820px),(max-height:600px)');
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var shiftStep = 0;
+  var lastFocus = null;
 
+  function msg(t){ sysMsg.textContent = t; }
   function mk(tag, attrs, parent){
     var el = document.createElementNS(NS, tag);
     for(var k in attrs) el.setAttribute(k, attrs[k]);
@@ -506,8 +914,9 @@ body.open .panel:hover{
     var c = getComputedStyle(el).getPropertyValue('--neon').trim();
     return c || '#00ff9d';
   }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
-  /* orthogonal polyline with 45-degree chamfered corners — PCB style */
+  /* ---------- PCB routing ---------- */
   function route(pts){
     var d = 'M ' + pts[0][0] + ' ' + pts[0][1];
     for(var i = 1; i < pts.length - 1; i++){
@@ -520,7 +929,6 @@ body.open .panel:hover{
     var z = pts[pts.length-1];
     return d + ' L ' + z[0] + ' ' + z[1];
   }
-
   function trace(pts, color, delay, soft){
     var p = mk('path', {d:route(pts), stroke:color, 'class': soft ? 'w-soft' : 'w-main', style:'color:'+color}, svg);
     var len = p.getTotalLength();
@@ -541,33 +949,23 @@ body.open .panel:hover{
       c.style.opacity = hollow ? .7 : .95;
     }, 40);
   }
-
   function box(el){
-    return {l:el.offsetLeft, t:el.offsetTop, r:el.offsetLeft+el.offsetWidth, b:el.offsetTop+el.offsetHeight, w:el.offsetWidth, h:el.offsetHeight};
+    return {l:el.offsetLeft, t:el.offsetTop, r:el.offsetLeft+el.offsetWidth, b:el.offsetTop+el.offsetHeight, w:el.offsetWidth, h:el.offsetHeight, el:el, col:colorOf(el)};
   }
+  function byId(list, id){ for(var i=0;i<list.length;i++) if(list[i].el.classList.contains(id)) return list[i]; return null; }
 
-  /* Deliberately uneven routing:
-       01  3-lane bus straight up
-       03  one lone trace straight down, off-centre into its card
-       02  2-lane bus right, then up      04  1 lane right, then down
-       + two dead-end debug stubs off the CPU's west side
-     Geometry comes from layout (offset*), so it is independent of the
-     board's scale and of the panels' open/close animation.               */
   function buildWires(){
     clearSvg();
     if(!document.body.classList.contains('open')) return;
-    var bb = box(board);
     svg.setAttribute('viewBox', '0 0 ' + board.offsetWidth + ' ' + board.offsetHeight);
     var c = box(core);
     var cx = c.l + c.w/2, cy = c.t + c.h/2, half = c.w/2 + PIN;
-    var P = ['.p1','.p2','.p3','.p4'].map(function(s){
-      var el = document.querySelector(s), b = box(el); b.col = colorOf(el); return b;
-    });
+    var P = panels.filter(function(p){ return !p.classList.contains('closed'); }).map(box);
 
     if(stacked.matches){
       var prev = c.b;
       P.forEach(function(p, i){
-        var d = .1 + i*.1;
+        var d = .1 + i*.08;
         trace([[cx, prev],[cx, p.t]], p.col, d, false);
         pad(cx, (prev + p.t)/2, p.col, d + .3);
         prev = p.b;
@@ -575,79 +973,369 @@ body.open .panel:hover{
       return;
     }
 
-    /* 01 — three parallel lanes up into the card above */
-    [-16, 0, 16].forEach(function(dx, i){
-      trace([[cx+dx, cy-half],[cx+dx, P[0].b]], P[0].col, .15 + i*.04, false);
-      pad(cx+dx, P[0].b, P[0].col, .65 + i*.04);
-    });
+    var p1 = byId(P,'p1'), p2 = byId(P,'p2'), p3 = byId(P,'p3'), p4 = byId(P,'p4'), p5 = byId(P,'p5');
+    var ex = cx + half, wx = cx - half;
 
-    /* 03 — a single trace down */
-    trace([[cx+24, cy+half],[cx+24, P[2].t]], P[2].col, .3, false);
-    pad(cx+24, P[2].t, P[2].col, .8);
-
-    /* 02 + 04 — lanes leave the east side together, then split */
-    var ex = cx + half;
-    var near = Math.min(P[1].l, P[3].l);
-    var xm = ex + (near - ex)/2;
-    var ta = P[1].t + 60, tb = P[1].t + 90, tc = P[3].t + 60;
-    trace([[ex, cy-18],[xm-16, cy-18],[xm-16, ta],[P[1].l, ta]], P[1].col, .2, false);
-    trace([[ex, cy],   [xm,    cy],   [xm,    tb],[P[1].l, tb]], P[1].col, .24, false);
-    trace([[ex, cy+18],[xm-32, cy+18],[xm-32, tc],[P[3].l, tc]], P[3].col, .36, false);
-    pad(P[1].l, ta, P[1].col, .7);
-    pad(P[1].l, tb, P[1].col, .74);
-    pad(P[3].l, tc, P[3].col, .86);
-
-    /* dead-end stubs west — vias to nowhere, like a real board */
-    var wx = cx - half;
-    trace([[wx, cy-10],[wx-98, cy-10],[wx-98, cy+70]], TRUNK, .1, true);
-    pad(wx-98, cy+70, TRUNK, .6, true);
-    trace([[wx, cy+14],[wx-72, cy+14]], TRUNK, .14, true);
-    pad(wx-72, cy+14, TRUNK, .6, true);
+    /* 01 — three lanes rise off the top pins, then jog west into the card's east edge */
+    if(p1){
+      [[-32,250],[-16,280],[0,310]].forEach(function(cfg,i){
+        var dx = cfg[0], ey = cfg[1];
+        trace([[cx+dx, cy-half],[cx+dx, ey],[p1.r-6, ey]], p1.col, .15+i*.05, false);
+        pad(p1.r-6, ey, p1.col, .65+i*.05);
+      });
+    }
+    /* 03 — one trace straight down into the card's top edge */
+    if(p3){
+      var dx3 = Math.min(Math.max(cx, p3.l+40), p3.r-40);
+      trace([[dx3, cy+half],[dx3, p3.t]], p3.col, .3, false);
+      pad(dx3, p3.t, p3.col, .8);
+    }
+    /* 02 — two lanes leave the east side, jog up, enter the card's west edge */
+    if(p2){
+      var xm = ex + (p2.l - ex)/2;
+      var ta = p2.t + 60, tb = p2.t + 90;
+      trace([[ex, cy-18],[xm-16, cy-18],[xm-16, ta],[p2.l, ta]], p2.col, .2, false);
+      trace([[ex, cy],   [xm,    cy],   [xm,    tb],[p2.l, tb]], p2.col, .24, false);
+      pad(p2.l, ta, p2.col, .7);
+      pad(p2.l, tb, p2.col, .74);
+    }
+    /* 04 — one lane east, then down into the card's west edge */
+    if(p4){
+      var xm4 = ex + (p4.l - ex)/2;
+      var tc = p4.t + 60;
+      trace([[ex, cy+18],[xm4-32, cy+18],[xm4-32, tc],[p4.l, tc]], p4.col, .36, false);
+      pad(p4.l, tc, p4.col, .86);
+    }
+    /* 05 — out the west side, down the corridor, into the card's east edge */
+    if(p5){
+      var ey5 = Math.min(Math.max(cy+40, p5.t+40), p5.b-40);
+      trace([[wx, cy-14],[234, cy-14],[234, ey5],[p5.r-10, ey5]], p5.col, .42, false);
+      pad(p5.r-10, ey5, p5.col, .9);
+    }
+    /* one dead-end stub west, for flavor */
+    trace([[wx, cy+14],[wx-64, cy+14]], TRUNK, .14, true);
+    pad(wx-64, cy+14, TRUNK, .6, true);
   }
+  function rebuildSoon(){ setTimeout(function(){ if(document.body.classList.contains('open')) buildWires(); }, 800); }
 
-  /* scale the board to the window; while closed, slide it so the CPU is centred */
+  /* ---------- fit / open ---------- */
   function fit(){
     var s = Math.min(1, (window.innerWidth - 32) / 1000, (window.innerHeight - 90) / 800);
     var open = document.body.classList.contains('open');
     board.style.setProperty('--fit', s);
     board.style.setProperty('--shx', open ? '0px' : (200 * s) + 'px');
   }
-
   function setOpen(open){
     document.body.classList.toggle('open', open);
     core.setAttribute('aria-expanded', open);
     core.setAttribute('aria-label', open ? 'bfloore.online — collapse menu' : 'bfloore.online — open menu');
-    sysMsg.textContent = open ? 'MENU DEPLOYED — 04 SECTORS WIRED' : 'STANDBY — AWAITING INPUT';
     fit();
-    if(open){ setTimeout(buildWires, 900); }  /* let the board settle, then trace the wires in */
-    else { clearSvg(); }
+    if(open){ msg('MENU DEPLOYED — 05 SECTORS WIRED'); setTimeout(buildWires, 900); }
+    else { clearSvg(); msg('STANDBY — AWAITING INPUT'); }
+  }
+  function closePanel(p, stagger){
+    p.classList.add('closed');
+    if(stagger != null){
+      p.style.transitionDelay = (stagger*0.06) + 's';
+      setTimeout(function(){ p.style.transitionDelay = ''; }, 900 + stagger*60);
+    }
+    rebuildSoon();
+  }
+  function openPanel(p, stagger){
+    p.classList.remove('closed');
+    if(stagger != null){
+      p.style.transitionDelay = (stagger*0.06) + 's';
+      setTimeout(function(){ p.style.transitionDelay = ''; }, 900 + stagger*60);
+    }
+    rebuildSoon();
   }
 
-  core.addEventListener('click', function(){ setOpen(!document.body.classList.contains('open')); });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && document.body.classList.contains('open')) setOpen(false);
+  core.addEventListener('click', function(){
+    if(document.body.classList.contains('lights-out')){
+      document.body.classList.remove('lights-out');
+      msg('POWER RESTORED — 05 SECTORS WIRED');
+      return;
+    }
+    if(!document.body.classList.contains('open')){ setOpen(true); return; }
+    var allOpen = panels.every(function(p){ return !p.classList.contains('closed'); });
+    if(allOpen){
+      panels.forEach(function(p,i){ closePanel(p, panels.length - i); });
+      msg('ALL SECTORS COLLAPSED');
+    } else {
+      panels.forEach(function(p,i){ openPanel(p, i); });
+      msg('MENU DEPLOYED — 05 SECTORS WIRED');
+    }
   });
 
+  /* per-card X */
+  panels.forEach(function(p){
+    p.querySelector('.p-x').addEventListener('click', function(e){
+      e.stopPropagation();
+      closePanel(p, null);
+      msg('SECTOR ' + (p.getAttribute('data-i')*1+1) + ' CLOSED — PRESS B TO RESTORE');
+    });
+  });
+
+  /* ---------- popup modal ---------- */
+  var ROTS = ['-3deg','2deg','-1.5deg','2.5deg','-2deg','1.8deg'];
+  function imgFallback(img){
+    var s = document.createElement('span');
+    s.className = 'img-slot';
+    s.textContent = img.getAttribute('src') + ' — drop this file in';
+    img.parentNode.replaceChild(s, img);
+  }
+  window.imgFallback = imgFallback;
+
+  function buildBody(d){
+    var h = '';
+    if(d.kicker) h += '<span class="m-kicker">' + esc(d.kicker) + '</span>';
+    if(d.art){
+      if(d.art.top) h += '<img class="m-art-top" style="--r:-.5deg" src="'+d.art.top+'" alt="" onerror="imgFallback(this)">';
+      if(d.art.side) h += '<img class="m-art-side" style="--r:1.4deg" src="'+d.art.side+'" alt="" onerror="imgFallback(this)">';
+    }
+    if(d.body){ d.body.forEach(function(p){ h += '<p>' + esc(p) + '</p>'; }); }
+    if(d.kind === 'lyrics' && d.lyric) h += '<div class="m-lyric">' + esc(d.lyric) + '</div>';
+    if(d.kind === 'images' && d.imgs){
+      h += '<div class="m-imgs">';
+      d.imgs.forEach(function(src,i){
+        h += '<figure style="--i:'+i+';--r:'+ROTS[i%ROTS.length]+'"><img src="'+src+'" alt="instagram post '+(i+1)+'" loading="lazy" onerror="imgFallback(this)"></figure>';
+      });
+      h += '</div>';
+    }
+    if(d.kind === 'icons' && d.icons){
+      h += '<div class="m-icons">';
+      d.icons.forEach(function(ic){
+        h += '<a href="'+ic.url+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true">'+ic.svg+'</svg><span>'+ic.label+'</span></a>';
+      });
+      h += '</div>';
+    }
+    if(d.kind === 'product' && d.product){
+      var p = d.product;
+      h += '<div class="m-prod"><div class="p-thumb"><img src="'+p.img+'" alt="featured product" onerror="imgFallback(this)"></div>' +
+           '<div><h4>'+esc(p.title)+'</h4><div class="p-price">'+esc(p.price)+'</div><p>'+esc(p.desc)+'</p></div></div>';
+    }
+    if(d.kind === 'embed' && d.embed){
+      h += '<iframe src="'+d.embed+'" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
+    }
+    if(d.kind === 'form'){
+      h += '<form class="m-form" id="mForm" action="https://formspree.io/f/'+FORMSPREE_ID+'" method="POST">' +
+           '<label for="mf-name">Name</label><input id="mf-name" name="name" required>' +
+           '<label for="mf-email">Email</label><input id="mf-email" type="email" name="email" required>' +
+           '<label for="mf-msg">Message</label><textarea id="mf-msg" name="message" rows="4" required></textarea>' +
+           '<button class="m-send" type="submit">Transmit</button>' +
+           '<div class="m-note">or text 904-297-8201 (text only)</div></form>';
+    }
+    if(d.art && d.art.bottom){
+      h += '<div class="m-art-bottom">';
+      d.art.bottom.forEach(function(src,i){
+        h += '<img style="--i:'+i+';--r:'+(i%2 ? '1.6deg' : '-1.6deg')+'" src="'+src+'" alt="" onerror="imgFallback(this)">';
+      });
+      h += '</div>';
+    }
+    return h;
+  }
+
+  function openModal(key, linkEl){
+    var d = PROJECTS[key];
+    if(!d) return;
+    lastFocus = linkEl;
+    var card = linkEl.closest('.panel');
+    var col = colorOf(card);
+    modal.style.setProperty('--mneon', col);
+    modal.style.setProperty('--tilt', (HANG[card.classList[1]] || {}).tilt || '0deg');
+    mIndex.textContent = d.idx;
+    mIndex.style.color = col;
+    mTitle.textContent = d.title;
+    mTag.textContent = d.tag || '';
+    mBody.innerHTML = buildBody(d);
+    mBody.scrollTop = 0;
+    if(d.url){ mOpen.style.display = ''; mOpen.href = d.url; }
+    else { mOpen.style.display = 'none'; }
+
+    /* position: hang off the card's anchor point, clamp to viewport */
+    var r = card.getBoundingClientRect();
+    var hg = HANG[card.classList[1]] || {fx:.5, dy:14};
+    var mw = Math.min(460, window.innerWidth - 32);
+    modal.style.width = mw + 'px';
+    modal.style.visibility = 'hidden';
+    modal.classList.add('show');
+    var mh = modal.offsetHeight;
+    var ax = r.left + r.width * hg.fx;
+    var left = ax - mw * hg.fx;
+    left = Math.max(12, Math.min(left, window.innerWidth - mw - 12));
+    var top = r.bottom + hg.dy;
+    if(top + mh > window.innerHeight - 12) top = Math.max(12, r.top - mh - hg.dy);
+    modal.style.left = left + 'px';
+    modal.style.top = top + 'px';
+    var nx = Math.max(8, Math.min(92, (ax - left) / mw * 100));
+    modal.style.setProperty('--nx', nx + '%');
+    modal.style.visibility = '';
+
+    /* the lead wire from card edge to popup notch */
+    var x1 = ax, y1 = top > r.bottom ? r.bottom : r.top;
+    var x2 = left + mw * nx/100, y2 = top;
+    var dist = Math.hypot(x2-x1, y2-y1);
+    var ang = Math.atan2(y2-y1, x2-x1) * 180/Math.PI;
+    lead.style.left = x1 + 'px';
+    lead.style.top = (y1-1) + 'px';
+    lead.style.width = dist + 'px';
+    lead.style.transform = 'rotate(' + ang + 'deg)';
+    lead.style.background = col;
+    lead.style.boxShadow = '0 0 6px ' + col;
+    lead.classList.remove('show');
+
+    veil.classList.add('show');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ lead.classList.add('show'); }); });
+
+    /* contact form ajax */
+    var form = document.getElementById('mForm');
+    if(form){
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var btn = form.querySelector('.m-send');
+        btn.textContent = 'Transmitting…';
+        fetch(form.action, {method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}})
+          .then(function(res){
+            mBody.innerHTML = res.ok
+              ? '<div class="m-success">MESSAGE ROUTED — THANK YOU</div>'
+              : '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>';
+          })
+          .catch(function(){
+            mBody.innerHTML = '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>';
+          });
+      });
+    }
+    msg('MODULE LOADED — ' + d.title.toUpperCase().slice(0, 26));
+    mClose.focus();
+  }
+  function closeModal(){
+    modal.classList.remove('show');
+    lead.classList.remove('show');
+    veil.classList.remove('show');
+    msg(document.body.classList.contains('open') ? 'MENU DEPLOYED — 05 SECTORS WIRED' : 'STANDBY — AWAITING INPUT');
+    if(lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll('.p-links a').forEach(function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); openModal(a.getAttribute('data-key'), a); });
+    a.setAttribute('tabindex','0');
+    a.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(a.getAttribute('data-key'), a); } });
+  });
+  mClose.addEventListener('click', closeModal);
+  veil.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(modal.classList.contains('show')){ closeModal(); return; }
+      if(document.body.classList.contains('lights-out')){ document.body.classList.remove('lights-out'); msg('POWER RESTORED'); return; }
+      if(document.body.classList.contains('open')) setOpen(false);
+    }
+  });
+
+  /* ---------- LIVE effects ---------- */
+  function fxSnake(card){
+    var r = card.getBoundingClientRect();
+    var col = colorOf(card);
+    fxlayer.setAttribute('viewBox', '0 0 ' + window.innerWidth + ' ' + window.innerHeight);
+    function spawn(){
+      var side = Math.floor(Math.random()*4); /* 0 top 1 right 2 bottom 3 left */
+      var x = side===0||side===2 ? r.left + Math.random()*r.width : (side===1 ? r.right : r.left);
+      var y = side===0||side===2 ? (side===0 ? r.top : r.bottom) : r.top + Math.random()*r.height;
+      var horiz = side===1 ? 1 : side===3 ? -1 : (Math.random()<.5 ? 1 : -1);
+      var vert  = side===2 ? 1 : side===0 ? -1 : (Math.random()<.5 ? 1 : -1);
+      var pts = [[x,y]];
+      var segs = 3 + Math.floor(Math.random()*3);
+      for(var i=0;i<segs;i++){
+        var len = 30 + Math.random()*110;
+        if(i % 2 === 0){ x += horiz*len; horiz = horiz || (Math.random()<.5?1:-1); }
+        else { y += vert*len; vert = vert || (Math.random()<.5?1:-1); }
+        pts.push([x,y]);
+      }
+      /* final long run off toward the viewport edge */
+      if(Math.abs(pts[pts.length-1][0] - pts[pts.length-2][0]) > 1) pts.push([pts[pts.length-1][0] + (pts[pts.length-1][0] > pts[pts.length-2][0] ? 1 : -1)*900, pts[pts.length-1][1]]);
+      else pts.push([pts[pts.length-1][0], pts[pts.length-1][1] + (pts[pts.length-1][1] > pts[pts.length-2][1] ? 1 : -1)*900]);
+      var p = mk('path', {d:route(pts), stroke:col, style:'filter:drop-shadow(0 0 5px '+col+')'}, fxlayer);
+      var len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+      requestAnimationFrame(function(){
+        p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.19,1,.22,1)';
+        p.style.strokeDashoffset = '0';
+      });
+      setTimeout(function(){
+        p.style.transition = 'opacity .5s ease';
+        p.style.opacity = '0';
+        setTimeout(function(){ p.remove(); }, 550);
+      }, 1000 + Math.random()*500);
+    }
+    for(var k=0;k<7;k++) setTimeout(spawn, k*90);
+    msg('SNAKE ROUTE DEPLOYED — TRACES RUNNING OFF-BOARD');
+  }
+  function fxSurge(card){
+    var r = card.getBoundingClientRect();
+    var s = document.getElementById('surge');
+    s.style.setProperty('--sx', (r.left + r.width/2)/window.innerWidth*100 + '%');
+    s.style.setProperty('--sy', (r.top + r.height/2)/window.innerHeight*100 + '%');
+    document.body.classList.remove('surge');
+    void document.body.offsetWidth; /* restart the animation */
+    document.body.classList.add('surge');
+    setTimeout(function(){ document.body.classList.remove('surge'); }, 1600);
+    msg('CYAN SURGE — INTENSITY SPIKE');
+  }
+  function fxShuffle(){
+    var blobG = document.getElementById('blobG'), blobB = document.getElementById('blobB');
+    var palette = ['#00ff9d','#00e0ff','#ff2fd6','#ffd500','#f2f7f5','#ff3b30','#7c4dff','#ff9500',null];
+    var ticks = 0;
+    var iv = setInterval(function(){
+      ticks++;
+      var c1 = palette[Math.floor(Math.random()*palette.length)];
+      var c2 = palette[Math.floor(Math.random()*palette.length)];
+      blobG.style.background = c1 || 'transparent';
+      blobB.style.background = c2 || 'transparent';
+      if(ticks >= 8){
+        clearInterval(iv);
+        /* settle somewhere — random, occasionally the original */
+        if(Math.random() < .35){ blobG.style.background = '#00ff9d'; blobB.style.background = '#00e0ff'; }
+        msg('BACKGROUND RECOLORED — SEED ' + Math.floor(Math.random()*9999));
+      }
+    }, 130);
+    msg('BACKGROUND SHUFFLE IN PROGRESS…');
+  }
+  function fxShift(){
+    shiftStep = (shiftStep + 1) % NEONS.length;
+    panels.forEach(function(p,i){
+      p.style.setProperty('--neon', NEONS[(i + shiftStep) % NEONS.length]);
+    });
+    setTimeout(buildWires, 650);
+    msg(shiftStep === 0 ? 'COLOR REGISTRY RESTORED — BASELINE' : 'COLOR ROTATION STEP ' + shiftStep + ' OF ' + (NEONS.length-1));
+  }
+  function fxDark(){
+    document.body.classList.add('lights-out');
+    msg('LIGHTS OUT — PRESS B TO RESTORE');
+  }
+  var FX = {snake:fxSnake, surge:fxSurge, shuffle:fxShuffle, shift:fxShift, dark:fxDark};
+  document.querySelectorAll('.live').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var card = btn.closest('.panel');
+      if(card.classList.contains('closed')) return;
+      (FX[btn.getAttribute('data-fx')] || function(){})(card);
+    });
+  });
+
+  /* ---------- boot ---------- */
   var rT;
   window.addEventListener('resize', function(){
     fit();
     clearTimeout(rT);
     rT = setTimeout(function(){
       if(document.body.classList.contains('open')) buildWires();
+      if(modal.classList.contains('show')) closeModal();
     }, 160);
   });
 
   fit();
-  /* first paint: jump straight to the centred position, no slide-in */
   board.style.transition = 'none';
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ board.style.transition = ''; }); });
-
-  /* baseline: no navigation yet */
-  var links = document.querySelectorAll('.p-links a');
-  for(var i=0;i<links.length;i++){
-    links[i].addEventListener('click', function(e){ e.preventDefault(); });
-    links[i].setAttribute('tabindex','0');
-  }
 })();
 </script>
 </body>
