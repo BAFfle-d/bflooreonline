@@ -837,7 +837,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
 </main>
 
 <div class="statusbar">
-  <span>SYS.BFLOORE // v4.1</span>
+  <span>SYS.BFLOORE // v4.1.1</span>
   <span class="sig">30.3322&deg;N 81.6557&deg;W — JACKSONVILLE, FL</span>
   <span id="sysMsg" role="status" aria-live="polite">STANDBY — AWAITING INPUT</span>
 </div>
@@ -974,11 +974,12 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     "status": "LIVE · POSTED RELENTLESSLY",
     "body": [
       "A banal and beautiful world, posted relentlessly. Photography, mostly; occasionally whatever else caught the light that day.",
-      "The self-appointed world record for non-commercial output. The grid below is always newer than this sentence."
+      "The self-appointed world record for non-commercial output. New work posted relentlessly \u2014 the six newest are below."
     ],
+    "imgs": ["img/insta-1.jpg", "img/insta-2.jpg", "img/insta-3.jpg", "img/insta-4.jpg", "img/insta-5.jpg", "img/insta-6.jpg"],
     "links": [
       {
-        "label": "See the latest six",
+        "label": "See more on Instagram",
         "url": "https://instagram.com/barrylikethefruit",
         "note": "instagram"
       }
@@ -1179,7 +1180,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     "kind": "product",
     "status": "LIVE · AUTHOR STORE",
     "body": [
-      "Everything in print, in one store: the FRIENDLY ROBOTS! books for young readers, and Benny: A Family Tragedy for the rest of us."
+      "Two very different shelves in one store: FRIENDLY ROBOTS! for young readers \u2014 six books and counting \u2014 and Benny: A Family Tragedy, an adult novel with nothing to do with the robots."
     ],
     "product": {
       "title": "The RoboPets",
@@ -1201,7 +1202,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       {
         "label": "Benny: A Family Tragedy",
         "url": "https://afamilytragedy.com",
-        "note": "novella"
+        "note": "adult novel"
       }
     ]
   },
@@ -1265,7 +1266,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     "kind": "text",
     "status": "DIAGNOSTIC COMPLETE · 5 OF 5",
     "body": [
-      "bfloore.online v4.1 — one file: HTML, CSS, and a little JavaScript. Unbounded, Space Grotesk, JetBrains Mono. The board, the wiring, and all five diagnostics are drawn in code.",
+      "bfloore.online v4.1.1 — one file: HTML, CSS, and a little JavaScript. Unbounded, Space Grotesk, JetBrains Mono. The board, the wiring, and all five diagnostics are drawn in code.",
       "Written and assembled by Barry Floore, with AI assistance — credited here the same way the models get a line in SLOP’s cast list and a section in Geoff & Maxie’s production notes.",
       "You found all five. This panel is the reward, and you are the kind of reader this site was built for."
     ]
@@ -1517,10 +1518,11 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   /* ---------- popup modal ---------- */
   var ROTS = ['-3deg','2deg','-1.5deg','2.5deg','-2deg','1.8deg'];
   function imgFallback(img){
-    var s = document.createElement('span');
-    s.className = 'img-slot';
-    s.textContent = img.getAttribute('src') + ' — drop this file in';
-    img.parentNode.replaceChild(s, img);
+    var fig = img.closest ? img.closest('figure') : null;
+    if(fig && fig.parentNode){ fig.parentNode.removeChild(fig); return; }
+    var box = img.parentNode;
+    if(box) box.removeChild(img);
+    if(box && box.classList && box.classList.contains('m-imgs') && !box.children.length) box.style.display = 'none';
   }
   window.imgFallback = imgFallback;
 
