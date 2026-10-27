@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bfloore.online</title>
+<meta name="description" content="Barry Floore — writer, composer, independent producer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BFLOORE.ONLINE — v3 "MOTHERBOARD"
+   The "b" is the CPU. Four components are wired to it with PCB
+   traces — deliberately uneven: different sizes, positions, and
+   routing (a 3-lane bus, a 2-lane bus, single traces, dead-end
+   stubs). Links intentionally unwired — baseline preview build.
+   ============================================================ */
+:root{
+  --black:#050607;
+  --ink:#e8ecef;
+  --dim:#5d6b76;
+  --green:#00ff9d;
+  --cyan:#00e0ff;
+  --magenta:#ff2fd6;
+  --amber:#ffd500;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --grot:'Space Grotesk',system-ui,sans-serif;
+  --disp:'Unbounded',sans-serif;
+  --ease:cubic-bezier(.19,1,.22,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--black);
+  color:var(--ink);
+  font-family:var(--grot);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- background machinery ---------- */
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(120,150,170,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(120,150,170,.07) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,#000 30%,transparent 100%);
+}
+.blob{position:fixed;border-radius:50%;filter:blur(110px);opacity:.16;z-index:0;pointer-events:none;animation:drift 18s ease-in-out infinite alternate}
+.blob.g{width:52vmax;height:52vmax;left:-18vmax;top:-18vmax;background:var(--green)}
+.blob.b{width:46vmax;height:46vmax;right:-16vmax;bottom:-16vmax;background:var(--cyan);animation-delay:-9s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vmax,4vmax) scale(1.15)}}
+
+.circuits{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.circuits path{fill:none;stroke-width:1.5;stroke-linecap:round;stroke-dasharray:14 200;animation:flow 9s linear infinite}
+.circuits .c1{stroke:rgba(0,255,157,.35)}
+.circuits .c2{stroke:rgba(0,224,255,.3);animation-delay:-3s}
+.circuits .c3{stroke:rgba(255,47,214,.25);animation-delay:-6s}
+@keyframes flow{to{stroke-dashoffset:-2140}}
+.circuits circle{fill:none;stroke-width:1.5;animation:pulse 2.6s ease-in-out infinite}
+.circuits .n1{stroke:rgba(0,255,157,.6)}
+.circuits .n2{stroke:rgba(0,224,255,.6);animation-delay:-.9s}
+.circuits .n3{stroke:rgba(255,47,214,.55);animation-delay:-1.7s}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+
+.scanbar{
+  position:fixed;left:0;right:0;height:120px;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(0,255,157,.045),transparent);
+  animation:scan 7s linear infinite;
+}
+@keyframes scan{from{top:-15%}to{top:110%}}
+
+/* ---------- stage + board ----------
+   The board is a fixed 1000x800 design space. JS scales it to fit the
+   window (--fit) and slides it so the CPU sits dead-centre while closed.  */
+.stage{
+  position:relative;z-index:10;height:100dvh;width:100vw;
+  display:flex;align-items:center;justify-content:center;
+  padding-bottom:34px;
+  cursor:crosshair;
+}
+.board{
+  position:relative;flex:none;width:1000px;height:800px;
+  transform:translate(var(--shx,0px),0) scale(var(--fit,1));
+  transform-origin:center center;
+  transition:transform .8s var(--ease);
+}
+
+/* ---------- live trace layer ---------- */
+.wires{
+  position:absolute;inset:0;width:100%;height:100%;z-index:15;pointer-events:none;
+  opacity:0;transition:opacity .5s ease;
+}
+body.open .wires{opacity:1;transition-delay:.1s}
+.wires path{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.wires .w-main{filter:drop-shadow(0 0 4px currentColor)}
+.wires .w-soft{stroke-width:1.5;stroke-opacity:.5}
+.wires circle{filter:drop-shadow(0 0 4px currentColor)}
+.wires .ring{fill:none;stroke-width:1.5;filter:none}
+
+/* ---------- the CPU ---------- */
+.core{
+  position:absolute;left:248px;top:348px;
+  width:104px;height:104px;
+  z-index:30;
+  background:none;border:0;cursor:pointer;
+  perspective:900px;
+  animation:boot .9s var(--ease) both;
+  -webkit-tap-highlight-color:transparent;
+}
+@keyframes boot{from{opacity:0;transform:scale(.4) rotate(-8deg)}to{opacity:1;transform:none}}
+
+/* socket outline + silkscreen */
+.core::after{
+  content:'';position:absolute;inset:-19px;pointer-events:none;
+  border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  transition:border-color .3s;
+}
+.core:hover::after{border-color:rgba(0,255,157,.35)}
+.silk{
+  position:absolute;left:-19px;top:-38px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--dim);
+  text-transform:uppercase;white-space:nowrap;pointer-events:none;
+}
+/* the pins: four strips of contacts around the package */
+.pins{
+  position:absolute;inset:-9px;pointer-events:none;
+  --pin:rgba(150,170,185,.75);
+  background:
+    repeating-linear-gradient(90deg,var(--pin) 0 3px,transparent 3px 8px) 9px 0 /calc(100% - 18px) 6px no-repeat,
+    repeating-linear-gradient(90deg,var(--pin) 0 3px,transparent 3px 8px) 9px 100%/calc(100% - 18px) 6px no-repeat,
+    repeating-linear-gradient(0deg,var(--pin) 0 3px,transparent 3px 8px) 0 9px /6px calc(100% - 18px) no-repeat,
+    repeating-linear-gradient(0deg,var(--pin) 0 3px,transparent 3px 8px) 100% 9px/6px calc(100% - 18px) no-repeat;
+  transition:filter .3s;
+}
+.core:hover .pins{filter:drop-shadow(0 0 5px rgba(0,255,157,.6))}
+body.open .pins{--pin:rgba(0,255,157,.8)}
+
+.core-inner{
+  position:absolute;inset:0;
+  transform-style:preserve-3d;
+  transition:transform .55s var(--ease);
+}
+.core:hover .core-inner,
+.core:focus-visible .core-inner{transform:rotateY(180deg)}
+@media (hover:none){
+  body.open .core-inner{transform:rotateY(180deg)}
+}
+.face{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:6px;
+}
+.face .b{
+  font-family:var(--disp);font-weight:900;
+  font-size:52px;line-height:1;
+  transform:translateY(-2px);
+}
+.face.front{
+  background:linear-gradient(145deg,#1b2023 0%,#0a0c0d 55%,#13171a 100%);
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:0 0 0 1px rgba(0,0,0,.8),0 10px 40px rgba(0,0,0,.7),inset 0 0 0 5px rgba(255,255,255,.03),inset 0 0 22px rgba(0,0,0,.9);
+  color:#fff;
+  transition:border-color .3s,box-shadow .3s;
+}
+/* pin-1 marker */
+.face.front::after{
+  content:'';position:absolute;left:6px;top:6px;
+  border:5px solid transparent;
+  border-top-color:rgba(255,255,255,.55);border-left-color:rgba(255,255,255,.55);
+}
+.core:hover .face.front{border-color:rgba(255,255,255,.4)}
+.face.back{
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg,var(--green) 0%,var(--cyan) 100%);
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:0 0 34px rgba(0,255,157,.5),0 0 90px rgba(0,224,255,.28),inset 0 0 18px rgba(255,255,255,.25);
+  color:#03110b;
+}
+.face.back .b{text-shadow:0 0 14px rgba(0,0,0,.25)}
+.core-hint{
+  position:absolute;top:calc(100% + 34px);left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--dim);white-space:nowrap;
+  animation:hintfade 3s ease .8s both;
+}
+@keyframes hintfade{from{opacity:0}to{opacity:1}}
+.core-hint .ht{display:none}
+@media (hover:none){
+  .core-hint .hv{display:none}
+  .core-hint .ht{display:inline}
+}
+body.open .core-hint{display:none}
+
+/* ---------- the four components ----------
+   Positioned on the board by hand — different widths, different heights,
+   staggered edges. Each one grows out of the CPU when the menu opens.     */
+.panel{
+  position:absolute;
+  display:flex;flex-direction:column;
+  padding:20px 24px 14px;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.05),transparent 40%),
+    rgba(8,11,13,.92);
+  border:1px solid color-mix(in srgb,var(--neon) 55%,transparent);
+  border-radius:8px;
+  box-shadow:
+    0 0 26px color-mix(in srgb,var(--neon) 22%,transparent),
+    0 0 90px color-mix(in srgb,var(--neon) 10%,transparent),
+    inset 0 0 30px color-mix(in srgb,var(--neon) 6%,transparent);
+  backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;
+  transform:scale(.05);
+  transition:transform .75s var(--ease),opacity .4s ease,box-shadow .3s ease;
+  will-change:transform,opacity;
+  z-index:20;
+}
+/* transform-origin = the CPU's centre (300,400) in each panel's own space */
+.p1{--neon:var(--green);  left:60px; top:30px; width:380px;transform-origin:240px 370px}
+.p2{--neon:var(--cyan);   left:540px;top:70px; width:340px;transform-origin:-240px 330px}
+.p3{--neon:var(--magenta);left:200px;top:515px;width:330px;transform-origin:100px -115px}
+.p4{--neon:var(--amber);  left:600px;top:470px;width:350px;transform-origin:-300px -70px}
+
+body.open .panel{opacity:1;pointer-events:auto;transform:none}
+body.open .p1{transition-delay:.05s}
+body.open .p2{transition-delay:.16s}
+body.open .p3{transition-delay:.27s}
+body.open .p4{transition-delay:.38s}
+body.open .panel:hover{
+  box-shadow:
+    0 0 44px color-mix(in srgb,var(--neon) 38%,transparent),
+    0 0 130px color-mix(in srgb,var(--neon) 16%,transparent),
+    inset 0 0 34px color-mix(in srgb,var(--neon) 9%,transparent);
+  z-index:25;
+}
+
+.p-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;min-height:44px}
+.p-index{
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--neon);
+  border:1px solid color-mix(in srgb,var(--neon) 55%,transparent);
+  padding:3px 7px;margin-top:3px;border-radius:3px;
+  box-shadow:0 0 12px color-mix(in srgb,var(--neon) 30%,transparent),inset 0 0 8px color-mix(in srgb,var(--neon) 12%,transparent);
+}
+.p-head h2{
+  font-family:var(--grot);font-weight:700;font-size:18px;line-height:1.12;
+  letter-spacing:.06em;text-transform:uppercase;color:#fff;
+  text-shadow:0 0 18px color-mix(in srgb,var(--neon) 55%,transparent);
+  flex:1;align-self:center;
+}
+
+/* sub-links as bus-tapped nodes */
+.p-links{list-style:none;display:flex;flex-direction:column;gap:2px;flex:1;position:relative;padding-left:17px}
+.p-links::before{
+  content:'';position:absolute;left:6px;top:11px;bottom:15px;width:1px;
+  background:linear-gradient(180deg,var(--neon),color-mix(in srgb,var(--neon) 25%,transparent));
+}
+.p-links li{position:relative}
+.p-links li::after{
+  content:'';position:absolute;left:-11px;top:50%;width:6px;height:1px;
+  background:var(--neon);opacity:.7;transform:translateY(-50%);
+}
+.p-links li::before{
+  content:'';position:absolute;left:-14px;top:50%;width:6px;height:6px;margin-top:-3px;
+  border-radius:50%;background:var(--neon);
+  box-shadow:0 0 7px var(--neon);
+  transition:transform .2s;
+}
+.p-links li:hover::before{transform:scale(1.5)}
+.p-links a{
+  display:flex;align-items:baseline;gap:10px;
+  padding:6px 8px;text-decoration:none;color:var(--ink);
+  border:1px solid transparent;border-radius:4px;
+  transition:background .2s,border-color .2s,transform .2s;
+  cursor:pointer;
+}
+.p-links a:hover{
+  background:color-mix(in srgb,var(--neon) 10%,transparent);
+  border-color:color-mix(in srgb,var(--neon) 35%,transparent);
+  transform:translateX(5px);
+}
+.l-name{font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.l-tag{
+  font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0;
+  flex:1;min-width:0;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.l-arrow{flex:none;font-family:var(--mono);color:var(--neon);font-size:13px;opacity:0;transform:translateX(-6px);transition:.2s}
+.p-links a:hover .l-arrow{opacity:1;transform:none}
+
+.p-foot{
+  margin-top:12px;padding-top:9px;
+  border-top:1px dashed color-mix(in srgb,var(--neon) 30%,transparent);
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--neon) 75%,var(--dim));
+  display:flex;justify-content:space-between;
+}
+.p-foot .blink{animation:pulse 1.6s steps(2) infinite}
+
+/* ---------- status bar ---------- */
+.statusbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:35;
+  display:flex;justify-content:space-between;gap:14px;
+  padding:10px 18px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);
+  pointer-events:none;
+  background:rgba(5,6,7,.82);backdrop-filter:blur(8px);
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.statusbar .sig{color:var(--green)}
+
+/* ---------- stacked layout: phones, narrow or short windows ----------
+   One column; CPU on top, components chained below it by a single trace. */
+@media (max-width:820px),(max-height:600px){
+  body{overflow:auto}
+  .stage{
+    height:auto;min-height:100dvh;
+    flex-direction:column;justify-content:flex-start;align-items:stretch;
+    padding:clamp(60px,12dvh,110px) 0 72px;
+  }
+  .board{
+    width:100%;height:auto;transform:none;transition:none;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .core{position:relative;left:auto;top:auto;flex:none;margin-bottom:38px}
+  .silk{display:none}
+  body.open .core-hint{display:none}
+
+  .panel,
+  body.open .panel{
+    position:relative;left:auto;top:auto;
+    width:min(90vw,420px);
+    margin:0 0 22px;
+    flex:none;
+    border-radius:12px;
+    display:none;
+    opacity:1;transform:none;transition:box-shadow .3s ease;
+    will-change:auto;
+  }
+  body.open .panel{display:flex;pointer-events:auto;animation:rise .6s var(--ease) both}
+  body.open .p1{animation-delay:.05s}
+  body.open .p2{animation-delay:.14s}
+  body.open .p3{animation-delay:.23s}
+  body.open .p4{animation-delay:.32s}
+  .p4{margin-bottom:0}
+
+  .p-head{min-height:0}
+
+  /* two-line rows: name over tag, arrow on the right — no wrapping, no clipping */
+  .p-links a{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    column-gap:10px;row-gap:1px;align-items:center;
+    padding:9px 10px;
+  }
+  .l-name{grid-column:1;grid-row:1;font-size:14px}
+  .l-tag{grid-column:1;grid-row:2;text-align:left;font-size:10.5px}
+  .l-arrow{grid-column:2;grid-row:1 / span 2;opacity:.45;transform:none}
+  .p-links a:hover{transform:none}
+}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+@media (max-width:560px){
+  .statusbar{justify-content:center}
+  .statusbar .sig,
+  .statusbar span:first-child{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div class="blob g"></div>
+<div class="blob b"></div>
+<div class="bg-grid"></div>
+<div class="scanbar"></div>
+
+<svg class="circuits" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <path class="c1" d="M-20 120 H300 V340 H620 V560 H980 V780 H1460"/>
+  <path class="c2" d="M1460 90 H1150 V300 H880 V520 H520 V700 H-20"/>
+  <path class="c3" d="M-20 760 H220 V500 H460 V260 H760 V120 H1460"/>
+  <circle class="n1" cx="620" cy="560" r="5"/>
+  <circle class="n2" cx="880" cy="300" r="5"/>
+  <circle class="n3" cx="460" cy="260" r="5"/>
+  <circle class="n1" cx="1150" cy="300" r="5"/>
+  <circle class="n2" cx="220" cy="500" r="5"/>
+</svg>
+
+<main class="stage" id="stage">
+<div class="board" id="board">
+
+  <!-- live trace layer (drawn by JS when open) -->
+  <svg class="wires" id="wires" aria-hidden="true"></svg>
+
+  <!-- ============ THE CPU ============ -->
+  <button class="core" id="core" aria-expanded="false" aria-label="bfloore.online — open menu">
+    <span class="silk">U1 · b-core</span>
+    <span class="pins"></span>
+    <span class="core-inner">
+      <span class="face front"><span class="b">b</span></span>
+      <span class="face back"><span class="b">b</span></span>
+    </span>
+    <span class="core-hint">
+      <span class="h-open"><span class="hv">hover · click to init</span><span class="ht">tap to init</span></span>
+      <span class="h-close">click to collapse</span>
+    </span>
+  </button>
+
+  <!-- ============ 01 · CREATIVE CONTENT ============ -->
+  <section class="panel p1" aria-label="Creative content">
+    <div class="p-head">
+      <span class="p-index">01</span>
+      <h2>Creative<br>Content</h2>
+    </div>
+    <ul class="p-links">
+      <li><a><span class="l-name">Writing</span><span class="l-tag">BENNY — a novella</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Theatre</span><span class="l-tag">SLOP! The Musical</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Photography</span><span class="l-tag">@barrylikethefruit</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Video</span><span class="l-tag">youtube.com/@bfloore_online</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+  </section>
+
+  <!-- ============ 02 · PROFESSIONAL ============ -->
+  <section class="panel p2" aria-label="Professional">
+    <div class="p-head">
+      <span class="p-index">02</span>
+      <h2>Professional</h2>
+    </div>
+    <ul class="p-links">
+      <li><a><span class="l-name">Resume / CV</span><span class="l-tag">linkedin</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Social Media</span><span class="l-tag">all channels</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">JAXDataPro</span><span class="l-tag">data services</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Link List</span><span class="l-tag">everywhere I exist</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">About</span><span class="l-tag">who is b</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Contact</span><span class="l-tag">hello@bfloore.online</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 06 modules</span><span class="blink">● live</span></div>
+  </section>
+
+  <!-- ============ 03 · PROFESSIONAL WRITING ============ -->
+  <section class="panel p3" aria-label="Professional writing">
+    <div class="p-head">
+      <span class="p-index">03</span>
+      <h2>Professional<br>Writing</h2>
+    </div>
+    <ul class="p-links">
+      <li><a><span class="l-name">Medium</span><span class="l-tag">essays</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Substack</span><span class="l-tag">the dispatch</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Blogs</span><span class="l-tag">archive</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Podcasts</span><span class="l-tag">audio / appearances</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+  </section>
+
+  <!-- ============ 04 · SHOPPING & MERCH ============ -->
+  <section class="panel p4" aria-label="Shopping and merch">
+    <div class="p-head">
+      <span class="p-index">04</span>
+      <h2>Shopping<br>&amp; Merch</h2>
+    </div>
+    <ul class="p-links">
+      <li><a><span class="l-name">Amazon</span><span class="l-tag">books &amp; goods</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Etsy</span><span class="l-tag">handmade</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Affiliate Articles</span><span class="l-tag">picks &amp; reviews</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a><span class="l-name">Gumroad</span><span class="l-tag">digital products</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 04 modules</span><span class="blink">● live</span></div>
+  </section>
+
+</div>
+</main>
+
+<div class="statusbar" aria-hidden="true">
+  <span>SYS.BFLOORE // v3.0</span>
+  <span class="sig">30.3322°N 81.6557°W — JACKSONVILLE, FL</span>
+  <span id="sysMsg">STANDBY — AWAITING INPUT</span>
+</div>
+
+<script>
+(function(){
+  var core = document.getElementById('core');
+  var sysMsg = document.getElementById('sysMsg');
+  var svg = document.getElementById('wires');
+  var board = document.getElementById('board');
+  var NS = 'http://www.w3.org/2000/svg';
+  var TRUNK = '#7d8e99';
+  var PIN = 9;        /* traces start at the tips of the CPU pins */
+  var CHAMFER = 14;   /* 45-degree corner cut on every trace bend */
+
+  /* must match the stacked-layout media query in the CSS */
+  var stacked = window.matchMedia('(max-width:820px),(max-height:600px)');
+
+  function mk(tag, attrs, parent){
+    var el = document.createElementNS(NS, tag);
+    for(var k in attrs) el.setAttribute(k, attrs[k]);
+    if(parent) parent.appendChild(el);
+    return el;
+  }
+  function clearSvg(){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+  function colorOf(el){
+    var c = getComputedStyle(el).getPropertyValue('--neon').trim();
+    return c || '#00ff9d';
+  }
+
+  /* orthogonal polyline with 45-degree chamfered corners — PCB style */
+  function route(pts){
+    var d = 'M ' + pts[0][0] + ' ' + pts[0][1];
+    for(var i = 1; i < pts.length - 1; i++){
+      var a = pts[i-1], b = pts[i], c = pts[i+1];
+      var l1 = Math.hypot(b[0]-a[0], b[1]-a[1]), l2 = Math.hypot(c[0]-b[0], c[1]-b[1]);
+      var r1 = Math.min(CHAMFER, l1/2), r2 = Math.min(CHAMFER, l2/2);
+      d += ' L ' + (b[0] - (b[0]-a[0])/l1*r1) + ' ' + (b[1] - (b[1]-a[1])/l1*r1);
+      d += ' L ' + (b[0] + (c[0]-b[0])/l2*r2) + ' ' + (b[1] + (c[1]-b[1])/l2*r2);
+    }
+    var z = pts[pts.length-1];
+    return d + ' L ' + z[0] + ' ' + z[1];
+  }
+
+  function trace(pts, color, delay, soft){
+    var p = mk('path', {d:route(pts), stroke:color, 'class': soft ? 'w-soft' : 'w-main', style:'color:'+color}, svg);
+    var len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    setTimeout(function(){
+      p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.19,1,.22,1) ' + delay + 's';
+      p.style.strokeDashoffset = '0';
+    }, 40);
+  }
+  function pad(x, y, color, delay, hollow){
+    var c = mk('circle', hollow
+      ? {cx:x, cy:y, r:4, stroke:color, 'class':'ring', style:'color:'+color}
+      : {cx:x, cy:y, r:3, fill:color, stroke:'none', style:'color:'+color}, svg);
+    c.style.opacity = 0;
+    setTimeout(function(){
+      c.style.transition = 'opacity .4s ease ' + delay + 's';
+      c.style.opacity = hollow ? .7 : .95;
+    }, 40);
+  }
+
+  function box(el){
+    return {l:el.offsetLeft, t:el.offsetTop, r:el.offsetLeft+el.offsetWidth, b:el.offsetTop+el.offsetHeight, w:el.offsetWidth, h:el.offsetHeight};
+  }
+
+  /* Deliberately uneven routing:
+       01  3-lane bus straight up
+       03  one lone trace straight down, off-centre into its card
+       02  2-lane bus right, then up      04  1 lane right, then down
+       + two dead-end debug stubs off the CPU's west side
+     Geometry comes from layout (offset*), so it is independent of the
+     board's scale and of the panels' open/close animation.               */
+  function buildWires(){
+    clearSvg();
+    if(!document.body.classList.contains('open')) return;
+    var bb = box(board);
+    svg.setAttribute('viewBox', '0 0 ' + board.offsetWidth + ' ' + board.offsetHeight);
+    var c = box(core);
+    var cx = c.l + c.w/2, cy = c.t + c.h/2, half = c.w/2 + PIN;
+    var P = ['.p1','.p2','.p3','.p4'].map(function(s){
+      var el = document.querySelector(s), b = box(el); b.col = colorOf(el); return b;
+    });
+
+    if(stacked.matches){
+      var prev = c.b;
+      P.forEach(function(p, i){
+        var d = .1 + i*.1;
+        trace([[cx, prev],[cx, p.t]], p.col, d, false);
+        pad(cx, (prev + p.t)/2, p.col, d + .3);
+        prev = p.b;
+      });
+      return;
+    }
+
+    /* 01 — three parallel lanes up into the card above */
+    [-16, 0, 16].forEach(function(dx, i){
+      trace([[cx+dx, cy-half],[cx+dx, P[0].b]], P[0].col, .15 + i*.04, false);
+      pad(cx+dx, P[0].b, P[0].col, .65 + i*.04);
+    });
+
+    /* 03 — a single trace down */
+    trace([[cx+24, cy+half],[cx+24, P[2].t]], P[2].col, .3, false);
+    pad(cx+24, P[2].t, P[2].col, .8);
+
+    /* 02 + 04 — lanes leave the east side together, then split */
+    var ex = cx + half;
+    var near = Math.min(P[1].l, P[3].l);
+    var xm = ex + (near - ex)/2;
+    var ta = P[1].t + 60, tb = P[1].t + 90, tc = P[3].t + 60;
+    trace([[ex, cy-18],[xm-16, cy-18],[xm-16, ta],[P[1].l, ta]], P[1].col, .2, false);
+    trace([[ex, cy],   [xm,    cy],   [xm,    tb],[P[1].l, tb]], P[1].col, .24, false);
+    trace([[ex, cy+18],[xm-32, cy+18],[xm-32, tc],[P[3].l, tc]], P[3].col, .36, false);
+    pad(P[1].l, ta, P[1].col, .7);
+    pad(P[1].l, tb, P[1].col, .74);
+    pad(P[3].l, tc, P[3].col, .86);
+
+    /* dead-end stubs west — vias to nowhere, like a real board */
+    var wx = cx - half;
+    trace([[wx, cy-10],[wx-98, cy-10],[wx-98, cy+70]], TRUNK, .1, true);
+    pad(wx-98, cy+70, TRUNK, .6, true);
+    trace([[wx, cy+14],[wx-72, cy+14]], TRUNK, .14, true);
+    pad(wx-72, cy+14, TRUNK, .6, true);
+  }
+
+  /* scale the board to the window; while closed, slide it so the CPU is centred */
+  function fit(){
+    var s = Math.min(1, (window.innerWidth - 32) / 1000, (window.innerHeight - 90) / 800);
+    var open = document.body.classList.contains('open');
+    board.style.setProperty('--fit', s);
+    board.style.setProperty('--shx', open ? '0px' : (200 * s) + 'px');
+  }
+
+  function setOpen(open){
+    document.body.classList.toggle('open', open);
+    core.setAttribute('aria-expanded', open);
+    core.setAttribute('aria-label', open ? 'bfloore.online — collapse menu' : 'bfloore.online — open menu');
+    sysMsg.textContent = open ? 'MENU DEPLOYED — 04 SECTORS WIRED' : 'STANDBY — AWAITING INPUT';
+    fit();
+    if(open){ setTimeout(buildWires, 900); }  /* let the board settle, then trace the wires in */
+    else { clearSvg(); }
+  }
+
+  core.addEventListener('click', function(){ setOpen(!document.body.classList.contains('open')); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && document.body.classList.contains('open')) setOpen(false);
+  });
+
+  var rT;
+  window.addEventListener('resize', function(){
+    fit();
+    clearTimeout(rT);
+    rT = setTimeout(function(){
+      if(document.body.classList.contains('open')) buildWires();
+    }, 160);
+  });
+
+  fit();
+  /* first paint: jump straight to the centred position, no slide-in */
+  board.style.transition = 'none';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ board.style.transition = ''; }); });
+
+  /* baseline: no navigation yet */
+  var links = document.querySelectorAll('.p-links a');
+  for(var i=0;i<links.length;i++){
+    links[i].addEventListener('click', function(e){ e.preventDefault(); });
+    links[i].setAttribute('tabindex','0');
+  }
+})();
+</script>
+</body>
+</html>
