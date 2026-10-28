@@ -884,7 +884,8 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     substack: {label:'Substack',               color:'#ff8a3d', home:'https://barryfloore.substack.com'},
     gaslight: {label:'American Gaslighter',    color:'#ffd500', home:'https://americangaslightercom.wordpress.com'},
     ceai:     {label:'Cultivating Ethical AI', color:'#00e0ff', home:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'},
-    liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'}
+    liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'},
+    archive:  {label:'Archive · 2008–09',      color:'#a78bfa', home:'https://cincywestsidequeer.blogspot.com'}
   };
 
   var ITEMS = {
@@ -909,6 +910,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       body:['A methy musical. Book and score are in the lab; a few working songs are pinned to the door.',
             'What can be said: it is loud, it is unkind, and it has a title you will want to whisper.'],
       links:[
+        {label:'Where it started: the tweaker monologues', url:'https://cloudycal.wordpress.com', note:'2021–22 origins'},
         {label:'Pedal Down', url:'https://spuncalliope.wordpress.com/act-i-intro-pedal-down/', note:'act 1 · open'},
         {label:'The Men We’ve Dated', url:'https://spuncalliope.wordpress.com/act-1scene-5-the-men-weve-dated-v2-0-cal-cw/', note:'act 1 · sc 5'},
         {label:'It’s Freedom, and That’s Good', url:'https://spuncalliope.wordpress.com/act-2scene-7-its-freedom-and-thats-good-cal/', note:'act 2 · sc 7'}
@@ -1019,6 +1021,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       title:'Words & Audio', tag:'the long-form stuff',
       links:[
         {label:'Medium', url:'https://medium.com/@bfloore', note:'essays'},
+        {label:'QueerCincinnati.com (2007–09)', url:'https://cincywestsidequeer.blogspot.com', note:'archive'},
         {label:'Substack', url:'https://barryfloore.substack.com', note:'dispatch'},
         {label:'American Gaslighter', url:'https://americangaslightercom.wordpress.com', note:'blog'},
         {label:'Cultivating Ethical AI', url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', note:'podcast'},
@@ -1344,7 +1347,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     });
     h += '</div><div class="fd-list" id="fdList">' + feedList(focusId) + '</div>';
     var upd = FEED.updated ? new Date(FEED.updated) : null;
-    h += '<div class="fd-foot">Pulled from five feeds, newest first'+(upd ? ' · synced '+upd.getDate()+' '+MONTHS[upd.getMonth()]+' '+upd.getFullYear() : '')+'.<br>Sources: ' +
+    h += '<div class="fd-foot">Five live feeds plus a curated 2008–09 archive, newest first'+(upd ? ' · synced '+upd.getDate()+' '+MONTHS[upd.getMonth()]+' '+upd.getFullYear() : '')+'.<br>Sources: ' +
       Object.keys(FEED_SRC).map(function(k){ return '<a href="'+FEED_SRC[k].home+'" target="_blank" rel="noopener">'+esc(FEED_SRC[k].label)+'</a>'; }).join(' · ') + '</div>';
     return h;
   }
