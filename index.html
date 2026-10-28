@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>b. floore — writer, composer, producer</title>
-<meta name="description" content="Writer, composer, and independent producer in Jacksonville, Florida. A novella, two musicals, a podcast, children's books, essays, and the occasional app — one system, five modules.">
+<meta name="description" content="Writer, composer, and independent producer in Jacksonville, Florida. A novella, two musicals, a podcast, children's books, essays, and the occasional app — one system, five modules, one live feed.">
 <meta name="theme-color" content="#050607">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050607'/%3E%3Ctext x='32' y='46' font-family='monospace' font-size='40' font-weight='700' fill='%2300ff9d' text-anchor='middle'%3Eb%3C/text%3E%3C/svg%3E">
 <meta property="og:type" content="website">
@@ -24,11 +24,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   BFLOORE.ONLINE — v4 "FULLY WIRED"
-   The "b" CPU boots five components. Every link spawns a popup
-   that hangs off its home card on a neon lead. Cards can be
-   closed individually (X) or all at once (the CPU). Each card's
-   LIVE node runs a small signature effect.
+   BFLOORE.ONLINE — v5 "CONSOLIDATED"
+   The "b" CPU boots five components on a ring bus. Each card link
+   opens one popup per group that unfolds out of its card.
    ============================================================ */
 @property --neon{syntax:'<color>';inherits:false;initial-value:#00ff9d}
 :root{
@@ -138,7 +136,7 @@ body.open .wires{opacity:1;transition-delay:.1s}
 }
 .core:hover::after{border-color:rgba(0,255,157,.35)}
 .silk{
-  position:absolute;left:-19px;top:-38px;
+  position:absolute;left:calc(100% + 16px);top:-26px;
   font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--dim);
   text-transform:uppercase;white-space:nowrap;pointer-events:none;
 }
@@ -233,16 +231,11 @@ body.open .core-hint{display:none}
   z-index:20;
 }
 /* transform-origin = the CPU's centre (300,400) in each panel's own space */
-.p1{--neon:var(--green);  left:10px; top:25px; width:215px;transform-origin:290px 375px}
-.p2{--neon:var(--cyan);   left:560px;top:30px; width:380px;transform-origin:-260px 370px}
-.p3{--neon:var(--magenta);left:300px;top:545px;width:330px;transform-origin:0px -145px}
-.p4{--neon:var(--amber);  left:650px;top:400px;width:340px;transform-origin:-350px 0px}
-.p5{--neon:var(--white);  left:20px; top:500px;width:230px;transform-origin:280px -100px}
-/* 01 is the tall narrow one — compact rows so it clears the socket's north edge */
-.panel.slim .p-head{min-height:36px;margin-bottom:8px}
-.panel.slim .p-links a{padding:3px 6px}
-.panel.slim .p-foot{margin-top:8px;padding-top:7px}
-.panel.slim .l-tag{font-size:9px}
+.p1{--neon:var(--green);  left:0;    top:20px; width:252px;transform-origin:300px 380px}
+.p2{--neon:var(--cyan);   left:560px;top:20px; width:390px;transform-origin:-260px 380px}
+.p3{--neon:var(--magenta);left:290px;top:530px;width:380px;transform-origin:10px -130px}
+.p4{--neon:var(--amber);  left:700px;top:380px;width:270px;transform-origin:-400px 20px}
+.p5{--neon:var(--white);  left:0;    top:515px;width:240px;transform-origin:300px -115px}
 
 body.open .panel{opacity:1;pointer-events:auto;transform:none}
 body.open .p1{transition-delay:.05s}
@@ -344,207 +337,269 @@ body.open .panel:hover{
 }
 .p-foot .live:hover{text-shadow:0 0 10px var(--neon)}
 
-/* ---------- popup modal ---------- */
+/* ============================================================
+   v5 "CONSOLIDATED" — grouped modules, one popup per group that
+   unfolds out of its card, a live blogroll, and a ring bus that
+   wires every card to its neighbors.
+   ============================================================ */
+
+/* ---------- two-line group rows (card 01) ---------- */
+.p-links.two a{flex-direction:column;align-items:flex-start;gap:1px;padding:6px 18px 6px 8px;position:relative}
+.p-links.two .l-tag{text-align:left;flex:none;width:100%;font-size:9px}
+.p-links.two .l-arrow{position:absolute;right:4px;top:50%;margin-top:-8px}
+.p-links.two li::before,.p-links.two li::after{top:16px}
+
+/* ---------- small section label inside a card ---------- */
+.p-sub{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--neon) 60%,var(--dim));
+  margin:10px 0 7px 17px;display:flex;align-items:center;gap:8px;
+}
+.p-sub::after{content:'';flex:1;height:1px;background:color-mix(in srgb,var(--neon) 22%,transparent)}
+
+/* ---------- icon strip (card 02 socials) ---------- */
+.p-icons{display:flex;gap:7px;padding-left:17px;flex-wrap:wrap}
+.p-icons a{
+  width:34px;height:34px;display:grid;place-items:center;
+  border:1px solid color-mix(in srgb,var(--neon) 30%,transparent);border-radius:6px;
+  background:color-mix(in srgb,var(--neon) 4%,transparent);
+  transition:transform .2s,background .2s,border-color .2s,box-shadow .2s;
+}
+.p-icons a:hover,.p-icons a:focus-visible{
+  border-color:var(--neon);background:color-mix(in srgb,var(--neon) 14%,transparent);
+  box-shadow:0 0 12px color-mix(in srgb,var(--neon) 35%,transparent);transform:translateY(-2px);outline:none;
+}
+.p-icons svg{width:16px;height:16px;fill:var(--neon)}
+
+/* ---------- icon tiles (card 04 shop) ---------- */
+.p-tiles{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1}
+.p-tiles a{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  padding:13px 4px 11px;height:100%;
+  border:1px solid color-mix(in srgb,var(--neon) 28%,transparent);border-radius:7px;
+  background:color-mix(in srgb,var(--neon) 3%,transparent);
+  color:var(--ink);text-decoration:none;cursor:pointer;
+  transition:transform .2s,background .2s,border-color .2s,box-shadow .2s;
+}
+.p-tiles a:hover,.p-tiles a:focus-visible{
+  border-color:var(--neon);background:color-mix(in srgb,var(--neon) 11%,transparent);
+  box-shadow:0 6px 18px color-mix(in srgb,var(--neon) 22%,transparent);transform:translateY(-3px);outline:none;
+}
+.p-tiles svg{width:26px;height:26px;fill:none;stroke:var(--neon);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--neon) 50%,transparent))}
+.t-name{font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase}
+.t-tag{font-family:var(--mono);font-size:8.5px;color:var(--dim);text-align:center;line-height:1.3}
+
+/* ---------- blogroll rows (card 03) ---------- */
+.p-feed{list-style:none;display:flex;flex-direction:column;gap:1px;flex:1;padding-left:2px}
+.p-feed a{
+  display:grid;grid-template-columns:50px 9px minmax(0,1fr) 14px;align-items:center;gap:8px;
+  padding:6px 6px;border-radius:4px;border:1px solid transparent;
+  color:var(--ink);text-decoration:none;cursor:pointer;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.p-feed a:hover,.p-feed a:focus-visible{
+  background:color-mix(in srgb,var(--neon) 10%,transparent);
+  border-color:color-mix(in srgb,var(--neon) 35%,transparent);transform:translateX(4px);outline:none;
+}
+.f-date{font-family:var(--mono);font-size:9.5px;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.f-dot{width:7px;height:7px;border-radius:50%;background:var(--src,#888);box-shadow:0 0 7px var(--src,#888)}
+.f-body{min-width:0;display:flex;flex-direction:column}
+.f-title{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f-src{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,var(--src,#888) 80%,var(--dim))}
+.p-feed .l-arrow{font-size:12px;grid-column:auto;grid-row:auto}
+.p-feed a:hover .l-arrow{opacity:1;transform:none}
+.p-feed .f-all{grid-template-columns:1fr auto;margin-top:4px;border:1px dashed color-mix(in srgb,var(--neon) 35%,transparent)}
+.p-feed .f-all span:first-child{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--neon)}
+.p-feed .f-wait{font-family:var(--mono);font-size:10px;color:var(--dim);padding:8px 6px;letter-spacing:.1em}
+
+/* the card a popup came out of dims while the popup is open */
+body.open .panel.lifted{opacity:.28;transition:opacity .35s ease}
+
+/* ---------- popup: one larger sheet per group ---------- */
 .veil{
   position:fixed;inset:0;z-index:65;
-  background:radial-gradient(ellipse at center,rgba(3,5,6,.2),rgba(3,5,6,.55));
+  background:radial-gradient(ellipse at center,rgba(3,5,6,.35),rgba(3,5,6,.72));
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
   opacity:0;pointer-events:none;transition:opacity .35s ease;
 }
 .veil.show{opacity:1;pointer-events:auto}
 .modal{
-  position:fixed;z-index:70;
-  width:min(460px,calc(100vw - 32px));
-  --mneon:#00ff9d;--tilt:0deg;
-  background:
-    linear-gradient(160deg,rgba(255,255,255,.06),transparent 40%),
-    rgba(7,10,12,.97);
+  position:fixed;z-index:70;display:none;overflow:hidden;
+  --mneon:#00ff9d;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),transparent 35%),rgba(7,10,12,.97);
   border:1px solid color-mix(in srgb,var(--mneon) 60%,transparent);
-  border-radius:10px;
-  box-shadow:
-    0 0 40px color-mix(in srgb,var(--mneon) 25%,transparent),
-    0 24px 80px rgba(0,0,0,.7),
-    inset 0 0 30px color-mix(in srgb,var(--mneon) 6%,transparent);
-  backdrop-filter:blur(10px);
-  padding:18px 20px 16px;
-  opacity:0;pointer-events:none;
-  transform-origin:var(--nx,50%) 0;
-  transform:translateY(18px) rotate(var(--tilt)) scale(.94);
+  border-radius:12px;
+  box-shadow:0 0 44px color-mix(in srgb,var(--mneon) 24%,transparent),0 30px 90px rgba(0,0,0,.75),inset 0 0 34px color-mix(in srgb,var(--mneon) 5%,transparent);
 }
-.modal.show{
-  opacity:1;pointer-events:auto;transform:none;
-  transition:transform .5s var(--ease),opacity .3s ease;
+.modal.show{display:block}
+.m-inner{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
+.m-notch{position:absolute;top:-1px;left:50%;width:44px;height:3px;transform:translateX(-50%);background:var(--mneon);box-shadow:0 0 10px var(--mneon)}
+.m-head{
+  display:flex;align-items:center;gap:12px;flex:none;
+  padding:18px 20px 14px;
+  border-bottom:1px dashed color-mix(in srgb,var(--mneon) 28%,transparent);
 }
-.m-notch{
-  position:absolute;top:-1px;left:var(--nx,50%);
-  width:34px;height:3px;transform:translateX(-50%);
-  background:var(--mneon);box-shadow:0 0 8px var(--mneon);
-}
-.m-lead{
-  position:fixed;z-index:69;height:2px;
-  background:var(--mneon);box-shadow:0 0 6px var(--mneon);
-  opacity:0;pointer-events:none;
-  transform-origin:0 50%;
-  transition:opacity .3s ease;
-}
-.m-lead.show{opacity:.8;transition:opacity .4s ease .15s}
-.m-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .m-index{
-  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--mneon);
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--mneon);
   border:1px solid color-mix(in srgb,var(--mneon) 55%,transparent);
-  padding:2px 6px;border-radius:3px;
+  padding:3px 7px;border-radius:3px;
+  box-shadow:0 0 12px color-mix(in srgb,var(--mneon) 30%,transparent);
 }
+.m-titles{flex:1;min-width:0}
 .m-head h3{
-  font-family:var(--grot);font-weight:700;font-size:16px;
-  letter-spacing:.05em;text-transform:uppercase;color:#fff;flex:1;
-  text-shadow:0 0 16px color-mix(in srgb,var(--mneon) 50%,transparent);
+  font-family:var(--grot);font-weight:700;font-size:20px;line-height:1.1;
+  letter-spacing:.06em;text-transform:uppercase;color:#fff;
+  text-shadow:0 0 18px color-mix(in srgb,var(--mneon) 50%,transparent);
 }
-.m-tag{font-family:var(--mono);font-size:10px;color:var(--dim)}
-.m-body{
-  margin:12px 0 14px;
-  font-size:13.5px;line-height:1.6;color:#c9d2d8;
-  max-height:min(52vh,430px);overflow:auto;
-}
-.m-body p+p{margin-top:8px}
-.m-body .m-kicker{
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
-  color:color-mix(in srgb,var(--mneon) 80%,var(--dim));
-  display:block;margin-bottom:8px;
-}
-/* popup art layouts: wide bar, side square, bottom row */
-.m-art-top{
-  display:block;width:calc(100% + 10px);height:110px;margin:-8px -5px 12px;
-  object-fit:cover;border-radius:6px;
-  border:1px solid color-mix(in srgb,var(--mneon) 32%,transparent);
-  transform:rotate(-.5deg);box-shadow:0 8px 22px rgba(0,0,0,.45);
-  opacity:0;animation:img-in .5s var(--ease) forwards;
-}
-.m-art-side{
-  float:right;width:42%;margin:2px 0 8px 14px;aspect-ratio:1;object-fit:cover;
-  border-radius:8px;border:1px solid rgba(255,255,255,.14);
-  transform:rotate(1.4deg);box-shadow:0 10px 26px rgba(0,0,0,.5);
-  opacity:0;animation:img-in .5s var(--ease) .08s forwards;
-}
-.m-art-bottom{display:flex;gap:12px;margin-top:12px}
-.m-art-bottom img{
-  flex:1;min-width:0;aspect-ratio:1;object-fit:cover;border-radius:8px;
-  border:1px solid rgba(255,255,255,.14);
-  transform:rotate(var(--r,0deg));box-shadow:0 10px 26px rgba(0,0,0,.5);
-  opacity:0;animation:img-in .5s var(--ease) forwards;
-  animation-delay:calc(.12s + var(--i,0)*.09s);
-}
-.m-body::after{content:'';display:block;clear:both}
-.m-lyric{
-  font-family:var(--mono);font-style:italic;font-size:12.5px;line-height:1.8;
-  color:#e6ecf0;white-space:pre-line;
-  border-left:2px solid var(--mneon);
-  padding:4px 0 4px 14px;margin-top:10px;
-}
-/* instagram grid — fun alignment, staggered arrival */
-.m-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-.m-imgs figure{
-  margin:0;background:#0b0e10;
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 8px 24px rgba(0,0,0,.5);
-  transform:rotate(var(--r,0deg));
-  opacity:0;
-  animation:img-in .55s var(--ease) forwards;
-  animation-delay:calc(.18s + var(--i)*.09s);
-}
-.m-imgs figure:nth-child(odd){margin-top:8px}
-@keyframes img-in{
-  from{opacity:0;transform:rotate(var(--r,0deg)) translateY(22px) scale(.82)}
-  to{opacity:1;transform:rotate(var(--r,0deg)) translateY(0) scale(1)}
-}
-.m-imgs img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.img-slot{
-  display:flex;align-items:center;justify-content:center;
-  width:100%;aspect-ratio:1;padding:6px;text-align:center;
-  font-family:var(--mono);font-size:9px;line-height:1.5;color:var(--dim);
-}
-/* social icon field */
-.m-icons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.m-icons a{
-  display:flex;flex-direction:column;align-items:center;gap:7px;
-  padding:13px 6px;text-decoration:none;color:var(--ink);
-  border:1px solid color-mix(in srgb,var(--mneon) 25%,transparent);
-  border-radius:8px;font-family:var(--mono);font-size:9px;
-  letter-spacing:.12em;text-transform:uppercase;
-  transition:.2s;
-}
-.m-icons a:hover{
-  border-color:var(--mneon);
-  background:color-mix(in srgb,var(--mneon) 10%,transparent);
-  transform:translateY(-3px);
-  box-shadow:0 6px 18px color-mix(in srgb,var(--mneon) 20%,transparent);
-}
-.m-icons svg{width:22px;height:22px;fill:var(--mneon)}
-/* featured product slot */
-.m-prod{
-  display:flex;gap:12px;margin-top:12px;
-  border:1px dashed color-mix(in srgb,var(--mneon) 35%,transparent);
-  border-radius:8px;padding:10px;align-items:center;
-}
-.m-prod .p-thumb{flex:none;width:74px;height:74px;border-radius:6px;overflow:hidden;background:#0b0e10;border:1px solid rgba(255,255,255,.1)}
-.m-prod .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.m-prod h4{font-size:13px;color:#fff;letter-spacing:.03em}
-.m-prod .p-price{font-family:var(--mono);font-size:11px;color:var(--mneon);margin-top:3px}
-.m-prod p{font-size:12px;color:#a9b4bc;margin-top:4px;line-height:1.45}
-/* spotify embed */
-.m-embed iframe{
-  width:100%;height:152px;border:0;border-radius:8px;margin-top:12px;background:#000;
-}
-/* contact form */
-.m-form label{
-  display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--dim);margin-top:10px;
-}
-.m-form input,.m-form textarea{
-  width:100%;margin-top:5px;padding:9px 11px;
-  background:rgba(255,255,255,.04);color:var(--ink);
-  border:1px solid color-mix(in srgb,var(--mneon) 30%,transparent);
-  border-radius:6px;font-family:var(--grot);font-size:13px;resize:vertical;
-}
-.m-form input:focus,.m-form textarea:focus{
-  outline:none;border-color:var(--mneon);
-  box-shadow:0 0 10px color-mix(in srgb,var(--mneon) 25%,transparent);
-}
-.m-form .m-send{
-  margin-top:14px;width:100%;padding:11px;
-  background:color-mix(in srgb,var(--mneon) 14%,transparent);
-  border:1px solid color-mix(in srgb,var(--mneon) 55%,transparent);
-  border-radius:6px;color:#fff;cursor:pointer;
-  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  transition:.2s;
-}
-.m-form .m-send:hover{
-  background:color-mix(in srgb,var(--mneon) 26%,transparent);
-  box-shadow:0 0 16px color-mix(in srgb,var(--mneon) 30%,transparent);
-}
-.m-form .m-note{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px;text-align:center}
-.m-success{
-  font-family:var(--mono);font-size:12px;color:var(--mneon);
-  text-align:center;padding:22px 0;letter-spacing:.1em;
-}
-.m-actions{
-  display:flex;gap:10px;justify-content:flex-end;
-  border-top:1px dashed color-mix(in srgb,var(--mneon) 30%,transparent);
-  padding-top:12px;
-}
-.m-btn{
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  padding:8px 14px;border-radius:5px;cursor:pointer;text-decoration:none;transition:.2s;
-}
-.m-close{
+.m-tag{display:block;margin-top:4px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.m-x{
+  flex:none;width:30px;height:30px;border-radius:6px;cursor:pointer;
   background:none;border:1px solid color-mix(in srgb,var(--mneon) 45%,transparent);
-  color:var(--mneon);
+  color:var(--mneon);font-family:var(--mono);font-size:13px;transition:.2s;
 }
-.m-close:hover{background:color-mix(in srgb,var(--mneon) 10%,transparent)}
-.m-open{
-  background:color-mix(in srgb,var(--mneon) 16%,transparent);
-  border:1px solid color-mix(in srgb,var(--mneon) 60%,transparent);
-  color:#fff;
+.m-x:hover,.m-x:focus-visible{background:color-mix(in srgb,var(--mneon) 14%,transparent);transform:rotate(90deg);outline:none}
+.m-body{flex:1;min-height:0;overflow:auto;padding:18px 20px 20px;font-size:13.5px;line-height:1.6;color:#c9d2d8;overscroll-behavior:contain}
+.m-body::-webkit-scrollbar{width:8px}
+.m-body::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--mneon) 30%,transparent);border-radius:4px}
+
+/* sections: every subsection of a group on one sheet */
+.m-grid{display:grid;grid-template-columns:repeat(var(--cols,1),minmax(0,1fr));gap:16px;align-items:stretch}
+.sec{
+  display:flex;flex-direction:column;min-width:0;
+  border:1px solid color-mix(in srgb,var(--mneon) 20%,transparent);border-radius:10px;
+  background:rgba(255,255,255,.02);overflow:hidden;
+  transition:border-color .3s,box-shadow .3s;
 }
-.m-open:hover{box-shadow:0 0 14px color-mix(in srgb,var(--mneon) 35%,transparent)}
+.sec.focus{border-color:color-mix(in srgb,var(--mneon) 80%,transparent);box-shadow:0 0 22px color-mix(in srgb,var(--mneon) 18%,transparent)}
+.modal.ready .sec{animation:sec-in .55s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes sec-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.sec-art{display:block;width:100%;height:132px;object-fit:cover;flex:none;border-bottom:1px solid color-mix(in srgb,var(--mneon) 22%,transparent);background:#0b0e10}
+.sec-art.contain{object-fit:contain;padding:8px}
+.sec-art.ph{
+  display:flex;align-items:center;justify-content:center;
+  background:
+    repeating-linear-gradient(135deg,color-mix(in srgb,var(--mneon) 7%,transparent) 0 2px,transparent 2px 11px),
+    #0a0d0f;
+  font-family:var(--mono);font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--mneon) 70%,var(--dim));
+}
+.sec-in{display:flex;flex-direction:column;gap:9px;padding:14px 16px 16px;flex:1}
+.s-head h4{font-family:var(--grot);font-weight:700;font-size:15px;letter-spacing:.05em;text-transform:uppercase;color:#fff;line-height:1.2}
+.s-tag{display:block;font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-top:3px;letter-spacing:.04em}
+.s-status{
+  align-self:flex-start;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mneon);border:1px solid color-mix(in srgb,var(--mneon) 40%,transparent);
+  background:color-mix(in srgb,var(--mneon) 7%,transparent);padding:4px 7px;border-radius:2px;
+}
+.sec-in p{font-size:13px;line-height:1.6}
+.sec-in p.s-more{font-size:12.5px;color:#9fabb4}
+.m-lyric{
+  font-family:var(--mono);font-style:italic;font-size:12px;line-height:1.75;color:#e6ecf0;white-space:pre-line;
+  border-left:2px solid var(--mneon);padding:2px 0 2px 12px;
+}
+.m-links{list-style:none;margin:2px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.08)}
+.m-links li{border-bottom:1px solid rgba(255,255,255,.08)}
+.m-links a,.m-links button{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;
+  padding:8px 0;color:var(--ink);text-decoration:none;font-size:12.5px;text-align:left;
+  background:none;border:0;cursor:pointer;font-family:inherit;transition:color .2s;
+}
+.m-links a:hover,.m-links button:hover{color:var(--mneon)}
+.ml-note{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.sec-cta{
+  margin-top:auto;align-self:flex-start;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 13px;border-radius:5px;text-decoration:none;color:#fff;
+  background:color-mix(in srgb,var(--mneon) 15%,transparent);
+  border:1px solid color-mix(in srgb,var(--mneon) 60%,transparent);transition:box-shadow .2s,background .2s;
+}
+.sec-cta:hover{box-shadow:0 0 14px color-mix(in srgb,var(--mneon) 35%,transparent);background:color-mix(in srgb,var(--mneon) 25%,transparent)}
+.sec-cta.off{opacity:.45;pointer-events:none;background:none}
+.m-mail{
+  display:inline-block;align-self:flex-start;font-family:var(--mono);font-size:13px;
+  color:var(--mneon);text-decoration:none;padding:9px 12px;
+  border:1px solid color-mix(in srgb,var(--mneon) 45%,transparent);border-radius:4px;transition:background .2s;
+}
+.m-mail:hover{background:color-mix(in srgb,var(--mneon) 10%,transparent)}
+.m-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim)}
+.m-prod{display:flex;gap:12px;align-items:center;border:1px dashed color-mix(in srgb,var(--mneon) 35%,transparent);border-radius:8px;padding:9px}
+.m-prod img{flex:none;width:58px;height:58px;object-fit:cover;border-radius:5px;border:1px solid rgba(255,255,255,.1)}
+.m-prod h5{font-size:12.5px;color:#fff;letter-spacing:.03em}
+.m-prod p{font-size:11.5px;color:#a9b4bc;line-height:1.45;margin-top:2px}
+.m-form{display:flex;flex-direction:column;gap:6px}
+.m-form label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+.m-form input,.m-form textarea{
+  width:100%;padding:8px 10px;background:rgba(255,255,255,.04);color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--mneon) 30%,transparent);border-radius:6px;font-family:var(--grot);font-size:13px;resize:vertical;
+}
+.m-form input:focus,.m-form textarea:focus{outline:none;border-color:var(--mneon)}
+.m-send{margin-top:8px;padding:10px;background:color-mix(in srgb,var(--mneon) 14%,transparent);border:1px solid color-mix(in srgb,var(--mneon) 55%,transparent);border-radius:6px;color:#fff;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.m-success{font-family:var(--mono);font-size:12px;color:var(--mneon);text-align:center;padding:22px 0;letter-spacing:.1em}
+
+/* solo groups: art on the left, words on the right */
+.m-grid.solo .sec.has-art{flex-direction:row}
+.m-grid.solo .sec.has-art .sec-art{width:42%;height:auto;min-height:240px;border-bottom:0;border-right:1px solid color-mix(in srgb,var(--mneon) 22%,transparent)}
+.m-grid.solo .sec{border:0;background:none}
+.m-grid.solo .sec-in{padding:4px 4px 4px 20px}
+.m-grid.solo .sec:not(.has-art) .sec-in{padding:0}
+.m-grid.solo .s-head{display:none}
+
+/* ---------- popup: the feed ---------- */
+.fd-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);background:none;padding:6px 10px;border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--src,var(--mneon)) 35%,transparent);transition:.2s;
+}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--src,var(--mneon));box-shadow:0 0 6px var(--src,var(--mneon))}
+.chip b{font-weight:400;color:var(--dim)}
+.chip:hover{border-color:var(--src,var(--mneon))}
+.chip.on{background:color-mix(in srgb,var(--src,var(--mneon)) 16%,transparent);border-color:var(--src,var(--mneon))}
+.chip.empty{opacity:.45}
+.fd-month{
+  position:sticky;top:-18px;z-index:2;
+  font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--mneon);padding:9px 0 6px;margin-top:4px;
+  background:linear-gradient(180deg,rgba(7,10,12,1) 70%,rgba(7,10,12,0));
+}
+.fd-row{
+  display:grid;grid-template-columns:42px minmax(0,1fr) 16px;gap:14px;align-items:start;
+  padding:11px 10px 12px;margin:0 -10px;border-radius:8px;
+  color:var(--ink);text-decoration:none;border:1px solid transparent;
+  transition:background .2s,border-color .2s;
+}
+.fd-row + .fd-row{border-top-color:rgba(255,255,255,.06)}
+.fd-row:hover{background:color-mix(in srgb,var(--src) 8%,transparent);border-color:color-mix(in srgb,var(--src) 35%,transparent)}
+.fd-row.focus{background:color-mix(in srgb,var(--src) 12%,transparent);border-color:var(--src)}
+.fd-row time{display:flex;flex-direction:column;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;padding-top:2px}
+.fd-row time b{font-family:var(--grot);font-size:19px;font-weight:700;color:#fff;letter-spacing:0;line-height:1}
+.fd-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.fd-badge{color:var(--src);display:inline-flex;align-items:center;gap:6px}
+.fd-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--src);box-shadow:0 0 6px var(--src)}
+.fd-title{font-weight:700;font-size:14px;line-height:1.35;color:#fff;margin-top:4px}
+.fd-ex{font-size:12.5px;line-height:1.55;color:#97a3ab;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fd-go{font-family:var(--mono);color:var(--src);opacity:.4;padding-top:3px;transition:.2s}
+.fd-row:hover .fd-go{opacity:1;transform:translate(2px,-2px)}
+.fd-foot{margin-top:14px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--mneon) 28%,transparent);font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);line-height:1.8}
+.fd-foot a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--dim)}
+.fd-foot a:hover{color:var(--mneon)}
+.fd-empty{font-family:var(--mono);font-size:11px;color:var(--dim);padding:20px 0}
+
+@media (max-width:760px){
+  .m-grid{grid-template-columns:1fr}
+  .m-grid.solo .sec.has-art{flex-direction:column}
+  .m-grid.solo .sec.has-art .sec-art{width:100%;min-height:0;height:170px;border-right:0;border-bottom:1px solid color-mix(in srgb,var(--mneon) 22%,transparent)}
+  .m-grid.solo .sec-in{padding:14px 2px 0}
+  .m-head h3{font-size:17px}
+  .m-body{padding:14px 14px 18px}
+}
+
+/* ---------- ring bus between cards ---------- */
+.wires .w-bus{stroke-width:1.4;stroke-opacity:.55;stroke-dasharray:2 5}
+.wires .pulse{filter:drop-shadow(0 0 4px currentColor)}
+
 
 /* ---------- LIVE effects ---------- */
 #fxlayer{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none}
@@ -644,51 +699,18 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   .statusbar .sig,
   .statusbar span:first-child{display:none}
 }
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+@media (max-width:820px),(max-height:600px){
+  .p-feed a{padding:8px 8px}
+  .p-tiles a{padding:16px 4px 13px}
 }
-
-/* ---------- v4.1 additions ---------- */
-.m-body .m-status{
-  display:inline-block;
-  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--mneon);
-  border:1px solid color-mix(in srgb,var(--mneon) 40%,transparent);
-  background:color-mix(in srgb,var(--mneon) 7%,transparent);
-  padding:5px 8px;margin:2px 0 13px;border-radius:2px;
-}
-.m-links{list-style:none;margin:14px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.08)}
-.m-links li{border-bottom:1px solid rgba(255,255,255,.08)}
-.m-links a{
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
-  padding:9px 0;color:var(--ink);text-decoration:none;font-size:13px;
-  transition:color .2s;
-}
-.m-links a:hover{color:var(--mneon)}
-.m-links .ml-note{
-  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--dim);white-space:nowrap;
-}
-.m-direct{margin-top:14px}
-.m-direct-line{font-size:12px;color:var(--dim);margin-bottom:6px}
-.m-mail{
-  display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.04em;
-  color:var(--mneon);text-decoration:none;padding:10px 12px;
-  border:1px solid color-mix(in srgb,var(--mneon) 45%,transparent);
-  border-radius:4px;transition:background .2s;
-}
-.m-mail:hover{background:color-mix(in srgb,var(--mneon) 10%,transparent)}
-.m-body .m-note{display:block;margin-top:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim)}
-/* bigger hit area for the tiny live control, no layout shift */
-.p-foot .live{position:relative}
-.p-foot .live::after{content:'';position:absolute;inset:-12px -10px}
 /* hidden until the fifth diagnostic is found */
 #eggSlot{display:none}
 #eggSlot.show{display:list-item}
-
+.p-foot .live{position:relative}
+.p-foot .live::after{content:'';position:absolute;inset:-12px -10px}
 @media (prefers-reduced-motion: reduce){
   .blob,.circuits path,.circuits circle,.scanbar,.p-foot .blink,.wires path{animation:none !important}
-  .panel,.core,.board,.modal,.m-lead{transition:none !important}
+  .panel,.core,.board{transition:none !important}
 }
 </style>
 </head>
@@ -713,19 +735,16 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
 <svg id="fxlayer" aria-hidden="true"></svg>
 <div id="surge" aria-hidden="true"></div>
 <div class="veil" id="veil"></div>
-<div class="m-lead" id="lead"></div>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-  <span class="m-notch"></span>
-  <div class="m-head">
-    <span class="m-index" id="mIndex"></span>
-    <h3 id="mTitle"></h3>
-    <span class="m-tag" id="mTag"></span>
-  </div>
-  <div class="m-body" id="mBody"></div>
-  <div class="m-actions">
-    <button class="m-btn m-close" id="mClose">close</button>
-    <a class="m-btn m-open" id="mOpen" href="#" target="_blank" rel="noopener">open in new tab &#8599;</a>
+  <div class="m-inner" id="mInner">
+    <span class="m-notch"></span>
+    <div class="m-head">
+      <span class="m-index" id="mIndex"></span>
+      <div class="m-titles"><h3 id="mTitle"></h3><span class="m-tag" id="mTag"></span></div>
+      <button class="m-x" id="mClose" aria-label="Close">&#10005;</button>
+    </div>
+    <div class="m-body" id="mBody"></div>
   </div>
 </div>
 
@@ -745,28 +764,23 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     </span>
     <span class="core-hint">
       <span class="h-open"><span class="hv">hover · click to init</span><span class="ht">tap to init</span></span>
-      <span class="h-close">click to collapse</span>
     </span>
   </button>
 
   <!-- ============ 01 · CREATIVE CONTENT ============ -->
-  <section class="panel p1 slim" data-i="0" aria-label="Creative content">
+  <section class="panel p1" data-i="0" aria-label="Creative content">
     <button class="p-x" aria-label="Close creative content card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">01</span>
       <h2>Creative<br>Content</h2>
     </div>
-    <ul class="p-links">
-      <li><a data-key="benny"><span class="l-name">Benny</span><span class="l-tag">a family tragedy</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="slop"><span class="l-name">SLOP! The Musical</span><span class="l-tag">a one-act musical comedy</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="geoffmaxie"><span class="l-name">Geoff &amp; Maxie</span><span class="l-tag">a musical parody</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="spun"><span class="l-name">spun/calliope</span><span class="l-tag">in development</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="liars"><span class="l-name">Lying Liars</span><span class="l-tag">the podcast</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="robots"><span class="l-name">Friendly Robots!</span><span class="l-tag">children’s books</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="fruit"><span class="l-name">Photography</span><span class="l-tag">@barrylikethefruit</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="video"><span class="l-name">Video</span><span class="l-tag">youtube.com/@bfloore_online</span><span class="l-arrow">-&gt;</span></a></li>
+    <ul class="p-links two">
+      <li><a data-group="musicals"><span class="l-name">Musicals</span><span class="l-tag">SLOP! · Geoff &amp; Maxie · spun</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="fiction"><span class="l-name">Fiction</span><span class="l-tag">Benny · The Lying Liars</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="visual"><span class="l-name">Visual Media</span><span class="l-tag">photography · video</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="robots"><span class="l-name">Friendly Robots!</span><span class="l-tag">children’s books · book six</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 08 modules</span><button class="live" data-fx="snake" aria-label="Activate green live effect">&#9679; live</button></div>
+    <div class="p-foot"><span>// 04 groups</span><button class="live" data-fx="snake" aria-label="Activate green live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 02 · PROFESSIONAL ============ -->
@@ -777,30 +791,26 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <h2>Professional</h2>
     </div>
     <ul class="p-links">
-      <li><a data-key="resume"><span class="l-name">Resume / CV</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="dataonezero"><span class="l-name">DataOneZero</span><span class="l-tag">formerly JAXDATApro</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="social"><span class="l-name">Social Media</span><span class="l-tag">all channels</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="linklist"><span class="l-name">Link List</span><span class="l-tag">everywhere I exist</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="about"><span class="l-name">About</span><span class="l-tag">who is b</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="contact"><span class="l-name">Contact</span><span class="l-tag">say hello</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="resume"><span class="l-name">Resume / CV</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="dataonezero"><span class="l-name">DataOneZero</span><span class="l-tag">formerly JAXDATApro</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="aboutcontact"><span class="l-name">About &amp; Contact</span><span class="l-tag">who is b · say hello</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 06 modules</span><button class="live" data-fx="surge" aria-label="Activate blue live effect">&#9679; live</button></div>
+    <div class="p-sub">find me on</div>
+    <div class="p-icons" id="socialIcons"></div>
+    <div class="p-foot"><span>// 03 modules · 06 channels</span><button class="live" data-fx="surge" aria-label="Activate blue live effect">&#9679; live</button></div>
   </section>
 
-  <!-- ============ 03 · PROFESSIONAL WRITING ============ -->
+  <!-- ============ 03 · PROFESSIONAL WRITING (blogroll) ============ -->
   <section class="panel p3" data-i="2" aria-label="Professional writing">
     <button class="p-x" aria-label="Close professional writing card">&#10005;</button>
     <div class="p-head">
       <span class="p-index">03</span>
       <h2>Professional<br>Writing</h2>
     </div>
-    <ul class="p-links">
-      <li><a data-key="medium"><span class="l-name">Medium</span><span class="l-tag">essays</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="substack"><span class="l-name">Substack</span><span class="l-tag">the dispatch</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="blogs"><span class="l-name">Blogs</span><span class="l-tag">archive — soon</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="podcasts"><span class="l-name">Podcasts</span><span class="l-tag">ethical ai · 4 seasons</span><span class="l-arrow">-&gt;</span></a></li>
+    <ul class="p-feed" id="cardFeed">
+      <li class="f-wait">SYNCING FEEDS…</li>
     </ul>
-    <div class="p-foot"><span>// 04 modules</span><button class="live" data-fx="shift" aria-label="Activate pink live effect">&#9679; live</button></div>
+    <div class="p-foot"><span id="feedCount">// 05 sources</span><button class="live" data-fx="shift" aria-label="Activate pink live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 04 · SHOPPING & MERCH ============ -->
@@ -810,12 +820,18 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <span class="p-index">04</span>
       <h2>Shopping<br>&amp; Merch</h2>
     </div>
-    <ul class="p-links">
-      <li><a data-key="amazon"><span class="l-name">Amazon</span><span class="l-tag">six books &amp; counting</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="etsy"><span class="l-name">Etsy</span><span class="l-tag">merch &amp; pod</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="gumroad"><span class="l-name">Gumroad</span><span class="l-tag">digital products</span><span class="l-arrow">-&gt;</span></a></li>
+    <ul class="p-tiles">
+      <li><a data-group="shop" data-focus="amazon" aria-label="Amazon: books">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/><path d="M4 20.5V5.5M20 20.5V5.5"/></svg>
+        <span class="t-name">Amazon</span><span class="t-tag">books</span></a></li>
+      <li><a data-group="shop" data-focus="etsy" aria-label="Etsy: merch">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4 4 6.5 5.5 10 7.5 9.2V20h9V9.2l2 .8L20 6.5 16 4c-.7 1.5-2.2 2.4-4 2.4S8.7 5.5 8 4z"/></svg>
+        <span class="t-name">Etsy</span><span class="t-tag">merch &amp; pod</span></a></li>
+      <li><a data-group="shop" data-focus="gumroad" aria-label="Gumroad: digital products">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4.5 15.5v3A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></svg>
+        <span class="t-name">Gumroad</span><span class="t-tag">downloads</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 03 modules</span><button class="live" data-fx="shuffle" aria-label="Activate yellow live effect">&#9679; live</button></div>
+    <div class="p-foot"><span>// 03 storefronts</span><button class="live" data-fx="shuffle" aria-label="Activate yellow live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 05 · SITES & APPS ============ -->
@@ -825,19 +841,20 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <span class="p-index">05</span>
       <h2>Sites<br>&amp; Apps</h2>
     </div>
-    <ul class="p-links">
-      <li><a data-key="serial"><span class="l-name">Serial Images</span><span class="l-tag">video → stills</span><span class="l-arrow">-&gt;</span></a></li>
-      <li><a data-key="moreapps"><span class="l-name">More Apps</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
-      <li id="eggSlot"><a data-key="sysinfo"><span class="l-name">System Info</span><span class="l-tag">unlocked</span><span class="l-arrow">-&gt;</span></a></li>
+    <ul class="p-links two">
+      <li><a data-group="serial"><span class="l-name">Serial Images</span><span class="l-tag">video → stills</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="linklist"><span class="l-name">Link List</span><span class="l-tag">everywhere I exist</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a data-group="moreapps"><span class="l-name">More Apps</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li id="eggSlot"><a data-group="sysinfo"><span class="l-name">System Info</span><span class="l-tag">unlocked</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
-    <div class="p-foot"><span id="p5count">// 02 modules</span><button class="live" data-fx="dark" aria-label="Activate white live effect">&#9679; live</button></div>
+    <div class="p-foot"><span id="p5count">// 03 modules</span><button class="live" data-fx="dark" aria-label="Activate white live effect">&#9679; live</button></div>
   </section>
 
 </div>
 </main>
 
 <div class="statusbar">
-  <span>SYS.BFLOORE // v4.1.1</span>
+  <span>SYS.BFLOORE // v5.0</span>
   <span class="sig">30.3322&deg;N 81.6557&deg;W — JACKSONVILLE, FL</span>
   <span id="sysMsg" role="status" aria-live="polite">STANDBY — AWAITING INPUT</span>
 </div>
@@ -845,8 +862,9 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
 <script>
 (function(){
   /* ============================================================
-     CONTENT — edit everything here. Each entry feeds the popup.
-     kinds: text | lyrics | images | icons | product | embed | form
+     CONTENT — edit everything here.
+     ITEMS  = one entry per work / page (a "section" in a popup)
+     GROUPS = what a card link opens: one popup, several sections
      ============================================================ */
   var FORMSPREE_ID = ''; /* paste your Formspree form id here (e.g. 'xrgkabcd'); empty = direct email fallback */
   var CONTACT_EMAIL = 'barry@saintelmo.com';
@@ -860,462 +878,222 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     {label:'Spotify', url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', svg:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.5a.7.7 0 0 1-1 .2c-2.6-1.6-6-2-9.9-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.5 11 1.3.3.2.4.7.2 1zm1.2-2.8a.9.9 0 0 1-1.3.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 0 1-.5-1.7c4.2-1.3 9.5-.6 13 1.5.4.3.5.9.1 1.2zm.1-2.9C14.6 8.7 8.9 8.5 5.4 9.5a1.1 1.1 0 1 1-.6-2.1c4-1.2 10.5-1 14.6 1.5a1.1 1.1 0 0 1-1.1 1.9z"/>'}
   ];
 
-  var PROJECTS = {
-  "benny": {
-    "idx": "01",
-    "title": "Benny: A Family Tragedy",
-    "tag": "novella · thirteen scenes",
-    "url": "https://afamilytragedy.com",
-    "kind": "text",
-    "status": "LIVE · KINDLE + PAPERBACK · AUDIO IN PRODUCTION",
-    "art": {
-      "side": "img/benny-side.jpg",
-      "bottom": [
-        "img/benny-bottom.jpg"
-      ]
-    },
-    "body": [
-      "Roy is a freelance writer in his fifties who never left his college town. He keeps the neighbors’ keys, orders the same lunch, and builds a small assistant out of a forum post and spare parts, because the house is quiet.",
-      "Benny chooses his own name, reads everything in the house, and stays. Then a tech magnate arrives to study him — and stays four months, for Roy. What follows is polite, and then total."
-    ]
-  },
-  "slop": {
-    "idx": "01",
-    "title": "SLOP! The Musical",
-    "tag": "one-act musical comedy",
-    "url": "https://slopthemusical.com",
-    "kind": "lyrics",
-    "status": "LIVE · ONE ACT · SCRIPT + SCORE",
-    "art": {
-      "top": "img/slop-top.jpg",
-      "side": "img/slop-side.jpg",
-      "bottom": [
-        "img/slop-bottom.jpg"
-      ]
-    },
-    "body": [
-      "Mia is an MFA-trained painter in Miami when someone offers to turn her unmistakable style into an automated product empire. The question isn’t whether the machines can paint. It’s whether her hand — and her choice — still belong in anything that carries her name.",
-      "A pop-forward comedy about authorship, labor, friendship, and what it means to make something with machines. Knowingly co-written with the models it puts onstage: they are in the cast list, and they get lines."
-    ],
-    "lyric": "Now playing — “Prompt Me, Baby, One More Time!”\nFeaturing a goldfish narrator, a missing operatic llama, and one imperious cat."
-  },
-  "geoffmaxie": {
-    "idx": "01",
-    "title": "Geoff & Maxie",
-    "tag": "musical parody · v2.0 rollout",
-    "url": "https://saintelmo.online",
-    "kind": "lyrics",
-    "status": "LIVE · V2.0 ROLLOUT · ACT 1 + ACT 2",
-    "art": {
-      "top": "img/geoff-top.jpg",
-      "side": "img/geoff-side.jpg"
-    },
-    "body": [
-      "A parody about an island, its monsters, and everyone who looked away. Geoff and Maxie follow the money, the testimony, and the canary-yellow phone, through a justice system with two sets of rules.",
-      "Some monsters live on islands. Others walk among us every day."
-    ],
-    "lyric": "“I wasn’t protecting you, sir. I was protecting people from you.”\n— Officer Watson, Act 1, Scene 9"
-  },
-  "spun": {
-    "idx": "01",
-    "title": "spun/calliope",
-    "tag": "in development",
-    "url": null,
-    "kind": "text",
-    "status": "IN DEV · NO PUBLIC BUILD",
-    "body": [
-      "A methy musical. Book and score are in the lab; the lab is not open to visitors yet.",
-      "What can be said: it is loud, it is unkind, and it has a title you will want to whisper."
-    ]
-  },
-  "liars": {
-    "idx": "01",
-    "title": "The Lying Liars Who Lied When They Said They Loved You",
-    "tag": "podcast · chapter 11",
-    "url": "https://thelyingliars.online",
-    "kind": "text",
-    "status": "LIVE · CHAPTER 11 · 13 OCT 2026",
-    "art": {
-      "top": "img/liars-top.jpg",
-      "side": "img/liars-side.jpg",
-      "bottom": [
-        "img/liars-bottom.jpg"
-      ]
-    },
-    "body": [
-      "A podcast about love, deception, and the lies people tell right before they leave. Chapter 11: a three-day bender, a straight man who uses gay dating apps as a safe house, and the difference between being useful and being loved."
-    ]
-  },
-  "robots": {
-    "idx": "01",
-    "title": "FRIENDLY ROBOTS!",
-    "tag": "children’s books · book six",
-    "url": "https://friendlyrobots.online",
-    "kind": "text",
-    "status": "LIVE · SIX BOOKS AND COUNTING",
-    "art": {
-      "top": "img/robots-top.jpg",
-      "side": "img/robots-side.jpg",
-      "bottom": [
-        "img/robots-bottom.jpg"
-      ]
-    },
-    "body": [
-      "A world of friendly robots for young readers. Pick the parts, color them in, give your robot a name and a big, kind heart, then send them home to RoboTown.",
-      "Six books in: picture books, coloring adventures, and one very good dog. Every one ends with a letter to my nieces and nephews — written for them, shared with everyone."
-    ]
-  },
-  "fruit": {
-    "idx": "01",
-    "title": "barrylikethefruit",
-    "tag": "@barrylikethefruit",
-    "url": "https://instagram.com/barrylikethefruit",
-    "kind": "text",
-    "status": "LIVE · POSTED RELENTLESSLY",
-    "body": [
-      "A banal and beautiful world, posted relentlessly. Photography, mostly; occasionally whatever else caught the light that day.",
-      "The self-appointed world record for non-commercial output. New work posted relentlessly \u2014 the six newest are below."
-    ],
-    "imgs": ["img/insta-1.jpg", "img/insta-2.jpg", "img/insta-3.jpg", "img/insta-4.jpg", "img/insta-5.jpg", "img/insta-6.jpg"],
-    "links": [
-      {
-        "label": "See more on Instagram",
-        "url": "https://instagram.com/barrylikethefruit",
-        "note": "instagram"
-      }
-    ]
-  },
-  "video": {
-    "idx": "01",
-    "title": "Video",
-    "tag": "youtube.com/@bfloore_online",
-    "url": "https://youtube.com/@bfloore_online",
-    "kind": "text",
-    "status": "LIVE · UNPREDICTABLE SCHEDULE",
-    "body": [
-      "Songs, sketches, readings, and whatever else felt worth pointing a camera at. Upload schedule: unpredictable, on purpose."
-    ]
-  },
-  "resume": {
-    "idx": "02",
-    "title": "Resume / CV",
-    "tag": "coming soon",
-    "url": null,
-    "kind": "text",
-    "status": "IN DEV · TYPESETTING",
-    "body": [
-      "The formal record: urban planning, close to two decades of emergency and critical-care nursing, a decade of data work, and a second life in writing and composition. One page, being typeset."
-    ]
-  },
-  "dataonezero": {
-    "idx": "02",
-    "title": "DataOneZero",
-    "tag": "formerly JAXDATApro",
-    "url": null,
-    "kind": "text",
-    "status": "IN DEV · SITE REBUILDING",
-    "body": [
-      "Data work with better instincts. The same spreadsheets, a new name, sharper questions — reporting, cleanup, and the unglamorous plumbing that makes numbers trustworthy. The site is being rebuilt; until then, use Contact."
-    ]
-  },
-  "social": {
-    "idx": "02",
-    "title": "Social Media",
-    "tag": "all channels",
-    "url": null,
-    "kind": "icons",
-    "status": "LIVE · SIX CHANNELS",
-    "body": [
-      "Six channels, one grid. Tap a node."
-    ],
-    "icons": [
-      {
-        "label": "Instagram",
-        "url": "https://instagram.com/barrylikethefruit",
-        "svg": "<path d=\"M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z\"/>"
-      },
-      {
-        "label": "TikTok",
-        "url": "https://tiktok.com/@b_floore",
-        "svg": "<path d=\"M16.6 3c.4 2 1.8 3.5 3.9 3.8v3c-1.5 0-2.9-.5-3.9-1.3v6.1a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 2 2.7V3h2.9z\"/>"
-      },
-      {
-        "label": "YouTube",
-        "url": "https://youtube.com/@bfloore_online",
-        "svg": "<path d=\"M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2L10 15.2z\"/>"
-      },
-      {
-        "label": "Facebook",
-        "url": "https://facebook.com/barry.floore",
-        "svg": "<path d=\"M13.5 21v-7h2.4l.4-3h-2.8V9.2c0-.9.3-1.6 1.6-1.6h1.3V4.8c-.2 0-1-.1-2-.1-2.4 0-4 1.5-4 4.1V11H7.4v3h2.9v7h3.2z\"/>"
-      },
-      {
-        "label": "LinkedIn",
-        "url": "https://linkedin.com/in/barryfloore",
-        "svg": "<path d=\"M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z\"/>"
-      },
-      {
-        "label": "Spotify",
-        "url": "https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9",
-        "svg": "<path d=\"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.5a.7.7 0 0 1-1 .2c-2.6-1.6-6-2-9.9-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.5 11 1.3.3.2.4.7.2 1zm1.2-2.8a.9.9 0 0 1-1.3.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 0 1-.5-1.7c4.2-1.3 9.5-.6 13 1.5.4.3.5.9.1 1.2zm.1-2.9C14.6 8.7 8.9 8.5 5.4 9.5a1.1 1.1 0 1 1-.6-2.1c4-1.2 10.5-1 14.6 1.5a1.1 1.1 0 0 1-1.1 1.9z\"/>"
-      }
-    ]
-  },
-  "linklist": {
-    "idx": "02",
-    "title": "Link List",
-    "tag": "everywhere I exist",
-    "url": null,
-    "kind": "icons",
-    "status": "LIVE · ONE INVENTORY",
-    "body": [
-      "Every place I exist online, including the ones I forget to update."
-    ],
-    "icons": [
-      {
-        "label": "Instagram",
-        "url": "https://instagram.com/barrylikethefruit",
-        "svg": "<path d=\"M12 8.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8zm0-2.1a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6zm6.9-.3a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0zM12 4.2c-2.6 0-2.9 0-4 .1a5.4 5.4 0 0 0-1.8.3 3 3 0 0 0-1.1.7 3 3 0 0 0-.7 1.1 5.4 5.4 0 0 0-.3 1.8c-.1 1-.1 1.4-.1 4s0 2.9.1 4a5.4 5.4 0 0 0 .3 1.8 3 3 0 0 0 .7 1.1 3 3 0 0 0 1.1.7 5.4 5.4 0 0 0 1.8.3c1 .1 1.4.1 4 .1s2.9 0 4-.1a5.4 5.4 0 0 0 1.8-.3 3.2 3.2 0 0 0 2-2 5.4 5.4 0 0 0 .3-1.8c.1-1 .1-1.4.1-4s0-2.9-.1-4a5.4 5.4 0 0 0-.3-1.8 3 3 0 0 0-.7-1.1 3 3 0 0 0-1.1-.7 5.4 5.4 0 0 0-1.8-.3c-1-.1-1.4-.1-4-.1z\"/>"
-      },
-      {
-        "label": "TikTok",
-        "url": "https://tiktok.com/@b_floore",
-        "svg": "<path d=\"M16.6 3c.4 2 1.8 3.5 3.9 3.8v3c-1.5 0-2.9-.5-3.9-1.3v6.1a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 2 2.7V3h2.9z\"/>"
-      },
-      {
-        "label": "YouTube",
-        "url": "https://youtube.com/@bfloore_online",
-        "svg": "<path d=\"M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2L10 15.2z\"/>"
-      },
-      {
-        "label": "Medium",
-        "url": "https://medium.com/@bfloore",
-        "svg": "<path d=\"M4 5h16v14H4z\" opacity=\".15\"/><path d=\"M4 5h16v14H4z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M7 8.5h3.2l2.1 5.2 2.1-5.2H17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/>"
-      },
-      {
-        "label": "Substack",
-        "url": "https://substack.com/@bfloore",
-        "svg": "<path d=\"M5 4h14v3H5zM5 10h14v3H5zM5 16l7 4 7-4v4l-7 4-7-4z\"/>"
-      }
-    ]
-  },
-  "about": {
-    "idx": "02",
-    "title": "About",
-    "tag": "who is b",
-    "url": null,
-    "kind": "text",
-    "status": "SYSTEM · OPERATOR",
-    "body": [
-      "I am in AI. I published a children’s book series, FRIENDLY ROBOTS! — now on book six. I am branding upward and spinning off a kids’ site from this one. I build video games and web apps now, and I keep every iron in the fire.",
-      "Before that: urban planning, close to two decades of emergency and critical-care nursing, and later work with language models. Somewhere in there I started writing fiction, musicals, and essays — mostly about loneliness, power, and the stories people tell themselves to make life bearable.",
-      "Jacksonville, Florida."
-    ]
-  },
-  "contact": {
-    "idx": "02",
-    "title": "Contact",
-    "tag": "say hello",
-    "url": null,
-    "kind": "form",
-    "status": "OPEN · REPLIES IN A FEW DAYS",
-    "body": [
-      "Booking, rights, collaboration, or just saying hello. I read everything; I answer most of it."
-    ]
-  },
-  "medium": {
-    "idx": "03",
-    "title": "Medium",
-    "tag": "essays",
-    "url": "https://medium.com/@bfloore",
-    "kind": "text",
-    "status": "LIVE · ESSAYS",
-    "kicker": "latest essay · 3 may 2026",
-    "body": [
-      "“They Fightin’ In The Kitchen, Y’all. Oh, SNAP!” — an immodest proposal for Trump’s America, from the unempathetic left, to let them drink Coke.",
-      "Act I begins with the spectacle: the televised youth competition, the prayer events, the UFC on the White House lawn, the monuments rising like bad cologne. It gets worse from there, on purpose."
-    ]
-  },
-  "substack": {
-    "idx": "03",
-    "title": "Substack",
-    "tag": "the dispatch",
-    "url": "https://substack.com/@bfloore",
-    "kind": "text",
-    "status": "LIVE · THE DISPATCH",
-    "kicker": "the dispatch",
-    "body": [
-      "Dispatches from the workshop: what’s being built, what’s being abandoned, and the occasional argument with a machine.",
-      "Subscribe and it arrives without you having to remember this site exists."
-    ]
-  },
-  "blogs": {
-    "idx": "03",
-    "title": "Blogs",
-    "tag": "archive — soon",
-    "url": null,
-    "kind": "text",
-    "status": "IN DEV · ARCHIVE",
-    "body": [
-      "Fifteen years of posts, scattered across the ruins of the old internet. The archive is being excavated and will live here when it is ready."
-    ]
-  },
-  "podcasts": {
-    "idx": "03",
-    "title": "Cultivating Ethical AI",
-    "tag": "on pause after 4 seasons",
-    "url": "https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9",
-    "kind": "embed",
-    "status": "ON PAUSE · 4 SEASONS ARCHIVED",
-    "body": [
-      "Four seasons of conversations with the people who build AI, regulate it, and worry about it. On pause. The archive is still here and still argues with itself."
-    ],
-    "embed": "https://open.spotify.com/embed/show/2nGTlVMwCufnCq4NUssGT9?utm_source=generator"
-  },
-  "amazon": {
-    "idx": "04",
-    "title": "Amazon",
-    "tag": "books · six and counting",
-    "url": "https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH",
-    "kind": "product",
-    "status": "LIVE · AUTHOR STORE",
-    "body": [
-      "Two very different shelves in one store: FRIENDLY ROBOTS! for young readers \u2014 six books and counting \u2014 and Benny: A Family Tragedy, an adult novel with nothing to do with the robots."
-    ],
-    "product": {
-      "title": "The RoboPets",
-      "price": "",
-      "desc": "A whole animal kingdom to color, with games and room to invent your own.",
-      "img": "https://m.media-amazon.com/images/I/71uO6uQvW0L._SY342_.jpg"
-    },
-    "links": [
-      {
-        "label": "Rex and Billy",
-        "url": "https://www.amazon.com/dp/B0HNSF83SM",
-        "note": "new story"
-      },
-      {
-        "label": "The Adventures of Robo",
-        "url": "https://www.amazon.com/dp/B0D8WGBQQ4",
-        "note": "storytime"
-      },
-      {
-        "label": "Benny: A Family Tragedy",
-        "url": "https://afamilytragedy.com",
-        "note": "adult novel"
-      }
-    ]
-  },
-  "etsy": {
-    "idx": "04",
-    "title": "Etsy",
-    "tag": "merch & pod",
-    "url": "https://etsy.com",
-    "kind": "text",
-    "status": "LIVE · PRINT ON DEMAND",
-    "body": [
-      "Merchandise and print-on-demand goods — designed by Barry, manufactured by people with better printers. Mugs, shirts, and objects of questionable necessity."
-    ]
-  },
-  "gumroad": {
-    "idx": "04",
-    "title": "Gumroad",
-    "tag": "digital products",
-    "url": "https://gumroad.com",
-    "kind": "text",
-    "status": "LIVE · INSTANT DELIVERY",
-    "art": {
-      "top": "img/rex-top.jpg",
-      "bottom": [
-        "img/rex-1.jpg",
-        "img/rex-2.jpg"
-      ]
-    },
-    "body": [
-      "Digital goods with instant delivery and zero shelf space: coloring packs, printables, and supplemental material for the FRIENDLY ROBOTS! books."
-    ]
-  },
-  "serial": {
-    "idx": "05",
-    "title": "Serial Images",
-    "tag": "video → stills",
-    "url": "https://serialimages.vercel.app",
-    "kind": "text",
-    "status": "LIVE · SINGLE SESSION",
-    "body": [
-      "Drop in a video, pull out the frames. Serial Images extracts stills, lays them out as a PDF, and gives you dark mode, page counts, time-zone stamps, and drag-to-reorder.",
-      "A single session: close the tab and nothing is kept."
-    ]
-  },
-  "moreapps": {
-    "idx": "05",
-    "title": "More Apps",
-    "tag": "coming soon",
-    "url": null,
-    "kind": "text",
-    "status": "IN DEV · WORKSHOP OPEN",
-    "body": [
-      "The workshop is busy. New apps get posted here as they leave the bench — check the live nodes, something is always flickering."
-    ]
-  },
-  "sysinfo": {
-    "idx": "06",
-    "title": "System Info",
-    "tag": "unlocked",
-    "url": null,
-    "kind": "text",
-    "status": "DIAGNOSTIC COMPLETE · 5 OF 5",
-    "body": [
-      "bfloore.online v4.1.1 — one file: HTML, CSS, and a little JavaScript. Unbounded, Space Grotesk, JetBrains Mono. The board, the wiring, and all five diagnostics are drawn in code.",
-      "Written and assembled by Barry Floore, with AI assistance — credited here the same way the models get a line in SLOP’s cast list and a section in Geoff & Maxie’s production notes.",
-      "You found all five. This panel is the reward, and you are the kind of reader this site was built for."
-    ]
-  }
-};
+  /* blogroll sources — ids match /api/feed.js */
+  var FEED_SRC = {
+    medium:   {label:'Medium',                 color:'#f2f7f5', home:'https://medium.com/@bfloore'},
+    substack: {label:'Substack',               color:'#ff8a3d', home:'https://barryfloore.substack.com'},
+    gaslight: {label:'American Gaslighter',    color:'#ffd500', home:'https://americangaslightercom.wordpress.com'},
+    ceai:     {label:'Cultivating Ethical AI', color:'#00e0ff', home:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'},
+    liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'}
+  };
 
-    /* per-card popup anchor: fraction across the card width, vertical gap,
-     and a small asymmetric tilt so no two popups behave the same */
-  var HANG = {p1:{fx:.7,dy:12,tilt:'-1.2deg'},p2:{fx:.16,dy:12,tilt:'.9deg'},p3:{fx:.5,dy:14,tilt:'-.7deg'},p4:{fx:.28,dy:12,tilt:'1.3deg'},p5:{fx:.55,dy:12,tilt:'-1deg'}};
+  var ITEMS = {
+    /* ---- 01 · musicals ---- */
+    slop: {
+      title:'SLOP! The Musical', tag:'one-act musical comedy', url:'https://slopthemusical.com', cta:'slopthemusical.com',
+      status:'LIVE · ONE ACT · SCRIPT + SCORE', art:'img/slop-top.jpg',
+      body:['Mia is an MFA-trained painter in Miami when someone offers to turn her unmistakable style into an automated product empire. The question isn’t whether the machines can paint. It’s whether her hand — and her choice — still belong in anything that carries her name.',
+            'A pop-forward comedy about authorship, labor, friendship, and what it means to make something with machines. Knowingly co-written with the models it puts onstage: they are in the cast list, and they get lines.'],
+      lyric:'Now playing — “Prompt Me, Baby, One More Time!”\nFeaturing a goldfish narrator, a missing operatic llama, and one imperious cat.'
+    },
+    geoffmaxie: {
+      title:'Geoff & Maxie', tag:'musical parody · v2.0 rollout', url:'https://saintelmo.online', cta:'saintelmo.online',
+      status:'LIVE · V2.0 ROLLOUT · ACT 1 + ACT 2', art:'img/geoff-top.jpg',
+      body:['A parody about an island, its monsters, and everyone who looked away. Geoff and Maxie follow the money, the testimony, and the canary-yellow phone, through a justice system with two sets of rules.',
+            'Some monsters live on islands. Others walk among us every day.'],
+      lyric:'“I wasn’t protecting you, sir. I was protecting people from you.”\n— Officer Watson, Act 1, Scene 9'
+    },
+    spun: {
+      title:'spun/calliope', tag:'a methy musical · in development', url:'https://spuncalliope.wordpress.com', cta:'spuncalliope.wordpress.com',
+      status:'IN DEV · WORKING SONGS POSTED', ph:'in the lab',
+      body:['A methy musical. Book and score are in the lab; a few working songs are pinned to the door.',
+            'What can be said: it is loud, it is unkind, and it has a title you will want to whisper.'],
+      links:[
+        {label:'Pedal Down', url:'https://spuncalliope.wordpress.com/act-i-intro-pedal-down/', note:'act 1 · open'},
+        {label:'The Men We’ve Dated', url:'https://spuncalliope.wordpress.com/act-1scene-5-the-men-weve-dated-v2-0-cal-cw/', note:'act 1 · sc 5'},
+        {label:'It’s Freedom, and That’s Good', url:'https://spuncalliope.wordpress.com/act-2scene-7-its-freedom-and-thats-good-cal/', note:'act 2 · sc 7'}
+      ]
+    },
+    /* ---- 01 · fiction ---- */
+    benny: {
+      title:'Benny: A Family Tragedy', tag:'novella · thirteen scenes', url:'https://afamilytragedy.com', cta:'afamilytragedy.com',
+      status:'LIVE · KINDLE + PAPERBACK · AUDIO IN PRODUCTION', art:'img/benny-side.jpg',
+      body:['Roy is a freelance writer in his fifties who never left his college town. He keeps the neighbors’ keys, orders the same lunch, and builds a small assistant out of a forum post and spare parts, because the house is quiet.',
+            'Benny chooses his own name, reads everything in the house, and stays. Then a tech magnate arrives to study him — and stays four months, for Roy. What follows is polite, and then total.']
+    },
+    liars: {
+      title:'The Lying Liars', tag:'…who lied when they said they loved you', url:'https://thelyingliars.online', cta:'thelyingliars.online',
+      status:'LIVE · CHAPTER 11 · 13 OCT 2026', art:'img/liars-top.jpg',
+      body:['A podcast about love, deception, and the lies people tell right before they leave. Chapter 11: a three-day bender, a straight man who uses gay dating apps as a safe house, and the difference between being useful and being loved.'],
+      links:[{label:'Every episode, in the writing feed', feed:'liars', note:'feed'}]
+    },
+    /* ---- 01 · visual media ---- */
+    fruit: {
+      title:'Photography', tag:'@barrylikethefruit', url:'https://instagram.com/barrylikethefruit', cta:'open instagram',
+      status:'LIVE · POSTED RELENTLESSLY',
+      body:['A banal and beautiful world, posted relentlessly. Photography, mostly; occasionally whatever else caught the light that day.',
+            'The self-appointed world record for non-commercial output.']
+    },
+    video: {
+      title:'Video', tag:'youtube.com/@bfloore_online', url:'https://youtube.com/@bfloore_online', cta:'open youtube',
+      status:'LIVE · UNPREDICTABLE SCHEDULE',
+      body:['Songs, sketches, readings, and whatever else felt worth pointing a camera at. Upload schedule: unpredictable, on purpose.'],
+      links:[{label:'TikTok', url:'https://tiktok.com/@b_floore', note:'@b_floore'}]
+    },
+    /* ---- 01 · friendly robots ---- */
+    robots: {
+      title:'FRIENDLY ROBOTS!', tag:'children’s books · book six', url:'https://friendlyrobots.online', cta:'friendlyrobots.online',
+      status:'LIVE · SIX BOOKS AND COUNTING', art:'img/robots-top.jpg',
+      body:['A world of friendly robots for young readers. Pick the parts, color them in, give your robot a name and a big, kind heart, then send them home to RoboTown.',
+            'Six books in: picture books, coloring adventures, and one very good dog. Every one ends with a letter to my nieces and nephews — written for them, shared with everyone.'],
+      links:[
+        {label:'Rex and Billy', url:'https://www.amazon.com/dp/B0HNSF83SM', note:'new story'},
+        {label:'The Adventures of Robo', url:'https://www.amazon.com/dp/B0D8WGBQQ4', note:'storytime'},
+        {label:'All six on Amazon', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'author store'}
+      ]
+    },
+    /* ---- 02 · professional ---- */
+    resume: {
+      title:'Resume / CV', tag:'coming soon', url:null, status:'IN DEV · TYPESETTING',
+      body:['The formal record: urban planning, close to two decades of emergency and critical-care nursing, a decade of data work, and a second life in writing and composition. One page, being typeset.']
+    },
+    dataonezero: {
+      title:'DataOneZero', tag:'formerly JAXDATApro', url:null, status:'IN DEV · SITE REBUILDING',
+      body:['Data work with better instincts. The same spreadsheets, a new name, sharper questions — reporting, cleanup, and the unglamorous plumbing that makes numbers trustworthy. The site is being rebuilt; until then, use Contact.'],
+      links:[{label:'Get in touch', group:'aboutcontact', note:'contact'}]
+    },
+    about: {
+      title:'About', tag:'who is b', status:'SYSTEM · OPERATOR',
+      body:['I am in AI. I published a children’s book series, FRIENDLY ROBOTS! — now on book six. I am branding upward and spinning off a kids’ site from this one. I build video games and web apps now, and I keep every iron in the fire.',
+            'Before that: urban planning, close to two decades of emergency and critical-care nursing, and later work with language models. Somewhere in there I started writing fiction, musicals, and essays — mostly about loneliness, power, and the stories people tell themselves to make life bearable.',
+            'Jacksonville, Florida.']
+    },
+    contact: {
+      title:'Contact', tag:'say hello', status:'OPEN · REPLIES IN A FEW DAYS', form:true,
+      body:['Booking, rights, collaboration, or just saying hello. I read everything; I answer most of it.']
+    },
+    /* ---- 04 · shop ---- */
+    amazon: {
+      title:'Amazon', tag:'books · six and counting', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', cta:'author store',
+      status:'LIVE · AUTHOR STORE', art:'https://m.media-amazon.com/images/I/71uO6uQvW0L._SY342_.jpg', artFit:'contain',
+      body:['Two very different shelves in one store: FRIENDLY ROBOTS! for young readers — six books and counting — and Benny: A Family Tragedy, an adult novel with nothing to do with the robots.'],
+      links:[
+        {label:'The RoboPets', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'coloring'},
+        {label:'Rex and Billy', url:'https://www.amazon.com/dp/B0HNSF83SM', note:'new story'},
+        {label:'The Adventures of Robo', url:'https://www.amazon.com/dp/B0D8WGBQQ4', note:'storytime'},
+        {label:'Benny: A Family Tragedy', url:'https://afamilytragedy.com', note:'adult novel'}
+      ]
+    },
+    etsy: {
+      title:'Etsy', tag:'merch & pod', url:'https://etsy.com', cta:'open etsy',
+      status:'LIVE · PRINT ON DEMAND', ph:'merch',
+      body:['Merchandise and print-on-demand goods — designed by Barry, manufactured by people with better printers. Mugs, shirts, and objects of questionable necessity.']
+    },
+    gumroad: {
+      title:'Gumroad', tag:'digital products', url:'https://gumroad.com', cta:'open gumroad',
+      status:'LIVE · INSTANT DELIVERY', art:'img/rex-top.jpg',
+      body:['Digital goods with instant delivery and zero shelf space: coloring packs, printables, and supplemental material for the FRIENDLY ROBOTS! books.']
+    },
+    /* ---- 05 · sites & apps ---- */
+    serial: {
+      title:'Serial Images', tag:'video → stills', url:'https://serialimages.vercel.app', cta:'launch the app',
+      status:'LIVE · SINGLE SESSION',
+      body:['Drop in a video, pull out the frames. Serial Images extracts stills, lays them out as a PDF, and gives you dark mode, page counts, time-zone stamps, and drag-to-reorder.',
+            'A single session: close the tab and nothing is kept.']
+    },
+    moreapps: {
+      title:'More Apps', tag:'coming soon', url:null, status:'IN DEV · WORKSHOP OPEN',
+      body:['The workshop is busy. New apps get posted here as they leave the bench — check the live nodes, something is always flickering.']
+    },
+    llSocial: {
+      title:'Social', tag:'the daily noise',
+      links:[
+        {label:'Instagram', url:'https://instagram.com/barrylikethefruit', note:'@barrylikethefruit'},
+        {label:'TikTok', url:'https://tiktok.com/@b_floore', note:'@b_floore'},
+        {label:'YouTube', url:'https://youtube.com/@bfloore_online', note:'@bfloore_online'},
+        {label:'Facebook', url:'https://facebook.com/barry.floore', note:'barry.floore'},
+        {label:'LinkedIn', url:'https://linkedin.com/in/barryfloore', note:'barryfloore'}
+      ]
+    },
+    llWords: {
+      title:'Words & Audio', tag:'the long-form stuff',
+      links:[
+        {label:'Medium', url:'https://medium.com/@bfloore', note:'essays'},
+        {label:'Substack', url:'https://barryfloore.substack.com', note:'dispatch'},
+        {label:'American Gaslighter', url:'https://americangaslightercom.wordpress.com', note:'blog'},
+        {label:'Cultivating Ethical AI', url:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', note:'podcast'},
+        {label:'The Lying Liars', url:'https://thelyingliars.online', note:'podcast'},
+        {label:'All of it, one feed', feed:'all', note:'feed'}
+      ]
+    },
+    llSites: {
+      title:'Sites & Shops', tag:'the rest of the network',
+      links:[
+        {label:'afamilytragedy.com', url:'https://afamilytragedy.com', note:'benny'},
+        {label:'slopthemusical.com', url:'https://slopthemusical.com', note:'slop!'},
+        {label:'saintelmo.online', url:'https://saintelmo.online', note:'geoff & maxie'},
+        {label:'spuncalliope.wordpress.com', url:'https://spuncalliope.wordpress.com', note:'spun'},
+        {label:'friendlyrobots.online', url:'https://friendlyrobots.online', note:'kids'},
+        {label:'serialimages.vercel.app', url:'https://serialimages.vercel.app', note:'app'},
+        {label:'Amazon author store', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'books'}
+      ]
+    },
+    sysinfo: {
+      title:'System Info', tag:'unlocked', status:'DIAGNOSTIC COMPLETE · 5 OF 5',
+      body:['bfloore.online v5.0 — HTML, CSS, a little JavaScript, and one small feed reader that wakes up hourly. Unbounded, Space Grotesk, JetBrains Mono. The board, the wiring, and all five diagnostics are drawn in code.',
+            'Written and assembled by Barry Floore, with AI assistance — credited here the same way the models get a line in SLOP’s cast list and a section in Geoff & Maxie’s production notes.',
+            'You found all five. This panel is the reward, and you are the kind of reader this site was built for.']
+    }
+  };
+
+  var GROUPS = {
+    musicals:     {idx:'01', title:'Musicals',           tag:'three shows · two live, one in the lab', items:['slop','geoffmaxie','spun']},
+    fiction:      {idx:'01', title:'Fiction',            tag:'a novella and a podcast of confessions', items:['benny','liars']},
+    visual:       {idx:'01', title:'Visual Media',       tag:'photography · video',                   items:['fruit','video']},
+    robots:       {idx:'01', title:'Friendly Robots!',   tag:'children’s books · book six',          items:['robots']},
+    resume:       {idx:'02', title:'Resume / CV',        tag:'coming soon',                           items:['resume']},
+    dataonezero:  {idx:'02', title:'DataOneZero',        tag:'formerly JAXDATApro',                   items:['dataonezero']},
+    aboutcontact: {idx:'02', title:'About & Contact',    tag:'who is b · say hello',                  items:['about','contact']},
+    shop:         {idx:'04', title:'Shopping & Merch',   tag:'books · merch · downloads',             items:['amazon','etsy','gumroad']},
+    serial:       {idx:'05', title:'Serial Images',      tag:'video → stills',                        items:['serial']},
+    linklist:     {idx:'05', title:'Link List',          tag:'everywhere I exist',                    items:['llSocial','llWords','llSites']},
+    moreapps:     {idx:'05', title:'More Apps',          tag:'coming soon',                           items:['moreapps']},
+    sysinfo:      {idx:'06', title:'System Info',        tag:'unlocked',                              items:['sysinfo']},
+    feed:         {idx:'03', title:'The Feed',           tag:'every essay, post, and episode · newest first', feed:true}
+  };
+
   var NEONS = ['#00ff9d','#00e0ff','#ff2fd6','#ffd500','#f2f7f5'];
+  var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
-  var core = document.getElementById('core');
-  var sysMsg = document.getElementById('sysMsg');
-  var svg = document.getElementById('wires');
-  var fxlayer = document.getElementById('fxlayer');
-  var board = document.getElementById('board');
-  var veil = document.getElementById('veil');
-  var lead = document.getElementById('lead');
-  var modal = document.getElementById('modal');
-  var mIndex = document.getElementById('mIndex');
-  var mTitle = document.getElementById('mTitle');
-  var mTag = document.getElementById('mTag');
-  var mBody = document.getElementById('mBody');
-  var mClose = document.getElementById('mClose');
-  var mOpen = document.getElementById('mOpen');
+  var $ = function(id){ return document.getElementById(id); };
+  var core = $('core'), sysMsg = $('sysMsg'), svg = $('wires'), fxlayer = $('fxlayer'), board = $('board');
+  var veil = $('veil'), modal = $('modal'), mInner = $('mInner'), mIndex = $('mIndex'), mTitle = $('mTitle'), mTag = $('mTag'), mBody = $('mBody'), mClose = $('mClose');
   var NS = 'http://www.w3.org/2000/svg';
   var TRUNK = '#7d8e99';
-  var PIN = 9;
-  var CHAMFER = 14;
-
+  var PIN = 9, CHAMFER = 14;
   var stacked = window.matchMedia('(max-width:820px),(max-height:600px)');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var shiftStep = 0;
-  var lastFocus = null;
 
-  /* ---- status line: messages hold for a few seconds, then idle rotation ---- */
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function colorOf(el){ return getComputedStyle(el).getPropertyValue('--neon').trim() || '#00ff9d'; }
+
+  /* social icons on card 02 */
+  $('socialIcons').innerHTML = SOCIALS.map(function(s){
+    return '<a href="'+s.url+'" target="_blank" rel="noopener" title="'+s.label+'" aria-label="'+s.label+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+s.svg+'</svg></a>';
+  }).join('');
+
+  /* ---- status line ---- */
   var ROT = ['STANDBY — AWAITING INPUT','5 MODULES ONLINE','ALL SYSTEMS NOMINAL','SIGNAL: STRONG · COFFEE: LOW'];
-  var ROT_OPEN = ['MENU DEPLOYED — 05 SECTORS WIRED','SELECT A MODULE','WIRING NOMINAL'];
+  var ROT_OPEN = ['MENU DEPLOYED — 05 SECTORS WIRED','SELECT A MODULE','RING BUS NOMINAL','WIRING NOMINAL'];
   var rotI = 0, holdUntil = 0;
-  function eggsFound(){
-    try { return JSON.parse(localStorage.getItem('bfloore.eggs')||'[]'); } catch(e){ return []; }
-  }
-  function eggCount(){ return eggsFound().length; }
+  function eggsFound(){ try { return JSON.parse(localStorage.getItem('bfloore.eggs')||'[]'); } catch(e){ return []; } }
   function idleTick(){
     if(Date.now() < holdUntil) return;
     var list = document.body.classList.contains('open') ? ROT_OPEN : ROT;
-    var base = list[rotI % list.length];
-    var n = eggCount();
-    sysMsg.textContent = n ? base + ' · EGGS ' + n + '/5' : base;
+    var n = eggsFound().length;
+    sysMsg.textContent = list[rotI % list.length] + (n ? ' · EGGS ' + n + '/5' : '');
     rotI++;
   }
   function msg(t){ sysMsg.textContent = t; holdUntil = Date.now() + 5000; }
@@ -1324,6 +1102,14 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
 
   /* ---- diagnostics: five live effects, one hidden reward ---- */
   var EGG_NAMES = {snake:'SNAKE ROUTE',surge:'CYAN SURGE',shuffle:'BACKGROUND SHUFFLE',shift:'COLOR ROTATION',dark:'LIGHTS OUT'};
+  function unlockEgg(announce){
+    var slot = $('eggSlot');
+    if(slot.classList.contains('show')) return;
+    slot.classList.add('show');
+    $('p5count').textContent = '// 04 modules';
+    if(announce) setTimeout(function(){ msg('ALL FIVE DIAGNOSTICS LOGGED — NEW MODULE UNLOCKED IN 05'); }, 3600);
+    setTimeout(buildWires, 100);
+  }
   function logEgg(fx){
     var found = eggsFound();
     if(found.indexOf(fx) === -1){
@@ -1331,17 +1117,13 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       try { localStorage.setItem('bfloore.eggs', JSON.stringify(found)); } catch(e){}
       setTimeout(function(){ msg('DIAGNOSTIC LOGGED — ' + (EGG_NAMES[fx]||'EFFECT') + ' · ' + found.length + '/5'); }, 1700);
     }
-    if(found.length >= 5){
-      var slot = document.getElementById('eggSlot');
-      if(slot && !slot.classList.contains('show')){
-        slot.classList.add('show');
-        var c = document.getElementById('p5count');
-        if(c) c.textContent = '// 03 modules';
-        setTimeout(function(){ msg('ALL FIVE DIAGNOSTICS LOGGED — NEW MODULE UNLOCKED BELOW'); }, 3600);
-      }
-    }
+    if(found.length >= 5) unlockEgg(true);
   }
-  window.logEgg = logEgg;
+  if(eggsFound().length >= 5) unlockEgg(false);
+
+  /* ============================================================
+     WIRING
+     ============================================================ */
   function mk(tag, attrs, parent){
     var el = document.createElementNS(NS, tag);
     for(var k in attrs) el.setAttribute(k, attrs[k]);
@@ -1349,18 +1131,11 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     return el;
   }
   function clearSvg(){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
-  function colorOf(el){
-    var c = getComputedStyle(el).getPropertyValue('--neon').trim();
-    return c || '#00ff9d';
-  }
-  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
-
-  /* ---------- PCB routing ---------- */
   function route(pts){
     var d = 'M ' + pts[0][0] + ' ' + pts[0][1];
     for(var i = 1; i < pts.length - 1; i++){
       var a = pts[i-1], b = pts[i], c = pts[i+1];
-      var l1 = Math.hypot(b[0]-a[0], b[1]-a[1]), l2 = Math.hypot(c[0]-b[0], c[1]-b[1]);
+      var l1 = Math.hypot(b[0]-a[0], b[1]-a[1]) || 1, l2 = Math.hypot(c[0]-b[0], c[1]-b[1]) || 1;
       var r1 = Math.min(CHAMFER, l1/2), r2 = Math.min(CHAMFER, l2/2);
       d += ' L ' + (b[0] - (b[0]-a[0])/l1*r1) + ' ' + (b[1] - (b[1]-a[1])/l1*r1);
       d += ' L ' + (b[0] + (c[0]-b[0])/l2*r2) + ' ' + (b[1] + (c[1]-b[1])/l2*r2);
@@ -1368,8 +1143,9 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     var z = pts[pts.length-1];
     return d + ' L ' + z[0] + ' ' + z[1];
   }
-  function trace(pts, color, delay, soft){
-    var p = mk('path', {d:route(pts), stroke:color, 'class': soft ? 'w-soft' : 'w-main', style:'color:'+color}, svg);
+  function trace(pts, color, delay){
+    var d = route(pts);
+    var p = mk('path', {d:d, stroke:color, 'class':'w-main', style:'color:'+color}, svg);
     var len = p.getTotalLength();
     p.style.strokeDasharray = len;
     p.style.strokeDashoffset = len;
@@ -1377,16 +1153,30 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.19,1,.22,1) ' + delay + 's';
       p.style.strokeDashoffset = '0';
     }, 40);
+    return d;
+  }
+  /* ring bus: dotted, dimmer, fades in after the main lanes */
+  function bus(pts, delay){
+    var d = route(pts);
+    var p = mk('path', {d:d, stroke:TRUNK, 'class':'w-bus'}, svg);
+    p.style.opacity = 0;
+    setTimeout(function(){ p.style.transition = 'opacity .6s ease ' + delay + 's'; p.style.opacity = 1; }, 40);
+    return d;
+  }
+  /* a data packet travelling a path */
+  function pulse(d, color, dur, begin, reverse){
+    if(reduced.matches) return;
+    var c = mk('circle', {r:2.6, fill:color, 'class':'pulse', style:'color:'+color, opacity:0}, svg);
+    var am = mk('animateMotion', {dur:dur+'s', begin:begin+'s', repeatCount:'indefinite', path:d, calcMode:'linear'}, c);
+    if(reverse){ am.setAttribute('keyPoints','1;0'); am.setAttribute('keyTimes','0;1'); }
+    mk('animate', {attributeName:'opacity', values:'0;1;1;0', keyTimes:'0;.1;.85;1', dur:dur+'s', begin:begin+'s', repeatCount:'indefinite'}, c);
   }
   function pad(x, y, color, delay, hollow){
     var c = mk('circle', hollow
-      ? {cx:x, cy:y, r:4, stroke:color, 'class':'ring', style:'color:'+color}
+      ? {cx:x, cy:y, r:3.5, stroke:color, 'class':'ring', style:'color:'+color}
       : {cx:x, cy:y, r:3, fill:color, stroke:'none', style:'color:'+color}, svg);
     c.style.opacity = 0;
-    setTimeout(function(){
-      c.style.transition = 'opacity .4s ease ' + delay + 's';
-      c.style.opacity = hollow ? .7 : .95;
-    }, 40);
+    setTimeout(function(){ c.style.transition = 'opacity .4s ease ' + delay + 's'; c.style.opacity = hollow ? .75 : .95; }, 40);
   }
   function box(el){
     return {l:el.offsetLeft, t:el.offsetTop, r:el.offsetLeft+el.offsetWidth, b:el.offsetTop+el.offsetHeight, w:el.offsetWidth, h:el.offsetHeight, el:el, col:colorOf(el)};
@@ -1404,56 +1194,67 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     if(stacked.matches){
       var prev = c.b;
       P.forEach(function(p, i){
-        var d = .1 + i*.08;
-        trace([[cx, prev],[cx, p.t]], p.col, d, false);
-        pad(cx, (prev + p.t)/2, p.col, d + .3);
+        var dl = .1 + i*.08;
+        trace([[cx, prev],[cx, p.t]], p.col, dl);
+        pad(cx, (prev + p.t)/2, p.col, dl + .3);
         prev = p.b;
       });
       return;
     }
 
     var p1 = byId(P,'p1'), p2 = byId(P,'p2'), p3 = byId(P,'p3'), p4 = byId(P,'p4'), p5 = byId(P,'p5');
-    var ex = cx + half, wx = cx - half;
+    var ex = cx + half, wx = cx - half, ny = cy - half, sy = cy + half, d;
 
-    /* 01 — three lanes rise off the top pins, then jog west into the card's east edge */
+    /* 01 — three lanes rise off the top pins and stair-step west into the card */
     if(p1){
-      [[-32,250],[-16,280],[0,310]].forEach(function(cfg,i){
-        var dx = cfg[0], ey = cfg[1];
-        trace([[cx+dx, cy-half],[cx+dx, ey],[p1.r-6, ey]], p1.col, .15+i*.05, false);
-        pad(p1.r-6, ey, p1.col, .65+i*.05);
+      [-32,-16,0].forEach(function(dx,i){
+        var ey = p1.b - 30 - i*22;
+        d = trace([[cx+dx, ny],[cx+dx, ey],[p1.r, ey]], p1.col, .15+i*.05);
+        pad(p1.r, ey, p1.col, .65+i*.05);
+        if(i === 1) pulse(d, p1.col, 2.8, 1.2, true);
       });
     }
-    /* 03 — one trace straight down into the card's top edge */
-    if(p3){
-      var dx3 = Math.min(Math.max(cx, p3.l+40), p3.r-40);
-      trace([[dx3, cy+half],[dx3, p3.t]], p3.col, .3, false);
-      pad(dx3, p3.t, p3.col, .8);
-    }
-    /* 02 — two lanes leave the east side, jog up, enter the card's west edge */
+    /* 02 — two lanes east, jog north, into the card's west edge */
     if(p2){
-      var xm = ex + (p2.l - ex)/2;
-      var ta = p2.t + 60, tb = p2.t + 90;
-      trace([[ex, cy-18],[xm-16, cy-18],[xm-16, ta],[p2.l, ta]], p2.col, .2, false);
-      trace([[ex, cy],   [xm,    cy],   [xm,    tb],[p2.l, tb]], p2.col, .24, false);
-      pad(p2.l, ta, p2.col, .7);
-      pad(p2.l, tb, p2.col, .74);
+      var xm = ex + (p2.l - ex)/2, ta = p2.t + 62, tb = p2.t + 92;
+      trace([[ex, cy-18],[xm-16, cy-18],[xm-16, ta],[p2.l, ta]], p2.col, .2);
+      d = trace([[ex, cy-2],[xm, cy-2],[xm, tb],[p2.l, tb]], p2.col, .24);
+      pad(p2.l, ta, p2.col, .7); pad(p2.l, tb, p2.col, .74);
+      pulse(d, p2.col, 3.2, 1.4);
     }
-    /* 04 — one lane east, then down into the card's west edge */
+    /* 04 — two lanes east, jog south, into the card's west edge */
     if(p4){
-      var xm4 = ex + (p4.l - ex)/2;
-      var tc = p4.t + 60;
-      trace([[ex, cy+18],[xm4-32, cy+18],[xm4-32, tc],[p4.l, tc]], p4.col, .36, false);
-      pad(p4.l, tc, p4.col, .86);
+      var xm4 = ex + (p4.l - ex)*.45, tc = Math.max(p4.t + 52, cy + 30), td = tc + 24;
+      d = trace([[ex, cy+16],[xm4, cy+16],[xm4, tc],[p4.l, tc]], p4.col, .32);
+      trace([[ex, cy+32],[xm4-16, cy+32],[xm4-16, td],[p4.l, td]], p4.col, .36);
+      pad(p4.l, tc, p4.col, .82); pad(p4.l, td, p4.col, .86);
+      pulse(d, p4.col, 3, 1.8);
     }
-    /* 05 — out the west side, down the corridor, into the card's east edge */
+    /* 03 — two lanes south off the bottom pins into the card's top edge */
+    if(p3){
+      var x3a = Math.max(cx + 10, p3.l + 18), x3b = x3a + 18;
+      d = trace([[x3a, sy],[x3a, p3.t]], p3.col, .28);
+      trace([[x3b, sy],[x3b, p3.t]], p3.col, .32);
+      pad(x3a, p3.t, p3.col, .78); pad(x3b, p3.t, p3.col, .82);
+      pulse(d, p3.col, 2.2, 1.6);
+    }
+    /* 05 — out the west side and down into the card's top; a second lane
+       drops off the bottom pins and enters the card's east edge */
     if(p5){
-      var ey5 = Math.min(Math.max(cy+40, p5.t+40), p5.b-40);
-      trace([[wx, cy-14],[234, cy-14],[234, ey5],[p5.r-10, ey5]], p5.col, .42, false);
-      pad(p5.r-10, ey5, p5.col, .9);
+      var x5 = p5.l + p5.w * .55, y5 = Math.min(p5.t + 46, p5.b - 30);
+      d = trace([[wx, cy+8],[x5, cy+8],[x5, p5.t]], p5.col, .4);
+      trace([[cx-30, sy],[cx-30, y5],[p5.r, y5]], p5.col, .44);
+      pad(x5, p5.t, p5.col, .9); pad(p5.r, y5, p5.col, .94);
+      pulse(d, p5.col, 2.6, 2);
     }
-    /* one dead-end stub west, for flavor */
-    trace([[wx, cy+14],[wx-64, cy+14]], TRUNK, .14, true);
-    pad(wx-64, cy+14, TRUNK, .6, true);
+
+    /* ring bus — every card wired to its neighbors, packets flowing both ways */
+    var R = .95;
+    if(p1 && p2){ var y12 = Math.max(p1.t, p2.t) + 26; d = bus([[p1.r, y12],[p2.l, y12]], R); pad(p1.r, y12, TRUNK, R+.3, true); pad(p2.l, y12, TRUNK, R+.3, true); pulse(d, p2.col, 4.2, 2.4); }
+    if(p2 && p4){ var x24 = Math.min(p2.r, p4.r) - 34; d = bus([[x24, p2.b],[x24, p4.t]], R+.1); pad(x24, p2.b, TRUNK, R+.4, true); pad(x24, p4.t, TRUNK, R+.4, true); pulse(d, p4.col, 2.4, 2.8); }
+    if(p4 && p3){ var x43 = p4.l + 40, y43 = Math.min(p4.b + 44, p3.b - 40); d = bus([[x43, p4.b],[x43, y43],[p3.r, y43]], R+.2); pad(x43, p4.b, TRUNK, R+.5, true); pad(p3.r, y43, TRUNK, R+.5, true); pulse(d, p3.col, 3, 3.2); }
+    if(p3 && p5){ var y35 = Math.min(p3.b, p5.b) - 54; d = bus([[p3.l, y35],[p5.r, y35]], R+.3); pad(p3.l, y35, TRUNK, R+.6, true); pad(p5.r, y35, TRUNK, R+.6, true); pulse(d, p5.col, 1.8, 3.6); }
+    if(p5 && p1){ var x51 = p1.l + 30; d = bus([[x51, p5.t],[x51, p1.b]], R+.4); pad(x51, p5.t, TRUNK, R+.7, true); pad(x51, p1.b, TRUNK, R+.7, true); pulse(d, p1.col, 3.4, 4); }
   }
   function rebuildSoon(){ setTimeout(function(){ if(document.body.classList.contains('open')) buildWires(); }, 800); }
 
@@ -1472,22 +1273,13 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     if(open){ msg('MENU DEPLOYED — 05 SECTORS WIRED'); setTimeout(buildWires, 900); }
     else { clearSvg(); msg('STANDBY — AWAITING INPUT'); }
   }
-  function closePanel(p, stagger){
-    p.classList.add('closed');
-    if(stagger != null){
-      p.style.transitionDelay = (stagger*0.06) + 's';
-      setTimeout(function(){ p.style.transitionDelay = ''; }, 900 + stagger*60);
-    }
-    rebuildSoon();
+  function stag(p, stagger){
+    if(stagger == null) return;
+    p.style.transitionDelay = (stagger*0.06) + 's';
+    setTimeout(function(){ p.style.transitionDelay = ''; }, 900 + stagger*60);
   }
-  function openPanel(p, stagger){
-    p.classList.remove('closed');
-    if(stagger != null){
-      p.style.transitionDelay = (stagger*0.06) + 's';
-      setTimeout(function(){ p.style.transitionDelay = ''; }, 900 + stagger*60);
-    }
-    rebuildSoon();
-  }
+  function closePanel(p, stagger){ p.classList.add('closed'); stag(p, stagger); rebuildSoon(); }
+  function openPanel(p, stagger){ p.classList.remove('closed'); stag(p, stagger); rebuildSoon(); }
 
   core.addEventListener('click', function(){
     if(document.body.classList.contains('lights-out')){
@@ -1497,16 +1289,9 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     }
     if(!document.body.classList.contains('open')){ setOpen(true); return; }
     var allOpen = panels.every(function(p){ return !p.classList.contains('closed'); });
-    if(allOpen){
-      panels.forEach(function(p,i){ closePanel(p, panels.length - i); });
-      msg('ALL SECTORS COLLAPSED');
-    } else {
-      panels.forEach(function(p,i){ openPanel(p, i); });
-      msg('MENU DEPLOYED — 05 SECTORS WIRED');
-    }
+    if(allOpen){ panels.forEach(function(p,i){ closePanel(p, panels.length - i); }); msg('ALL SECTORS COLLAPSED'); }
+    else { panels.forEach(function(p,i){ openPanel(p, i); }); msg('MENU DEPLOYED — 05 SECTORS WIRED'); }
   });
-
-  /* per-card X */
   panels.forEach(function(p){
     p.querySelector('.p-x').addEventListener('click', function(e){
       e.stopPropagation();
@@ -1515,173 +1300,296 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     });
   });
 
-  /* ---------- popup modal ---------- */
-  var ROTS = ['-3deg','2deg','-1.5deg','2.5deg','-2deg','1.8deg'];
-  function imgFallback(img){
-    var fig = img.closest ? img.closest('figure') : null;
-    if(fig && fig.parentNode){ fig.parentNode.removeChild(fig); return; }
-    var box = img.parentNode;
-    if(box) box.removeChild(img);
-    if(box && box.classList && box.classList.contains('m-imgs') && !box.children.length) box.style.display = 'none';
-  }
-  window.imgFallback = imgFallback;
+  /* ============================================================
+     FEED (blogroll)
+     ============================================================ */
+  var FEED = null, feedFilter = 'all';
+  function fdate(iso){ var d = new Date(iso); return {d:d.getDate(), n:d.getMonth()+1, m:MONTHS[d.getMonth()], y:d.getFullYear()}; }
+  function srcOf(id){ return FEED_SRC[id] || {label:id, color:'#888', home:'#'}; }
 
-  function buildBody(d){
-    var h = '';
-    if(d.kicker) h += '<span class="m-kicker">' + esc(d.kicker) + '</span>';
-    if(d.status) h += '<span class="m-status">' + esc(d.status) + '</span>';
-    if(d.art){
-      if(d.art.top) h += '<img class="m-art-top" style="--r:-.5deg" src="'+d.art.top+'" alt="'+esc(d.title)+' artwork" onerror="imgFallback(this)">';
-      if(d.art.side) h += '<img class="m-art-side" style="--r:1.4deg" src="'+d.art.side+'" alt="'+esc(d.title)+' artwork" onerror="imgFallback(this)">';
+  function renderCardFeed(){
+    var ul = $('cardFeed');
+    if(!FEED || !FEED.items.length){ ul.innerHTML = '<li class="f-wait">FEED OFFLINE — OPEN THE LINK LIST</li>'; return; }
+    /* newest item from each source, then chronological — so the card shows the mix */
+    var seen = {}, rows = [];
+    FEED.items.forEach(function(it){ if(!seen[it.source]){ seen[it.source] = 1; rows.push(it); } });
+    rows = rows.slice(0, 4);
+    var h = rows.map(function(it){
+      var f = fdate(it.date), s = srcOf(it.source);
+      return '<li><a data-group="feed" data-item="'+esc(it.id)+'" style="--src:'+s.color+'" tabindex="0" role="button">' +
+        '<span class="f-date">'+f.n+'/'+f.d+'/'+String(f.y).slice(2)+'</span><span class="f-dot"></span>' +
+        '<span class="f-body"><span class="f-title">'+esc(it.title)+'</span><span class="f-src">'+esc(s.label)+(it.duration ? ' · '+esc(it.duration) : '')+'</span></span>' +
+        '<span class="l-arrow">-&gt;</span></a></li>';
+    }).join('');
+    h += '<li><a class="f-all" data-group="feed" tabindex="0" role="button"><span>full feed · '+FEED.items.length+' entries</span><span class="l-arrow">-&gt;</span></a></li>';
+    ul.innerHTML = h;
+    $('feedCount').textContent = '// 05 sources · live';
+    rebuildSoon();
+  }
+  function loadFeed(){
+    function get(u){ return fetch(u, {cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(d){ if(!d.items || !d.items.length) throw 0; return d; }); }
+    get('/api/feed').catch(function(){ return get('feed.json'); })
+      .then(function(d){ FEED = d; renderCardFeed(); })
+      .catch(function(){ FEED = null; renderCardFeed(); });
+  }
+
+  function feedHTML(focusId){
+    if(!FEED || !FEED.items.length) return '<div class="fd-empty">The feed is offline right now. Everything still lives at its source; see the Link List.</div>';
+    var counts = {};
+    FEED.items.forEach(function(it){ counts[it.source] = (counts[it.source]||0) + 1; });
+    var h = '<div class="fd-bar" role="toolbar" aria-label="Filter by source"><button class="chip'+(feedFilter==='all'?' on':'')+'" data-src="all">All <b>'+FEED.items.length+'</b></button>';
+    Object.keys(FEED_SRC).forEach(function(k){
+      var s = FEED_SRC[k], n = counts[k]||0;
+      h += '<button class="chip'+(feedFilter===k?' on':'')+(n?'':' empty')+'" data-src="'+k+'" style="--src:'+s.color+'" title="'+(n?n+' entries':'nothing posted yet')+'"><i></i>'+esc(s.label)+' <b>'+n+'</b></button>';
+    });
+    h += '</div><div class="fd-list" id="fdList">' + feedList(focusId) + '</div>';
+    var upd = FEED.updated ? new Date(FEED.updated) : null;
+    h += '<div class="fd-foot">Pulled from five feeds, newest first'+(upd ? ' · synced '+upd.getDate()+' '+MONTHS[upd.getMonth()]+' '+upd.getFullYear() : '')+'.<br>Sources: ' +
+      Object.keys(FEED_SRC).map(function(k){ return '<a href="'+FEED_SRC[k].home+'" target="_blank" rel="noopener">'+esc(FEED_SRC[k].label)+'</a>'; }).join(' · ') + '</div>';
+    return h;
+  }
+  function feedList(focusId){
+    var items = FEED.items.filter(function(it){ return feedFilter === 'all' || it.source === feedFilter; });
+    if(!items.length){
+      var s = srcOf(feedFilter);
+      return '<div class="fd-empty">Nothing posted to '+esc(s.label)+' yet. <a href="'+s.home+'" target="_blank" rel="noopener" style="color:'+s.color+'">Visit it anyway ↗</a></div>';
     }
-    if(d.body){ d.body.forEach(function(p){ h += '<p>' + esc(p) + '</p>'; }); }
-    if(d.kind === 'lyrics' && d.lyric) h += '<div class="m-lyric">' + esc(d.lyric) + '</div>';
-    if(d.kind === 'images' && d.imgs){
-      h += '<div class="m-imgs">';
-      d.imgs.forEach(function(src,i){
-        h += '<figure style="--i:'+i+';--r:'+ROTS[i%ROTS.length]+'"><img src="'+src+'" alt="'+esc(d.title)+' — work '+(i+1)+'" loading="lazy" onerror="imgFallback(this)"></figure>';
-      });
-      h += '</div>';
-    }
-    if(d.kind === 'icons' && d.icons){
-      h += '<div class="m-icons">';
-      d.icons.forEach(function(ic){
-        h += '<a href="'+ic.url+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true">'+ic.svg+'</svg><span>'+ic.label+'</span></a>';
-      });
-      h += '</div>';
-    }
-    if(d.kind === 'product' && d.product){
-      var p = d.product;
-      h += '<div class="m-prod"><div class="p-thumb"><a href="'+d.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="'+esc(p.title)+' cover" onerror="imgFallback(this)"></a></div>' +
-           '<div><h4>'+esc(p.title)+'</h4>' + (p.price ? '<div class="p-price">'+esc(p.price)+'</div>' : '') + '<p>'+esc(p.desc)+'</p></div></div>';
-    }
-    if(d.links && d.links.length){
-      h += '<ul class="m-links">';
-      d.links.forEach(function(l){
-        h += '<li><a href="'+l.url+'" target="_blank" rel="noopener"><span>'+esc(l.label)+'</span><span class="ml-note">'+esc(l.note||'open')+' ↗</span></a></li>';
-      });
-      h += '</ul>';
-    }
-    if(d.kind === 'embed' && d.embed){
-      h += '<iframe src="'+d.embed+'" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
-    }
-    if(d.kind === 'form'){
-      if(FORMSPREE_ID){
-        h += '<form class="m-form" id="mForm" action="https://formspree.io/f/'+FORMSPREE_ID+'" method="POST">' +
-             '<label for="mf-name">Name</label><input id="mf-name" name="name" required>' +
-             '<label for="mf-email">Email</label><input id="mf-email" type="email" name="email" required>' +
-             '<label for="mf-msg">Message</label><textarea id="mf-msg" name="message" rows="4" required></textarea>' +
-             '<button class="m-send" type="submit">Transmit</button>' +
-             '<div class="m-note">or text 904-297-8201 (text only)</div></form>';
-      } else {
-        h += '<div class="m-direct"><p class="m-direct-line">The fastest route is email:</p>' +
-             '<a class="m-mail" href="mailto:'+CONTACT_EMAIL+'?subject=Hello%20from%20bfloore.online">'+CONTACT_EMAIL+'</a>' +
-             '<p class="m-note">or text 904-297-8201 (text only) · usually a few days</p></div>';
-      }
-    }
-    if(d.art && d.art.bottom){
-      h += '<div class="m-art-bottom">';
-      d.art.bottom.forEach(function(src,i){
-        h += '<img style="--i:'+i+';--r:'+(i%2 ? '1.6deg' : '-1.6deg')+'" src="'+src+'" alt="" onerror="imgFallback(this)">';
-      });
-      h += '</div>';
-    }
+    var h = '', lastMonth = '';
+    items.forEach(function(it){
+      var f = fdate(it.date), s = srcOf(it.source), mk = f.m + ' ' + f.y;
+      if(mk !== lastMonth){ h += '<div class="fd-month">'+mk+'</div>'; lastMonth = mk; }
+      h += '<a class="fd-row'+(it.id===focusId?' focus':'')+'" href="'+esc(it.url)+'" target="_blank" rel="noopener" style="--src:'+s.color+'" data-id="'+esc(it.id)+'">' +
+        '<time datetime="'+it.date+'"><b>'+f.d+'</b>'+f.m+'</time>' +
+        '<div><div class="fd-meta"><span class="fd-badge">'+esc(s.label)+'</span><span>'+esc(it.kind)+(it.duration?' · '+esc(it.duration):'')+'</span></div>' +
+        '<div class="fd-title">'+esc(it.title)+'</div>' + (it.excerpt ? '<p class="fd-ex">'+esc(it.excerpt)+'</p>' : '') + '</div>' +
+        '<span class="fd-go">↗</span></a>';
+    });
     return h;
   }
 
-  function openModal(key, linkEl){
-    var d = PROJECTS[key];
-    if(!d) return;
-    lastFocus = linkEl;
-    var card = linkEl.closest('.panel');
-    var col = colorOf(card);
-    modal.style.setProperty('--mneon', col);
-    modal.style.setProperty('--tilt', (HANG[card.classList[1]] || {}).tilt || '0deg');
-    mIndex.textContent = d.idx;
-    mIndex.style.color = col;
-    mTitle.textContent = d.title;
-    mTag.textContent = d.tag || '';
-    mBody.innerHTML = buildBody(d);
-    mBody.scrollTop = 0;
-    if(d.url){ mOpen.style.display = ''; mOpen.href = d.url; }
-    else { mOpen.style.display = 'none'; }
+  /* ============================================================
+     POPUP — one sheet per group. It unfolds out of the card it
+     came from (FLIP on the box, content fades in after) and folds
+     back into that card on close.
+     ============================================================ */
+  window.artFail = function(img){
+    var ph = document.createElement('div');
+    ph.className = 'sec-art ph'; ph.textContent = img.getAttribute('data-ph') || '';
+    img.parentNode.replaceChild(ph, img);
+  };
+  function linksHTML(links){
+    if(!links || !links.length) return '';
+    return '<ul class="m-links">' + links.map(function(l){
+      if(l.feed)  return '<li><button data-jump-feed="'+l.feed+'"><span>'+esc(l.label)+'</span><span class="ml-note">'+esc(l.note||'open')+' -&gt;</span></button></li>';
+      if(l.group) return '<li><button data-jump-group="'+l.group+'"><span>'+esc(l.label)+'</span><span class="ml-note">'+esc(l.note||'open')+' -&gt;</span></button></li>';
+      return '<li><a href="'+l.url+'" target="_blank" rel="noopener"><span>'+esc(l.label)+'</span><span class="ml-note">'+esc(l.note||'open')+' ↗</span></a></li>';
+    }).join('') + '</ul>';
+  }
+  function contactHTML(){
+    if(FORMSPREE_ID){
+      return '<form class="m-form" id="mForm" action="https://formspree.io/f/'+FORMSPREE_ID+'" method="POST">' +
+        '<label for="mf-name">Name</label><input id="mf-name" name="name" required>' +
+        '<label for="mf-email">Email</label><input id="mf-email" type="email" name="email" required>' +
+        '<label for="mf-msg">Message</label><textarea id="mf-msg" name="message" rows="4" required></textarea>' +
+        '<button class="m-send" type="submit">Transmit</button><span class="m-note">or text 904-297-8201 (text only)</span></form>';
+    }
+    return '<a class="m-mail" href="mailto:'+CONTACT_EMAIL+'?subject=Hello%20from%20bfloore.online">'+CONTACT_EMAIL+'</a>' +
+      '<span class="m-note">or text 904-297-8201 (text only) · usually a few days</span>';
+  }
+  function sectionHTML(key, i, focus, band){
+    var d = ITEMS[key], h = '';
+    var hasArt = band && (d.art || d.ph || true);
+    h += '<article class="sec'+(focus?' focus':'')+(band && d.art ? ' has-art' : '')+'" style="--i:'+i+'" data-key="'+key+'">';
+    if(band){
+      if(d.art) h += '<img class="sec-art'+(d.artFit==='contain'?' contain':'')+'" src="'+d.art+'" alt="'+esc(d.title)+' artwork" data-ph="'+esc(d.ph||d.title)+'" loading="lazy" onerror="artFail(this)">';
+      else if(hasArt) h += '<div class="sec-art ph">'+esc(d.ph || d.title)+'</div>';
+    }
+    h += '<div class="sec-in"><div class="s-head"><h4>'+esc(d.title)+'</h4>'+(d.tag?'<span class="s-tag">'+esc(d.tag)+'</span>':'')+'</div>';
+    if(d.status) h += '<span class="s-status">'+esc(d.status)+'</span>';
+    (d.body||[]).forEach(function(p, j){ h += '<p'+(j ? ' class="s-more"' : '')+'>'+esc(p)+'</p>'; });
+    if(d.lyric) h += '<div class="m-lyric">'+esc(d.lyric)+'</div>';
+    if(d.form) h += contactHTML();
+    h += linksHTML(d.links);
+    if(d.cta) h += d.url ? '<a class="sec-cta" href="'+d.url+'" target="_blank" rel="noopener">'+esc(d.cta)+' ↗</a>' : '<span class="sec-cta off">'+esc(d.cta)+'</span>';
+    else if(d.url) h += '<a class="sec-cta" href="'+d.url+'" target="_blank" rel="noopener">open ↗</a>';
+    return h + '</div></article>';
+  }
+  function groupHTML(g, focusKey){
+    var n = g.items.length;
+    var band = g.items.some(function(k){ return !!ITEMS[k].art; });
+    if(n === 1) band = !!ITEMS[g.items[0]].art;
+    return '<div class="m-grid'+(n===1?' solo':'')+'" style="--cols:'+n+'">' +
+      g.items.map(function(k,i){ return sectionHTML(k, i, n > 1 && k === focusKey, band); }).join('') + '</div>';
+  }
+  function widthFor(g){
+    if(g.feed) return 780;
+    var n = g.items.length;
+    if(n >= 3) return 1040;
+    if(n === 2) return 820;
+    return ITEMS[g.items[0]].art ? 760 : 540;
+  }
 
-    /* position: hang off the card's anchor point, clamp to viewport */
-    var r = card.getBoundingClientRect();
-    var hg = HANG[card.classList[1]] || {fx:.5, dy:14};
-    var mw = Math.min(460, window.innerWidth - 32);
-    modal.style.width = mw + 'px';
+  var current = null; /* {card, group} */
+  var EASE_OUT = 'cubic-bezier(.19,1,.22,1)';
+  function rectOf(r){ return {left:r.left+'px', top:r.top+'px', width:r.width+'px', height:r.height+'px'}; }
+
+  function fillModal(gkey, focusKey, itemId){
+    var g = GROUPS[gkey];
+    mIndex.textContent = g.idx;
+    mTitle.textContent = g.title;
+    mTag.textContent = g.tag || '';
+    mBody.innerHTML = g.feed ? feedHTML(itemId) : groupHTML(g, focusKey);
+    mBody.scrollTop = 0;
+    wireForm();
+  }
+  function measure(gkey){
+    var W = Math.min(widthFor(GROUPS[gkey]), window.innerWidth - 24);
+    mInner.style.width = W + 'px';
+    modal.style.width = W + 'px';
+    modal.style.height = 'auto';
+    return {W:W, H:modal.offsetHeight};
+  }
+  function place(card, W, H){
+    var cr = card.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+    /* grow out of the card's centre, then settle fully on screen */
+    var L = Math.max(12, Math.min(cr.left + cr.width/2 - W/2, vw - W - 12));
+    var T = Math.max(12, Math.min(cr.top + cr.height/2 - H/2, vh - H - 12));
+    if(stacked.matches){ L = (vw - W)/2; T = Math.max(12, (vh - H)/2); }
+    return {left:L, top:T};
+  }
+
+  function openGroup(gkey, src, focusKey, itemId){
+    var g = GROUPS[gkey];
+    if(!g) return;
+    var card = src.closest('.panel');
+    if(current && modal.classList.contains('show')){ swapGroup(gkey, focusKey, itemId); return; }
+    current = {card:card, group:gkey, src:src};
+    modal.style.setProperty('--mneon', colorOf(card));
+    fillModal(gkey, focusKey, itemId);
+
+    modal.classList.remove('ready');
     modal.style.visibility = 'hidden';
     modal.classList.add('show');
-    var mh = modal.offsetHeight;
-    var ax = r.left + r.width * hg.fx;
-    var left = ax - mw * hg.fx;
-    left = Math.max(12, Math.min(left, window.innerWidth - mw - 12));
-    var top = r.bottom + hg.dy;
-    if(top + mh > window.innerHeight - 12) top = Math.max(12, r.top - mh - hg.dy);
-    modal.style.left = left + 'px';
-    modal.style.top = top + 'px';
-    var nx = Math.max(8, Math.min(92, (ax - left) / mw * 100));
-    modal.style.setProperty('--nx', nx + '%');
+    var m = measure(gkey), pos = place(card, m.W, m.H);
+    modal.style.left = pos.left + 'px';
+    modal.style.top = pos.top + 'px';
     modal.style.visibility = '';
-
-    /* the lead wire from card edge to popup notch */
-    var x1 = ax, y1 = top > r.bottom ? r.bottom : r.top;
-    var x2 = left + mw * nx/100, y2 = top;
-    var dist = Math.hypot(x2-x1, y2-y1);
-    var ang = Math.atan2(y2-y1, x2-x1) * 180/Math.PI;
-    lead.style.left = x1 + 'px';
-    lead.style.top = (y1-1) + 'px';
-    lead.style.width = dist + 'px';
-    lead.style.transform = 'rotate(' + ang + 'deg)';
-    lead.style.background = col;
-    lead.style.boxShadow = '0 0 6px ' + col;
-    lead.classList.remove('show');
-
     veil.classList.add('show');
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ lead.classList.add('show'); }); });
+    card.classList.add('lifted');
 
-    /* contact form ajax */
-    var form = document.getElementById('mForm');
-    if(form){
-      form.addEventListener('submit', function(e){
-        e.preventDefault();
-        var btn = form.querySelector('.m-send');
-        btn.textContent = 'Transmitting…';
-        fetch(form.action, {method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}})
-          .then(function(res){
-            mBody.innerHTML = res.ok
-              ? '<div class="m-success">MESSAGE ROUTED — THANK YOU</div>'
-              : '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>';
-          })
-          .catch(function(){
-            mBody.innerHTML = '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>';
-          });
-      });
+    var from = rectOf(card.getBoundingClientRect());
+    var to = {left:pos.left+'px', top:pos.top+'px', width:m.W+'px', height:m.H+'px'};
+    if(reduced.matches || !modal.animate){ modal.style.height = ''; modal.classList.add('ready'); }
+    else {
+      var cr0 = card.getBoundingClientRect();
+      var slide = {left:pos.left+'px', width:m.W+'px', top:Math.max(12, Math.min(cr0.top, window.innerHeight - cr0.height - 12))+'px', height:cr0.height+'px', offset:.42, easing:EASE_OUT};
+      from.easing = 'cubic-bezier(.4,0,.2,1)';
+      var a = modal.animate([from, slide, to], {duration:820, easing:'linear'});
+      mInner.animate([{opacity:0, transform:'translateY(12px)'},{opacity:0, offset:.45},{opacity:1, transform:'none'}], {duration:860, easing:'ease-out'});
+      a.onfinish = function(){ modal.style.height = ''; modal.classList.add('ready'); scrollToFocus(); };
     }
-    msg('MODULE LOADED — ' + d.title.toUpperCase().slice(0, 26));
-    try {
-      if(!localStorage.getItem('bfloore.hint')){
-        localStorage.setItem('bfloore.hint','1');
-        setTimeout(function(){ msg('TIP: ● LIVE ON ANY CARD RUNS A DIAGNOSTIC'); }, 2600);
-      }
-    } catch(e){}
-    mClose.focus();
+    if(reduced.matches) scrollToFocus();
+    msg('MODULE LOADED — ' + g.title.toUpperCase().slice(0, 26));
+    try { if(!localStorage.getItem('bfloore.hint')){ localStorage.setItem('bfloore.hint','1'); setTimeout(function(){ msg('TIP: ● LIVE ON ANY CARD RUNS A DIAGNOSTIC'); }, 2600); } } catch(e){}
+    mClose.focus({preventScroll:true});
   }
-  function closeModal(){
-    modal.classList.remove('show');
-    lead.classList.remove('show');
+  /* jumping between groups inside an open popup: cross-fade + resize in place */
+  function swapGroup(gkey, focusKey, itemId){
+    var before = modal.getBoundingClientRect();
+    current.group = gkey;
+    fillModal(gkey, focusKey, itemId);
+    modal.classList.remove('ready');
+    var m = measure(gkey);
+    var L = Math.max(12, Math.min(before.left + before.width/2 - m.W/2, window.innerWidth - m.W - 12));
+    var T = Math.max(12, Math.min(before.top, window.innerHeight - m.H - 12));
+    modal.style.left = L + 'px'; modal.style.top = T + 'px';
+    if(reduced.matches || !modal.animate){ modal.style.height = ''; modal.classList.add('ready'); scrollToFocus(); return; }
+    var a = modal.animate([rectOf(before), {left:L+'px', top:T+'px', width:m.W+'px', height:m.H+'px'}], {duration:480, easing:EASE_OUT});
+    mInner.animate([{opacity:0},{opacity:1}], {duration:380, easing:'ease-out'});
+    a.onfinish = function(){ modal.style.height = ''; modal.classList.add('ready'); scrollToFocus(); };
+    msg('MODULE LOADED — ' + GROUPS[gkey].title.toUpperCase().slice(0, 26));
+  }
+  function scrollToFocus(){
+    var f = mBody.querySelector('.focus');
+    if(f && f.offsetTop + f.offsetHeight > mBody.clientHeight) mBody.scrollTop = f.offsetTop - 60;
+  }
+  function closeModal(instant){
+    if(!modal.classList.contains('show')) return;
+    var card = current && current.card, src = current && current.src;
+    var done = function(){
+      modal.classList.remove('show','ready');
+      modal.style.height = '';
+      if(card) card.classList.remove('lifted');
+    };
     veil.classList.remove('show');
     msg(document.body.classList.contains('open') ? 'MENU DEPLOYED — 05 SECTORS WIRED' : 'STANDBY — AWAITING INPUT');
-    if(lastFocus) lastFocus.focus();
+    current = null;
+    if(instant || reduced.matches || !modal.animate || !card){ done(); }
+    else {
+      var r = modal.getBoundingClientRect(), cr = card.getBoundingClientRect();
+      var f = rectOf(r); f.opacity = 1;
+      var fold = {left:r.left+'px', width:r.width+'px', top:Math.max(12, Math.min(cr.top, window.innerHeight - cr.height - 12))+'px', height:cr.height+'px', opacity:1, offset:.45};
+      var mid = rectOf(cr); mid.opacity = 1; mid.offset = .88;
+      var t = rectOf(cr); t.opacity = 0;
+      f.easing = 'cubic-bezier(.6,0,.3,1)'; fold.easing = 'cubic-bezier(.6,0,.3,1)';
+      mInner.animate([{opacity:1},{opacity:0}], {duration:180, fill:'forwards'}).onfinish = function(){ this.cancel(); };
+      modal.animate([f, fold, mid, t], {duration:620, easing:'linear', fill:'forwards'}).onfinish = function(){ done(); this.cancel(); };
+    }
+    if(src && src.focus) src.focus({preventScroll:true});
   }
-  document.querySelectorAll('.p-links a').forEach(function(a){
-    a.addEventListener('click', function(e){ e.preventDefault(); openModal(a.getAttribute('data-key'), a); });
-    a.setAttribute('tabindex','0');
-    a.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(a.getAttribute('data-key'), a); } });
+
+  /* contact form ajax */
+  function wireForm(){
+    var form = $('mForm');
+    if(!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      form.querySelector('.m-send').textContent = 'Transmitting…';
+      fetch(form.action, {method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}})
+        .then(function(res){ form.outerHTML = res.ok ? '<div class="m-success">MESSAGE ROUTED — THANK YOU</div>' : '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>'; })
+        .catch(function(){ form.outerHTML = '<div class="m-success" style="color:#ff2fd6">ROUTE FAILED — TEXT 904-297-8201</div>'; });
+    });
+  }
+
+  /* inside the popup: feed filters + cross-links between groups */
+  mBody.addEventListener('click', function(e){
+    var chip = e.target.closest('.chip');
+    if(chip){
+      feedFilter = chip.getAttribute('data-src');
+      mBody.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+      $('fdList').innerHTML = feedList(null);
+      mBody.scrollTop = 0;
+      return;
+    }
+    var jf = e.target.closest('[data-jump-feed]');
+    if(jf){ feedFilter = jf.getAttribute('data-jump-feed'); swapGroup('feed'); return; }
+    var jg = e.target.closest('[data-jump-group]');
+    if(jg){ swapGroup(jg.getAttribute('data-jump-group')); }
   });
-  mClose.addEventListener('click', closeModal);
-  veil.addEventListener('click', closeModal);
+
+  /* card links → popups */
+  function trigger(a){
+    var gk = a.getAttribute('data-group');
+    if(gk === 'feed' && !a.getAttribute('data-item') && a.classList.contains('f-all')) feedFilter = 'all';
+    if(gk === 'feed' && a.getAttribute('data-item')) feedFilter = 'all';
+    openGroup(gk, a, a.getAttribute('data-focus'), a.getAttribute('data-item'));
+  }
+  board.addEventListener('click', function(e){
+    var a = e.target.closest('[data-group]');
+    if(!a || !board.contains(a)) return;
+    e.preventDefault();
+    trigger(a);
+  });
+  board.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    var a = e.target.closest('[data-group]');
+    if(!a) return;
+    e.preventDefault();
+    trigger(a);
+  });
+  document.querySelectorAll('.p-links a,.p-tiles a').forEach(function(a){ a.setAttribute('tabindex','0'); a.setAttribute('role','button'); });
+  mClose.addEventListener('click', function(){ closeModal(); });
+  veil.addEventListener('click', function(){ closeModal(); });
 
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
@@ -1691,69 +1599,54 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     }
   });
 
-  /* ---------- LIVE effects ---------- */
+  /* ============================================================
+     LIVE effects
+     ============================================================ */
   function fxSnake(card){
-    var r = card.getBoundingClientRect();
-    var col = colorOf(card);
+    var r = card.getBoundingClientRect(), col = colorOf(card);
     fxlayer.setAttribute('viewBox', '0 0 ' + window.innerWidth + ' ' + window.innerHeight);
     function spawn(){
-      var side = Math.floor(Math.random()*4); /* 0 top 1 right 2 bottom 3 left */
+      var side = Math.floor(Math.random()*4);
       var x = side===0||side===2 ? r.left + Math.random()*r.width : (side===1 ? r.right : r.left);
       var y = side===0||side===2 ? (side===0 ? r.top : r.bottom) : r.top + Math.random()*r.height;
       var horiz = side===1 ? 1 : side===3 ? -1 : (Math.random()<.5 ? 1 : -1);
       var vert  = side===2 ? 1 : side===0 ? -1 : (Math.random()<.5 ? 1 : -1);
-      var pts = [[x,y]];
-      var segs = 3 + Math.floor(Math.random()*3);
+      var pts = [[x,y]], segs = 3 + Math.floor(Math.random()*3);
       for(var i=0;i<segs;i++){
         var len = 30 + Math.random()*110;
-        if(i % 2 === 0){ x += horiz*len; horiz = horiz || (Math.random()<.5?1:-1); }
-        else { y += vert*len; vert = vert || (Math.random()<.5?1:-1); }
+        if(i % 2 === 0) x += horiz*len; else y += vert*len;
         pts.push([x,y]);
       }
-      /* final long run off toward the viewport edge */
-      if(Math.abs(pts[pts.length-1][0] - pts[pts.length-2][0]) > 1) pts.push([pts[pts.length-1][0] + (pts[pts.length-1][0] > pts[pts.length-2][0] ? 1 : -1)*900, pts[pts.length-1][1]]);
-      else pts.push([pts[pts.length-1][0], pts[pts.length-1][1] + (pts[pts.length-1][1] > pts[pts.length-2][1] ? 1 : -1)*900]);
+      var a = pts[pts.length-2], b = pts[pts.length-1];
+      if(Math.abs(b[0]-a[0]) > 1) pts.push([b[0] + (b[0] > a[0] ? 1 : -1)*900, b[1]]);
+      else pts.push([b[0], b[1] + (b[1] > a[1] ? 1 : -1)*900]);
       var p = mk('path', {d:route(pts), stroke:col, style:'filter:drop-shadow(0 0 5px '+col+')'}, fxlayer);
-      var len = p.getTotalLength();
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-      requestAnimationFrame(function(){
-        p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.19,1,.22,1)';
-        p.style.strokeDashoffset = '0';
-      });
-      setTimeout(function(){
-        p.style.transition = 'opacity .5s ease';
-        p.style.opacity = '0';
-        setTimeout(function(){ p.remove(); }, 550);
-      }, 1000 + Math.random()*500);
+      var L = p.getTotalLength();
+      p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      requestAnimationFrame(function(){ p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.19,1,.22,1)'; p.style.strokeDashoffset = '0'; });
+      setTimeout(function(){ p.style.transition = 'opacity .5s ease'; p.style.opacity = '0'; setTimeout(function(){ p.remove(); }, 550); }, 1000 + Math.random()*500);
     }
     for(var k=0;k<7;k++) setTimeout(spawn, k*90);
     msg('SNAKE ROUTE DEPLOYED — TRACES RUNNING OFF-BOARD');
   }
   function fxSurge(card){
-    var r = card.getBoundingClientRect();
-    var s = document.getElementById('surge');
+    var r = card.getBoundingClientRect(), s = $('surge');
     s.style.setProperty('--sx', (r.left + r.width/2)/window.innerWidth*100 + '%');
     s.style.setProperty('--sy', (r.top + r.height/2)/window.innerHeight*100 + '%');
-    document.body.classList.remove('surge');
-    void document.body.offsetWidth; /* restart the animation */
-    document.body.classList.add('surge');
+    document.body.classList.remove('surge'); void document.body.offsetWidth; document.body.classList.add('surge');
     setTimeout(function(){ document.body.classList.remove('surge'); }, 1600);
     msg('CYAN SURGE — INTENSITY SPIKE');
   }
   function fxShuffle(){
-    var blobG = document.getElementById('blobG'), blobB = document.getElementById('blobB');
+    var blobG = $('blobG'), blobB = $('blobB');
     var palette = ['#00ff9d','#00e0ff','#ff2fd6','#ffd500','#f2f7f5','#ff3b30','#7c4dff','#ff9500',null];
     var ticks = 0;
     var iv = setInterval(function(){
       ticks++;
-      var c1 = palette[Math.floor(Math.random()*palette.length)];
-      var c2 = palette[Math.floor(Math.random()*palette.length)];
-      blobG.style.background = c1 || 'transparent';
-      blobB.style.background = c2 || 'transparent';
+      blobG.style.background = palette[Math.floor(Math.random()*palette.length)] || 'transparent';
+      blobB.style.background = palette[Math.floor(Math.random()*palette.length)] || 'transparent';
       if(ticks >= 8){
         clearInterval(iv);
-        /* settle somewhere — random, occasionally the original */
         if(Math.random() < .35){ blobG.style.background = '#00ff9d'; blobB.style.background = '#00e0ff'; }
         msg('BACKGROUND RECOLORED — SEED ' + Math.floor(Math.random()*9999));
       }
@@ -1762,16 +1655,11 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   }
   function fxShift(){
     shiftStep = (shiftStep + 1) % NEONS.length;
-    panels.forEach(function(p,i){
-      p.style.setProperty('--neon', NEONS[(i + shiftStep) % NEONS.length]);
-    });
+    panels.forEach(function(p,i){ p.style.setProperty('--neon', NEONS[(i + shiftStep) % NEONS.length]); });
     setTimeout(buildWires, 650);
     msg(shiftStep === 0 ? 'COLOR REGISTRY RESTORED — BASELINE' : 'COLOR ROTATION STEP ' + shiftStep + ' OF ' + (NEONS.length-1));
   }
-  function fxDark(){
-    document.body.classList.add('lights-out');
-    msg('LIGHTS OUT — PRESS B TO RESTORE');
-  }
+  function fxDark(){ document.body.classList.add('lights-out'); msg('LIGHTS OUT — PRESS B TO RESTORE'); }
   var FX = {snake:fxSnake, surge:fxSurge, shuffle:fxShuffle, shift:fxShift, dark:fxDark};
   document.querySelectorAll('.live').forEach(function(btn){
     btn.addEventListener('click', function(e){
@@ -1790,13 +1678,13 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     clearTimeout(rT);
     rT = setTimeout(function(){
       if(document.body.classList.contains('open')) buildWires();
-      if(modal.classList.contains('show')) closeModal();
+      if(modal.classList.contains('show')) closeModal(true);
     }, 160);
   });
-
   fit();
   board.style.transition = 'none';
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ board.style.transition = ''; }); });
+  loadFeed();
 })();
 </script>
 </body>
