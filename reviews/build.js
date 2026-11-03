@@ -17,6 +17,7 @@ const SRC = path.join(ROOT, 'posts');
 const OUT = path.join(ROOT, 'dist');
 const NAME = /^(\d{4}-\d{2}-\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 const today = new Date().toISOString().slice(0, 10);
+const IMG_EXT = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'JPG', 'JPEG', 'PNG', 'WEBP'];
 
 /* ---------- helpers ---------- */
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -91,18 +92,31 @@ for (const file of (fs.existsSync(SRC) ? fs.readdirSync(SRC) : []).sort()) {
   const { meta, body } = parse(fs.readFileSync(path.join(SRC, file), 'utf8'), file);
   if (!meta.title) throw new Error(file + ': needs a title: line in the header');
   const { html, affiliate } = render(body);
+  /* cover image, in priority order:
+     1. cover: line in the header (a path in this folder, or a full https:// URL)
+     2. an image in img/posts/ named after the post: best-cat-water-fountains.jpg
+        or 2026-11-10-best-cat-water-fountains.jpg (jpg, jpeg, png, webp, gif, avif) */
   let cover = meta.cover || '';
-  if (cover && !/^https?:/.test(cover) && !fs.existsSync(path.join(ROOT, cover.replace(/^\//, '')))) {
+  if (cover && !/^https?:\/\//.test(cover) && !fs.existsSync(path.join(ROOT, cover.replace(/^\//, '')))) {
     skipped.push(file + ': cover image ' + cover + ' not found, published without it');
     cover = '';
   }
+  if (!cover) {
+    const stem = file.replace(/\.md$/, '');
+    for (const base of [slug, stem]) {
+      const hit = IMG_EXT.map((e) => 'img/posts/' + base + '.' + e).find((f) => fs.existsSync(path.join(ROOT, f)));
+      if (hit) { cover = hit; break; }
+    }
+  }
+  const coverSrc = !cover ? '' : /^https?:\/\//.test(cover) ? cover : '/' + cover.replace(/^\//, '');
   const words = body.split(/\s+/).filter(Boolean).length;
   posts.push({
     file, date, slug,
     title: meta.title,
     summary: meta.summary || body.replace(/[#*_>\[\]()`!-]/g, '').trim().split(/\s+/).slice(0, 32).join(' ') + '…',
     niche: (meta.niche || 'general').toLowerCase(),
-    cover,
+    cover: coverSrc,
+    coverAbs: !coverSrc ? '' : /^https?:/.test(coverSrc) ? coverSrc : CFG.siteUrl + coverSrc,
     coverAlt: meta.cover_alt || meta.title,
     updated: meta.updated || '',
     html, affiliate,
@@ -130,7 +144,7 @@ function page({ title, desc, canonical, body, og = {}, jsonld = '' }) {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(CFG.siteUrl + canonical)}">
 <meta property="og:type" content="${og.type || 'website'}">
-${og.image ? `<meta property="og:image" content="${esc(CFG.siteUrl + '/' + og.image.replace(/^\//, ''))}">\n<meta name="twitter:card" content="summary_large_image">` : '<meta name="twitter:card" content="summary">'}
+${og.image ? `<meta property="og:image" content="${esc(og.image)}">\n<meta name="twitter:card" content="summary_large_image">` : '<meta name="twitter:card" content="summary">'}
 <meta name="theme-color" content="#07090a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2307090a'/%3E%3Ctext x='32' y='45' font-family='monospace' font-size='38' font-weight='700' fill='%23ffd500' text-anchor='middle'%3Eb%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,7 +169,7 @@ ${body}
 
 function card(p) {
   return `<a class="card" href="${p.url}" data-niche="${esc(nicheSlug(p.niche))}">
-  ${p.cover ? `<img src="/${esc(p.cover.replace(/^\//, ''))}" alt="${esc(p.coverAlt)}" loading="lazy">` : `<div class="ph">${esc(nicheLabel(p.niche))}</div>`}
+  ${p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt)}" loading="lazy">` : `<div class="ph">${esc(nicheLabel(p.niche))}</div>`}
   <div class="c-in">
     <div class="meta"><span class="niche">${esc(nicheLabel(p.niche))}</span><time datetime="${p.date}">${fmtDate(p.date)}</time></div>
     <h2>${esc(p.title)}</h2>
@@ -202,17 +216,17 @@ for (const p of posts) {
     '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.summary,
     datePublished: p.date, dateModified: p.updated || p.date,
     author: { '@type': 'Person', name: CFG.author, url: CFG.hubUrl },
-    image: p.cover ? CFG.siteUrl + '/' + p.cover.replace(/^\//, '') : undefined,
+    image: p.coverAbs || undefined,
     mainEntityOfPage: CFG.siteUrl + p.url
   })}</script>`;
   write(`posts/${p.slug}/index.html`, page({
-    title: p.title, desc: p.summary, canonical: p.url, og: { type: 'article', image: p.cover }, jsonld,
+    title: p.title, desc: p.summary, canonical: p.url, og: { type: 'article', image: p.coverAbs }, jsonld,
     body: `<main class="post">
   <a class="back" href="/niche/${nicheSlug(p.niche)}/">← ${esc(nicheLabel(p.niche))}</a>
   <h1>${esc(p.title)}</h1>
   <div class="meta"><span class="niche">${esc(nicheLabel(p.niche))}</span><time datetime="${p.date}">${fmtDate(p.date)}</time>${p.updated ? `<span>updated ${fmtDate(p.updated)}</span>` : ''}<span>${p.minutes} min read</span></div>
   ${p.affiliate ? `<aside class="disclosure">${esc(CFG.disclosure)}</aside>` : ''}
-  ${p.cover ? `<img class="cover" src="/${esc(p.cover.replace(/^\//, ''))}" alt="${esc(p.coverAlt)}">` : ''}
+  ${p.cover ? `<img class="cover" src="${esc(p.cover)}" alt="${esc(p.coverAlt)}">` : ''}
   <article class="prose">${p.html}</article>
   ${related.length ? `<section class="related"><h3>More ${esc(nicheLabel(p.niche).toLowerCase())}</h3><div class="grid small">${related.map(card).join('')}</div></section>` : ''}
 </main>`
@@ -225,7 +239,7 @@ write('404.html', page({ title: 'Not found', desc: 'That page does not exist.', 
 const abs = (u) => CFG.siteUrl + u;
 write('feed.json', JSON.stringify({
   version: 'https://jsonfeed.org/version/1.1', title: CFG.siteTitle, home_page_url: CFG.siteUrl, feed_url: abs('/feed.json'),
-  items: posts.map((p) => ({ id: abs(p.url), url: abs(p.url), title: p.title, summary: p.summary, date_published: p.date + 'T12:00:00Z', tags: [nicheLabel(p.niche)], image: p.cover ? abs('/' + p.cover.replace(/^\//, '')) : undefined }))
+  items: posts.map((p) => ({ id: abs(p.url), url: abs(p.url), title: p.title, summary: p.summary, date_published: p.date + 'T12:00:00Z', tags: [nicheLabel(p.niche)], image: p.coverAbs || undefined }))
 }, null, 1));
 write('rss.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>

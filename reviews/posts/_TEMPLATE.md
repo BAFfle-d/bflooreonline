@@ -8,8 +8,12 @@ cover_alt: Describe the photo for screen readers
 HOW TO USE THIS FILE (delete this paragraph):
 1. Copy this file. Rename the copy like 2026-11-10-best-cat-water-fountains.md
    (date first, then lowercase words joined by hyphens; that last part becomes the web address).
-2. Fill in the header above. Only title is required. Leave cover out if you have no image;
-   put images in reviews/img/posts/.
+2. Fill in the header above. Only title is required.
+   COVER IMAGE, three ways (pick one, or none):
+   - Easiest: upload an image to reviews/img/posts/ named the same as the post,
+     e.g. best-cat-water-fountains.jpg. It is picked up automatically; no cover: line needed.
+   - A full web address: cover: https://example.com/photo.jpg
+   - A different file name: cover: img/posts/whatever.jpg
 3. niche groups posts on the site. Labels live in site.config.js.
 4. Upload it to reviews/posts/ on GitHub. The site rebuilds itself in about a minute.
    A file name starting with _ (like this one) is never published.

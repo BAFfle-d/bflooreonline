@@ -13,12 +13,12 @@ module.exports = {
      Every amazon.com link in a post gets ?tag=<this> added automatically.
      Leave empty and links are left exactly as you wrote them.
      (You can also set AMAZON_TAG in Vercel's environment variables.) */
-  amazonTag: process.env.AMAZON_TAG || '',
+  amazonTag: process.env.AMAZON_TAG || 'stashandset-20',
 
   /* Any other store whose links are affiliate links (your dropshipping
      storefronts, other programs). Links to these hosts get marked
      rel="sponsored nofollow" like Amazon links do. */
-  affiliateHosts: ['amazon.com', 'amzn.to', 'amzn.com'],
+  affiliateHosts: ['amazon.com', 'amzn.to', 'amzn.com', 'link.amazon', 'amzlinks.in'],
 
   /* Shown at the top of any post that contains an affiliate link.
      The first sentence is the wording Amazon requires. */
