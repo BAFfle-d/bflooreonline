@@ -10,7 +10,8 @@ const SOURCES = [
   { id: 'substack', label: 'Substack',              url: 'https://barryfloore.substack.com/feed',             home: 'https://barryfloore.substack.com',               kind: 'dispatch'},
   { id: 'gaslight', label: 'American Gaslighter',   url: 'https://americangaslightercom.wordpress.com/feed/', home: 'https://americangaslightercom.wordpress.com',    kind: 'blog'    },
   { id: 'ceai',     label: 'Cultivating Ethical AI',url: 'https://anchor.fm/s/eed77758/podcast/rss',          home: 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', kind: 'episode' },
-  { id: 'liars',    label: 'The Lying Liars',       url: 'https://media.rss.com/the-lying-liars/feed.xml',    home: 'https://thelyingliars.online',                   kind: 'episode' }
+  { id: 'liars',    label: 'The Lying Liars',       url: 'https://media.rss.com/the-lying-liars/feed.xml',    home: 'https://thelyingliars.online',                   kind: 'episode' },
+  { id: 'reviews',  label: 'Reviews',               url: 'https://reviews.bfloore.online/rss.xml',          home: 'https://reviews.bfloore.online',                 kind: 'review'  },
 ];
 /* titles that are platform placeholders, not posts */
 const SKIP = /^(coming soon|welcome to|hello world)/i;

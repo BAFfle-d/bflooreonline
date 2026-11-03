@@ -885,6 +885,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     gaslight: {label:'American Gaslighter',    color:'#ffd500', home:'https://americangaslightercom.wordpress.com'},
     ceai:     {label:'Cultivating Ethical AI', color:'#00e0ff', home:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'},
     liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'},
+    reviews:  {label:'Reviews',                color:'#ffd500', home:'https://reviews.bfloore.online'},
     archive:  {label:'Archive · 2008–09',      color:'#a78bfa', home:'https://cincywestsidequeer.blogspot.com'}
   };
 
@@ -980,6 +981,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       status:'LIVE · AUTHOR STORE', art:'https://m.media-amazon.com/images/I/71uO6uQvW0L._SY342_.jpg', artFit:'contain',
       body:['Two very different shelves in one store: FRIENDLY ROBOTS! for young readers — six books and counting — and Benny: A Family Tragedy, an adult novel with nothing to do with the robots.'],
       links:[
+        {label:'Reviews & buying guides', url:'https://reviews.bfloore.online', note:'reviews site'},
         {label:'The RoboPets', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'coloring'},
         {label:'Rex and Billy', url:'https://www.amazon.com/dp/B0HNSF83SM', note:'new story'},
         {label:'The Adventures of Robo', url:'https://www.amazon.com/dp/B0D8WGBQQ4', note:'storytime'},
@@ -1038,6 +1040,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
         {label:'spuncalliope.wordpress.com', url:'https://spuncalliope.wordpress.com', note:'spun'},
         {label:'friendlyrobots.online', url:'https://friendlyrobots.online', note:'kids'},
         {label:'serialimages.vercel.app', url:'https://serialimages.vercel.app', note:'app'},
+        {label:'reviews.bfloore.online', url:'https://reviews.bfloore.online', note:'reviews'},
         {label:'Amazon author store', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'books'}
       ]
     },
@@ -1347,7 +1350,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     });
     h += '</div><div class="fd-list" id="fdList">' + feedList(focusId) + '</div>';
     var upd = FEED.updated ? new Date(FEED.updated) : null;
-    h += '<div class="fd-foot">Five live feeds plus a curated 2008–09 archive, newest first'+(upd ? ' · synced '+upd.getDate()+' '+MONTHS[upd.getMonth()]+' '+upd.getFullYear() : '')+'.<br>Sources: ' +
+    h += '<div class="fd-foot">Six live feeds plus a curated 2008–09 archive, newest first'+(upd ? ' · synced '+upd.getDate()+' '+MONTHS[upd.getMonth()]+' '+upd.getFullYear() : '')+'.<br>Sources: ' +
       Object.keys(FEED_SRC).map(function(k){ return '<a href="'+FEED_SRC[k].home+'" target="_blank" rel="noopener">'+esc(FEED_SRC[k].label)+'</a>'; }).join(' · ') + '</div>';
     return h;
   }

@@ -1,0 +1,14 @@
+{
+  "name": "bfloore-reviews",
+  "private": true,
+  "description": "reviews.bfloore.online: drop a dated .md file in posts/ and push.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "marked": "12.0.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
