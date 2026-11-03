@@ -1,6 +1,7 @@
 ---
 title: Best Manual Can Opener for Everyday Use and Your Emergency Kit
 niche: home
+cover_alt: A hand holding a black manual can opener over a canvas bag full of canned food
 summary: The OXO Good Grips is the manual can opener I'd keep in the drawer and the hurricane kit. Gorilla Grip is the budget pick that does the same job.
 ---
 *Heads up: I own [StashAndSet](https://stashandset.com), a home and office shop that's linked below. The can openers themselves are Amazon picks, not StashAndSet products.*
@@ -11,6 +12,8 @@ The quick answer: get the **OXO Good Grips** manual can opener. It's comfortable
 
 1. **[OXO Good Grips Manual Can Opener](https://link.amazon/B0789nzez)**: the one to buy if you want it to last and feel good in your hand every day.
 2. **[Gorilla Grip Manual Can Opener](https://link.amazon/B03Pb9cDs)**: the budget pick, and a good spare to stash in the emergency kit.
+
+![OXO Good Grips manual can opener, about 7.1 inches long and 2 inches wide](/img/posts/oxo-can-opener-dimensions.png "OXO Good Grips: 7.1 in long, 2 in wide")
 
 ## What I looked for
 
