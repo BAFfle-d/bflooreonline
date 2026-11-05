@@ -4,7 +4,7 @@
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.ResumeState = factory();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-  const REMIXES = ['general', 'ai', 'freelance'];
+  const REMIXES = ['general', 'ai', 'freelance', 'health', 'support', 'creative'];
 
   function sameList(a, b) {
     return a.length === b.length && a.every(function (v, i) { return v === b[i]; });

@@ -158,8 +158,8 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   if (!html.includes('Download PDF') || !html.includes('Download vCard')) {
     throw new Error('PDF and vCard actions are missing.');
   }
-  ['general', 'ai', 'freelance'].forEach(function (id) {
-    if (!html.includes('data-remix="' + id + '"')) throw new Error('Missing remix chip ' + id);
+  CONTENT.remixes.forEach(function (remix) {
+    if (!html.includes('data-remix="' + remix.id + '"')) throw new Error('Missing remix chip ' + remix.id);
   });
 
   rmrf(OUT);

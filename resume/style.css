@@ -75,6 +75,8 @@ button,input{font:inherit;color:inherit}
 .item strong{font-weight:700}
 .item a{color:var(--amber);text-underline-offset:3px}
 .item span{font-family:var(--serif);font-size:16.5px;color:var(--soft)}
+.item .links{display:flex;flex-wrap:wrap;gap:4px 12px;font-family:var(--mono);font-size:12px}
+.item .links a{color:var(--amber);text-underline-offset:3px}
 .skills{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
 .skills li{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--soft);border:1px solid var(--line);border-radius:999px;padding:6px 10px}
 .empty{font-family:var(--serif);font-size:18px;color:var(--soft);padding:8px 0 4px}
