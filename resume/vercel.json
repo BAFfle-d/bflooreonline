@@ -1,0 +1,15 @@
+{
+  "buildCommand": "node build.js",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/Barry-Floore.vcf",
+      "headers": [
+        { "key": "Content-Type", "value": "text/vcard; charset=utf-8" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"Barry-Floore.vcf\"" }
+      ]
+    }
+  ]
+}
