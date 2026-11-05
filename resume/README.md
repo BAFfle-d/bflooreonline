@@ -36,19 +36,28 @@ That matches `reviews/`: the Pages project root is the app folder, and the build
 
 ## Remixes
 
-Three compositions, and no others:
+Six compositions:
 
 | Chip | URL |
 | --- | --- |
 | General (the page you land on) | `/` |
 | AI trainer | `/?remix=ai` |
 | Business owner / freelancer | `/?remix=freelance` |
+| Health / education | `/?remix=health` |
+| Remote support / crisis | `/?remix=support` |
+| Content creation | `/?remix=creative` |
 
 General is the short at-a-glance resume: blended summary, light AI experience, light projects, education, and core skills. Customer service and clinical background stay off until a section chip turns them on.
 
 AI trainer uses the AI summary, the full AI experience, AI skills, education, and a light project list.
 
-Business owner / freelancer uses the operator summary, projects and properties, operator skills, selected client-ops roles, education, and AI experience as supporting contracts.
+Business owner / freelancer uses the operator summary, a practice-length project list, operator skills, selected client-ops roles, education, and AI experience as supporting contracts.
+
+Health / education uses the health-education summary, AI experience with a Pearson and Appen healthcare lens, crisis-focused customer service, the clinical background, education, and health skills. Projects and operator skills stay off until a section chip turns them on.
+
+Remote support / crisis uses the support summary, crisis-focused customer service, the clinical background, education, and support skills. AI experience stays off until a section chip turns it on.
+
+Content creation uses the publishing summary, the creative portfolio, education, operator skills, and creative skills. Customer service and clinical background stay off until a section chip turns them on.
 
 Section chips show and hide modules. **Copy link** puts the current remix and the visible sections in the query string (`on=`), so the URL opens the same page again. The browser back button steps through those changes.
 
@@ -63,4 +72,4 @@ The contact card is separate from the PDF. Its QR code encodes a vCard (name, em
 - `content.js` — sections, remix presets, and which variant each remix shows
 - `site.config.js` — name, email, phones, links, site URL
 
-Keep remix chips to General, AI trainer, and Business owner / freelancer.
+Remix chips are General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, and Content creation.

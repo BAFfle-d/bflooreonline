@@ -20,6 +20,9 @@
     if (state.view === 'cv') return 'Barry Floore — full CV';
     if (state.remix === 'ai') return 'Barry Floore — AI trainer';
     if (state.remix === 'freelance') return 'Barry Floore — business owner / freelancer';
+    if (state.remix === 'health') return 'Barry Floore — health / education';
+    if (state.remix === 'support') return 'Barry Floore — remote support / crisis';
+    if (state.remix === 'creative') return 'Barry Floore — content creation';
     return 'Barry Floore — resume';
   }
 
@@ -135,7 +138,12 @@
       body = variant.entries.map(function (it) {
         var href = it.href && /^https:\/\//.test(it.href) ? it.href : '';
         var name = href ? '<a href="' + esc(href) + '">' + esc(it.title) + '</a>' : esc(it.title);
-        return '<p class="item"><strong>' + name + '</strong><span>' + esc(it.text) + '</span></p>';
+        var links = (it.links || []).map(function (link) {
+          if (!link || !link.href || !/^https:\/\//.test(link.href)) return '';
+          return '<a href="' + esc(link.href) + '">' + esc(link.label || link.href) + '</a>';
+        }).join('');
+        return '<p class="item"><strong>' + name + '</strong><span>' + esc(it.text) + '</span>' +
+          (links ? '<span class="links">' + links + '</span>' : '') + '</p>';
       }).join('');
     } else if (mod.kind === 'skills') {
       body = '<ul class="skills">' + variant.items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
