@@ -32,7 +32,7 @@ DNS stays outside this repo. When the site is connected, set:
 | Build command | `npm run build` (or `node build.js`) |
 | Build output directory | `dist` |
 
-That matches `reviews/`: the Pages project root is the app folder, and the build writes `dist/`. `vercel.json` records the same build command, output folder, and `cleanUrls` for a Vercel-style static host. Cloudflare Pages reads the files in `dist/` directly, including `_headers` for the vCard content type.
+That matches `reviews/`: the Pages project root is the app folder, and the build writes `dist/`. `vercel.json` records the same build command, output folder, and `cleanUrls` for a Vercel-style static host. Cloudflare Pages reads the files in `dist/` directly.
 
 ## Remixes
 
@@ -65,7 +65,7 @@ Section chips show and hide modules. **Copy link** puts the current remix and th
 
 **Full CV** turns every module on, using the long form of each section. Hide anything that should not travel with this copy. **Download PDF** opens the print dialog for whatever is still on screen. Choose **Save as PDF**, and turn off browser headers and footers if you want a clean page. There is no separate download of the entire raw CV.
 
-The contact card is separate from the PDF. Its QR code encodes a vCard (name, email, voice number, SMS number, Jacksonville, LinkedIn, and the hub). **Download vCard** saves `Barry-Floore.vcf`, and a phone camera can add the same card from the code.
+The contact card is separate from the PDF. Its QR code encodes a vCard (name, email, voice number, SMS number, Jacksonville, LinkedIn, and the hub). The page links say Email, Call, and Text. **Download vCard** builds `Barry-Floore.vcf` in the browser, and a phone camera can add the same card from the code. Print still writes the address and numbers onto the PDF.
 
 ## Edit the words
 

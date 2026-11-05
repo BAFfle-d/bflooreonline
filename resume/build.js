@@ -60,7 +60,7 @@ ${jsonld || ''}
 ${body}
 <footer class="foot">
   <p>${esc(CFG.person.full)} · Jacksonville, Florida · ${esc(CFG.person.remote)}</p>
-  <p><a href="mailto:${esc(CFG.person.email)}">${esc(CFG.person.email)}</a> · <a href="${esc(CFG.person.linkedin)}">LinkedIn</a> · <a href="${esc(CFG.hubUrl)}">bfloore.online</a></p>
+  <p><a class="reach" data-reach="mail" href="/#contact">Email</a> · <a href="${esc(CFG.person.linkedin)}">LinkedIn</a> · <a href="${esc(CFG.hubUrl)}">bfloore.online</a></p>
 </footer>
 ${boot || ''}
 </body>
@@ -83,7 +83,7 @@ async function main() {
     siteTitle: CFG.siteTitle,
     siteUrl: CFG.siteUrl,
     hubUrl: CFG.hubUrl,
-    person: CFG.person,
+    person: R.sealPerson(CFG.person),
     identity: CONTENT.identity,
     remixes: CONTENT.remixes,
     modules: CONTENT.modules,
@@ -121,7 +121,7 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
         <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. The file matches the sections on screen. The vCard is a separate download.</p>
       </div>
       <div id="sections">${R.sectionsHtml(payload, defaultState)}</div>
-      <noscript><p class="note">Remixes and section toggles use JavaScript. The contact card is Barry-Floore.vcf.</p></noscript>
+      <noscript><p class="note">Remixes, section toggles, and the vCard download use JavaScript. The QR code still adds Barry Floore to a phone.</p></noscript>
     </article>
     <aside class="panel" id="contact" aria-label="Contact">${R.contactHtml(payload)}</aside>
   </div>
@@ -132,8 +132,6 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     '@type': 'Person',
     name: CFG.person.full,
     alternateName: CFG.person.display,
-    email: CFG.person.email,
-    telephone: CFG.person.phoneE164,
     address: {
       '@type': 'PostalAddress',
       addressLocality: CFG.person.city,
@@ -161,15 +159,15 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   CONTENT.remixes.forEach(function (remix) {
     if (!html.includes('data-remix="' + remix.id + '"')) throw new Error('Missing remix chip ' + remix.id);
   });
+  [CFG.person.email, CFG.person.phone, CFG.person.phoneE164, CFG.person.sms, CFG.person.smsE164,
+    String(CFG.person.phoneE164).replace(/-/g, ''), String(CFG.person.smsE164).replace(/-/g, '')
+  ].forEach(function (bit) {
+    if (html.indexOf(bit) !== -1) throw new Error('Page source still contains plaintext contact');
+  });
 
   rmrf(OUT);
   fs.mkdirSync(OUT, { recursive: true });
   write('index.html', html);
-  write('Barry-Floore.vcf', card);
-  write('_headers', `/Barry-Floore.vcf
-  Content-Type: text/vcard; charset=utf-8
-  Content-Disposition: attachment; filename="Barry-Floore.vcf"
-`);
   write('404.html', page({
     title: 'Not found',
     desc: 'That page does not exist.',
