@@ -791,7 +791,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <h2>Professional</h2>
     </div>
     <ul class="p-links">
-      <li><a data-group="resume"><span class="l-name">Resume / CV</span><span class="l-tag">coming soon</span><span class="l-arrow">-&gt;</span></a></li>
+      <li><a href="https://resume.bfloore.online/" target="_blank" rel="noopener"><span class="l-name">Resume / CV</span><span class="l-tag">resume.bfloore.online</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-group="dataonezero"><span class="l-name">DataZeroOne</span><span class="l-tag">formerly JAXDATApro</span><span class="l-arrow">-&gt;</span></a></li>
       <li><a data-group="aboutcontact"><span class="l-name">About &amp; Contact</span><span class="l-tag">who is b · say hello</span><span class="l-arrow">-&gt;</span></a></li>
     </ul>
@@ -957,8 +957,9 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     },
     /* ---- 02 · professional ---- */
     resume: {
-      title:'Resume / CV', tag:'coming soon', url:null, status:'IN DEV · TYPESETTING',
-      body:['The formal record: urban planning, close to two decades of emergency and critical-care nursing, a decade of data work, and a second life in writing and composition. One page, being typeset.']
+      title:'Resume / CV', tag:'resume.bfloore.online', url:'https://resume.bfloore.online/', cta:'resume.bfloore.online',
+      status:'LIVE · READY',
+      body:['The formal record: urban planning, close to two decades of emergency and critical-care nursing, a decade of data work, and a second life in writing and composition. Interactive, and ready to read.']
     },
     dataonezero: {
       title:'DataZeroOne', tag:'formerly JAXDATApro', url:'https://dataonezero.com', cta:'dataonezero.com',
@@ -1042,6 +1043,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
         {label:'friendlyrobots.online', url:'https://friendlyrobots.online', note:'kids'},
         {label:'serialimages.vercel.app', url:'https://serialimages.vercel.app', note:'app'},
         {label:'reviews.bfloore.online', url:'https://reviews.bfloore.online', note:'reviews'},
+        {label:'resume.bfloore.online', url:'https://resume.bfloore.online/', note:'resume'},
         {label:'Amazon author store', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'books'}
       ]
     },
@@ -1058,7 +1060,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     fiction:      {idx:'01', title:'Fiction',            tag:'a novella and a podcast of confessions', items:['benny','liars']},
     visual:       {idx:'01', title:'Visual Media',       tag:'photography · video',                   items:['fruit','video']},
     robots:       {idx:'01', title:'Friendly Robots!',   tag:'children’s books · book six',          items:['robots']},
-    resume:       {idx:'02', title:'Resume / CV',        tag:'coming soon',                           items:['resume']},
+    resume:       {idx:'02', title:'Resume / CV',        tag:'resume.bfloore.online',                 items:['resume']},
     dataonezero:  {idx:'02', title:'DataZeroOne',        tag:'formerly JAXDATApro',                   items:['dataonezero']},
     aboutcontact: {idx:'02', title:'About & Contact',    tag:'who is b · say hello',                  items:['about','contact']},
     shop:         {idx:'04', title:'Shopping & Merch',   tag:'books · merch · downloads',             items:['amazon','etsy','gumroad']},
@@ -1574,8 +1576,17 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     if(jg){ swapGroup(jg.getAttribute('data-jump-group')); }
   });
 
-  /* card links → popups */
+  /* card links → popups, except a real outbound href (Resume / CV).
+     That one must leave the hub the same way other live site links do. */
+  function outboundHref(a){
+    if(!a || a.tagName !== 'A') return '';
+    var href = a.getAttribute('href');
+    if(!href || href.charAt(0) === '#') return '';
+    return href;
+  }
   function trigger(a){
+    var href = outboundHref(a);
+    if(href){ window.open(href, '_blank', 'noopener'); return; }
     var gk = a.getAttribute('data-group');
     if(gk === 'feed' && !a.getAttribute('data-item') && a.classList.contains('f-all')) feedFilter = 'all';
     if(gk === 'feed' && a.getAttribute('data-item')) feedFilter = 'all';
@@ -1584,17 +1595,23 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   board.addEventListener('click', function(e){
     var a = e.target.closest('[data-group]');
     if(!a || !board.contains(a)) return;
+    /* a real href is an external live site — do not preventDefault into a popup */
+    if(outboundHref(a)) return;
     e.preventDefault();
     trigger(a);
   });
   board.addEventListener('keydown', function(e){
     if(e.key !== 'Enter' && e.key !== ' ') return;
     var a = e.target.closest('[data-group]');
-    if(!a) return;
+    if(!a || outboundHref(a)) return;
     e.preventDefault();
     trigger(a);
   });
-  document.querySelectorAll('.p-links a,.p-tiles a').forEach(function(a){ a.setAttribute('tabindex','0'); a.setAttribute('role','button'); });
+  document.querySelectorAll('.p-links a,.p-tiles a').forEach(function(a){
+    if(outboundHref(a)) return;
+    a.setAttribute('tabindex','0');
+    a.setAttribute('role','button');
+  });
   mClose.addEventListener('click', function(){ closeModal(); });
   veil.addEventListener('click', function(){ closeModal(); });
 
