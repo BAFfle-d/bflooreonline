@@ -412,8 +412,31 @@ assert.ok(cvHtml.includes("Friendly Robots children's books."));
 const hidden = htmlFor('?on=');
 assert.ok(hidden.includes('Every section is hidden'));
 
-assert.ok(R.whoHtml(data).includes('barry.floore@gmail.com'));
-assert.ok(R.contactHtml(data).includes('Download vCard'));
+const sealed = R.sealPerson(CFG.person);
+const opened = R.openReach(sealed);
+assert.strictEqual(opened.email, CFG.person.email);
+assert.strictEqual(opened.phone, CFG.person.phone);
+assert.strictEqual(opened.sms, CFG.person.sms);
+assert.strictEqual(opened.tel, CFG.person.phoneE164.replace(/-/g, ''));
+assert.strictEqual(opened.smsTel, CFG.person.smsE164.replace(/-/g, ''));
+const sealedDump = JSON.stringify(sealed);
+[CFG.person.email, CFG.person.phone, CFG.person.sms, CFG.person.phoneE164, CFG.person.smsE164].forEach(function (bit) {
+  assert.ok(!sealedDump.includes(bit), 'sealed contact still has ' + bit);
+});
+const sealedData = Object.assign({}, data, { person: sealed });
+const who = R.whoHtml(sealedData);
+assert.ok(who.includes('>Email</a>'));
+assert.ok(who.includes('>Call</a>'));
+assert.ok(who.includes('>Text</a>'));
+assert.ok(!who.includes(CFG.person.email));
+assert.ok(!who.includes(CFG.person.phone));
+assert.ok(!who.includes('mailto:'));
+assert.ok(!who.includes('tel:'));
+const contact = R.contactHtml(sealedData);
+assert.ok(contact.includes('Download vCard'));
+assert.ok(!contact.includes(CFG.person.email));
+assert.ok(!contact.includes(CFG.person.phone));
+assert.strictEqual(R.contactCard(sealedData), card);
 assert.ok(!/download full/i.test(R.deckText(data, { view: 'cv', remix: 'general', on: CONTENT.moduleIds })));
 
 console.log('ok ' + CONTENT.modules.length + ' modules · ' + CONTENT.remixes.length + ' remixes · vCard ' + card.length + ' bytes');

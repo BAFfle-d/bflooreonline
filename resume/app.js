@@ -19,6 +19,39 @@
     who.innerHTML = R.whoHtml(data);
     document.getElementById('contact').innerHTML = R.contactHtml(data);
 
+    function reachSpecs() {
+      var c = R.openReach(data.person);
+      return {
+        mail: { href: 'mailto:' + c.email, label: 'Email', print: c.email },
+        voice: { href: 'tel:' + c.tel, label: 'Call', print: c.phone },
+        sms: { href: 'sms:' + c.smsTel, label: 'Text', print: 'SMS ' + c.sms }
+      };
+    }
+
+    function paintReach(mode) {
+      var specs = reachSpecs();
+      document.querySelectorAll('[data-reach]').forEach(function (el) {
+        var spec = specs[el.getAttribute('data-reach')];
+        if (!spec) return;
+        el.setAttribute('href', spec.href);
+        var printed = mode === 'print' && el.closest('.contact-line');
+        el.textContent = printed ? spec.print : spec.label;
+      });
+    }
+
+    paintReach('live');
+    document.getElementById('vcard').addEventListener('click', function () {
+      var blob = new Blob([R.contactCard(data)], { type: 'text/vcard;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Barry-Floore.vcf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
     function writeUrl(push) {
       var qs = RS.serializeState(state, catalog);
       var next = location.pathname + (qs ? '?' + qs : '');
@@ -114,9 +147,11 @@
 
     window.addEventListener('beforeprint', function () {
       document.title = R.pageTitle(data, state);
+      paintReach('print');
     });
     window.addEventListener('afterprint', function () {
       document.title = R.pageTitle(data, state) + ' · ' + data.siteTitle;
+      paintReach('live');
     });
     document.getElementById('pdf').addEventListener('click', function () { window.print(); });
 

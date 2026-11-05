@@ -37,17 +37,81 @@
     return mod.variants[key] || mod.variants.full;
   }
 
+  function rev(s) {
+    return String(s).split('').reverse().join('');
+  }
+
+  /* Contact is stored as reversed pieces so the shipped page has no raw address or number. */
+  function sealPerson(person) {
+    var at = String(person.email).split('@');
+    return {
+      given: person.given,
+      family: person.family,
+      display: person.display,
+      full: person.full,
+      city: person.city,
+      region: person.region,
+      country: person.country,
+      localityLabel: person.localityLabel,
+      remote: person.remote,
+      linkedin: person.linkedin,
+      linkedinLabel: person.linkedinLabel,
+      reach: {
+        m: at.map(function (part) { return part.split('.').map(rev); }),
+        v: String(person.phone).split('-').map(rev),
+        s: String(person.sms).split('-').map(rev)
+      }
+    };
+  }
+
+  function openReach(person) {
+    var reach = (person && person.reach) || {};
+    var email = (reach.m || []).map(function (group) {
+      return (group || []).map(rev).join('.');
+    }).join('@');
+    var v = (reach.v || []).map(rev);
+    var s = (reach.s || []).map(rev);
+    return {
+      email: email,
+      phone: v.join('-'),
+      sms: s.join('-'),
+      tel: v.length ? '+1' + v.join('') : '',
+      smsTel: s.length ? '+1' + s.join('') : ''
+    };
+  }
+
+  function reachLink(kind, label) {
+    return '<a class="reach" data-reach="' + kind + '" href="#contact">' + label + '</a>';
+  }
+
+  function contactCard(data) {
+    var p = data.person;
+    var c = openReach(p);
+    var lines = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'N:' + p.family + ';' + p.given + ';;;',
+      'FN:' + p.full,
+      'EMAIL:' + c.email,
+      'TEL;TYPE=VOICE:+1-' + c.phone,
+      'TEL;TYPE=CELL:+1-' + c.sms,
+      'ADR;TYPE=HOME:;;' + p.city + ';' + p.region + ';;USA',
+      'URL:' + p.linkedin,
+      'URL:' + data.hubUrl,
+      'END:VCARD'
+    ];
+    return lines.join('\r\n') + '\r\n';
+  }
+
   function whoHtml(data) {
     var p = data.person;
-    var tel = String(p.phoneE164).replace(/-/g, '');
-    var sms = String(p.smsE164).replace(/-/g, '');
     return '<p class="kicker">// ' + esc(p.display) + '</p>' +
       '<h1 id="name">' + esc(p.full) + '</h1>' +
       '<p class="identity">' + esc(data.identity.line) + '</p>' +
       '<ul class="contact-line">' +
-        '<li><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></li>' +
-        '<li><a href="tel:' + esc(tel) + '">' + esc(p.phone) + '</a></li>' +
-        '<li><a href="sms:' + esc(sms) + '">SMS ' + esc(p.sms) + '</a></li>' +
+        '<li>' + reachLink('mail', 'Email') + '</li>' +
+        '<li>' + reachLink('voice', 'Call') + '</li>' +
+        '<li>' + reachLink('sms', 'Text') + '</li>' +
         '<li>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</li>' +
         '<li><a href="' + esc(p.linkedin) + '">' + esc(p.linkedinLabel) + '</a></li>' +
         '<li><a href="' + esc(data.hubUrl) + '">bfloore.online</a></li>' +
@@ -56,17 +120,15 @@
 
   function contactHtml(data) {
     var p = data.person;
-    var tel = String(p.phoneE164).replace(/-/g, '');
-    var sms = String(p.smsE164).replace(/-/g, '');
     return '<p class="kicker">// contact</p>' +
       '<h2>Save to phone</h2>' +
       '<div class="qr-frame" role="img" aria-label="QR code that adds Barry Floore to a phone\'s contacts">' + data.qrSvg + '</div>' +
       '<p class="qr-note">Scan the code to add Barry Floore, or download the same contact card.</p>' +
-      '<a class="btn primary" href="Barry-Floore.vcf" download="Barry-Floore.vcf">Download vCard</a>' +
+      '<button type="button" class="btn primary" id="vcard">Download vCard</button>' +
       '<dl class="facts">' +
-        '<div><dt>Email</dt><dd><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></dd></div>' +
-        '<div><dt>Phone</dt><dd><a href="tel:' + esc(tel) + '">' + esc(p.phone) + '</a></dd></div>' +
-        '<div><dt>SMS</dt><dd><a href="sms:' + esc(sms) + '">' + esc(p.sms) + '</a></dd></div>' +
+        '<div><dt>Email</dt><dd>' + reachLink('mail', 'Email') + '</dd></div>' +
+        '<div><dt>Phone</dt><dd>' + reachLink('voice', 'Call') + '</dd></div>' +
+        '<div><dt>SMS</dt><dd>' + reachLink('sms', 'Text') + '</dd></div>' +
         '<div><dt>Location</dt><dd>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</dd></div>' +
         '<div><dt>LinkedIn</dt><dd><a href="' + esc(p.linkedin) + '">' + esc(p.linkedinLabel) + '</a></dd></div>' +
         '<div><dt>Hub</dt><dd><a href="' + esc(data.hubUrl) + '">bfloore.online</a></dd></div>' +
@@ -165,6 +227,9 @@
     esc: esc,
     pageTitle: pageTitle,
     deckText: deckText,
+    sealPerson: sealPerson,
+    openReach: openReach,
+    contactCard: contactCard,
     whoHtml: whoHtml,
     contactHtml: contactHtml,
     remixesHtml: remixesHtml,
