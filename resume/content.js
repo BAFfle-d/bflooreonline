@@ -36,7 +36,7 @@ const crisisServiceRoles = [
     where: 'Remote',
     dates: '2020–2023',
     bullets: [
-      'Inbound reservations for a major hotel booking company; navigated multiple booking systems.',
+      'Inbound reservations; navigated multiple booking systems.',
       'Department recognition for conversion and service metrics; de-escalated angry/crisis guests.'
     ]
   },
@@ -55,14 +55,14 @@ const creativePortfolio = [
   {
     title: 'FRIENDLY ROBOTS!',
     href: 'https://friendlyrobots.online',
-    text: 'Children\'s coloring, activity, and storytime series (STEM/SEL). A series of published titles on Amazon, with expansions on Gumroad.',
+    text: 'Children\'s coloring, activity, and storytime series by b. floore, begun for his nieces and nephews. Published titles on Amazon; expansions on Gumroad.',
     links: [{ href: 'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', label: 'Amazon author store' }]
   },
   { title: 'Benny', text: 'Published novella.' },
   {
     title: 'The Lying Liars',
     href: 'https://thelyingliars.online',
-    text: 'Semi-autobiographical novel in editing (160k+ words), with podcast chapters on the site.'
+    text: 'The Lying Liars Who Lied When They Said They Loved You, a fictionalized semi-autobiographical novel in editing, with chapter podcasts and companion music episodes on the site.'
   },
   { title: 'SLOP!', href: 'https://slopthemusical.com', text: 'Musical in progress.' },
   { title: 'Geoff & Maxie', text: 'Musical in progress.' },
@@ -70,9 +70,9 @@ const creativePortfolio = [
   {
     title: 'Cultivating Ethical AI',
     href: 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9',
-    text: 'Sci-fi ethics podcast in season 4. Show notes report an Apple Podcasts number-one ranking for ethical AI; that ranking is the show\'s claim.'
+    text: 'Sci-fi ethics podcast, season 4: Lessons for Modern AI Models from the Monsters, Marvels, & Mentors of SciFI. Produced by Barry Floore. Built with free AI tools. Also on Apple Podcasts and iHeart. The show claims an Apple Podcasts number-one ranking for ethical AI; that ranking is the show\'s claim.'
   },
-  { title: 'The Lying Liars podcast', text: 'Adult fiction and music podcast companion to the novel.' },
+  { title: 'The Lying Liars podcast', text: 'Chapter podcasts and companion music for the novel. Lyrics by DJ Staxxx; arrangement and production by B. Floore; AI-assisted instrumentation via Suno. Adult.' },
   { title: 'Instagram', href: 'https://instagram.com/barrylikethefruit', text: 'World-record nominated channel.' },
   { title: 'YouTube', href: 'https://youtube.com/@bfloore_online', text: 'Video channel.' },
   { title: 'TikTok', href: 'https://tiktok.com/@b_floore', text: 'Short-form channel.' },
@@ -84,11 +84,21 @@ const creativePortfolio = [
   { title: 'Etsy and Gumroad', text: 'Merch on Etsy and downloads on Gumroad, linked from the hub.' }
 ];
 
-const projectLead = [
-  { title: 'bfloore.online', href: 'https://www.bfloore.online', text: 'Personal hub (creative, professional modules, merch).' },
-  { title: 'reviews.bfloore.online', href: 'https://reviews.bfloore.online', text: 'Affiliate review site (static build, publishing workflow).' },
-  { title: 'Creative work', text: 'Musicals, fiction, visual media, and Friendly Robots children\'s books.' }
+const liveSites = [
+  { title: 'bfloore.online', href: 'https://www.bfloore.online', text: 'Personal hub for creative work, professional modules, and merch.' },
+  { title: 'reviews.bfloore.online', href: 'https://reviews.bfloore.online', text: 'Affiliate review site. Static build and a publishing workflow.' },
+  { title: 'Stashandset', href: 'https://stashandset.com', text: 'Shopify store for everyday-readiness and prep products. Catalog is live; merchandising is ongoing.' },
+  { title: 'DataZeroOne', href: 'https://dataonezero.com', text: 'Jacksonville service site for data sanitization, disposal, and recycling (RedKey).' },
+  {
+    title: 'Property assistants',
+    text: 'Built and run from current setups to operate resume.bfloore.online, reviews.bfloore.online, Stashandset, and DataZeroOne.'
+  }
 ];
+
+const creativeWorkLine = {
+  title: 'Creative work',
+  text: 'Musicals, fiction, visual media, and Friendly Robots children\'s books.'
+};
 
 const identity = {
   line: 'Writer, composer, producer; AI data trainer; remote professional.'
@@ -138,7 +148,7 @@ const modules = [
     variants: {
       blend: {
         paragraphs: [
-          'AI data trainer and auditor with 5+ years in safety labeling, preference ranking, and output auditing, and an independent operator of personal brands and digital properties including bfloore.online and reviews.bfloore.online. Remote support lead and multi-channel service pro, working from Jacksonville, FL.'
+          'AI data trainer and auditor with 5+ years in safety labeling, preference ranking, and output auditing. Runs bfloore.online, reviews.bfloore.online, Stashandset, and DataZeroOne from Jacksonville, FL. Remote support and multi-channel service.'
         ]
       },
       ai: {
@@ -148,7 +158,7 @@ const modules = [
       },
       freelance: {
         paragraphs: [
-          'Independent operator building and running personal brands and digital properties (bfloore.online, reviews.bfloore.online, creative/serial projects, merch), while contracting as an AI trainer, remote support lead, and multi-channel service pro. Comfortable owning roadmap, publishing cadence, affiliate/ops hygiene, and client-facing delivery without a corporate scaffold.'
+          'Runs bfloore.online, reviews.bfloore.online, Stashandset, and DataZeroOne, and builds property-specific assistants from current setups to operate them. Contracts as an AI trainer and in remote support. Publishing, affiliate reviews, and client delivery.'
         ]
       },
       health: {
@@ -163,13 +173,13 @@ const modules = [
       },
       creative: {
         paragraphs: [
-          'Writer, composer, and independent producer building books, musicals, podcasts, and multi-platform content from Jacksonville, FL. Publishes the FRIENDLY ROBOTS! children\'s coloring, activity, and story series on Amazon, fiction including the Benny novella and The Lying Liars project, and three musicals in various stages of completion (SLOP!, Geoff & Maxie, spun). Produces podcasts Cultivating Ethical AI and The Lying Liars; maintains Instagram (world-record nominated), YouTube, and TikTok channels plus blogs; licenses photography through Getty Images (monthly licensing) and Adobe Stock.'
+          'Writer, composer, and producer in Jacksonville, FL. FRIENDLY ROBOTS! is a children\'s coloring, activity, and storytime series begun for his nieces and nephews, with published titles on Amazon and expansions on Gumroad. Fiction: Benny, a published novella, and The Lying Liars, a fictionalized semi-autobiographical novel in editing, with chapter podcasts and companion music. SLOP!, Geoff & Maxie, and spun are underway. Cultivating Ethical AI is a sci-fi ethics podcast in season 4. Getty Images licensing; Adobe Stock is listed, with no paid licensing yet.'
         ]
       },
       full: {
         paragraphs: [
           'AI data trainer and auditor with 5+ years supporting LLMs through safety labeling, preference ranking, and output auditing. Extensive background in content moderation, RLHF workflows, and guideline-based evaluation — including exposure to explicit, toxic, and psychologically disturbing content. High accuracy, emotional resilience, consistent performance across 100+ remote projects.',
-          'Independent operator building and running personal brands and digital properties (bfloore.online, reviews.bfloore.online, creative/serial projects, merch), while contracting as an AI trainer, remote support lead, and multi-channel service pro. Comfortable owning roadmap, publishing cadence, affiliate/ops hygiene, and client-facing delivery without a corporate scaffold.'
+          'Runs bfloore.online, reviews.bfloore.online, Stashandset, and DataZeroOne, and builds property-specific assistants from current setups to operate them. Contracts as an AI trainer and in remote support. Publishing, affiliate reviews, and client delivery.'
         ]
       }
     }
@@ -353,31 +363,31 @@ const modules = [
     kind: 'items',
     variants: {
       light: {
-        entries: [
-          { title: 'bfloore.online', href: 'https://www.bfloore.online', text: 'Personal hub for creative work, professional modules, and merch.' },
-          { title: 'reviews.bfloore.online', href: 'https://reviews.bfloore.online', text: 'Affiliate review site with a static build and a publishing workflow.' },
-          { title: 'Creative and product work', text: 'Musicals, fiction, Friendly Robots, and apps listed on the hub.' }
-        ]
+        entries: liveSites.concat([
+          { title: 'Creative work', text: 'Musicals, fiction, Friendly Robots, and apps listed on the hub.' }
+        ])
       },
       practice: {
-        entries: projectLead.concat([
+        entries: liveSites.concat([
+          creativeWorkLine,
           { title: 'Serial Images and other apps', text: 'Listed on the hub.' },
           { title: 'Ongoing publishing', text: 'Multi-platform content and ops.' },
           {
             title: 'FRIENDLY ROBOTS!',
             href: 'https://friendlyrobots.online',
-            text: 'Children\'s coloring, activity, and story series, with published titles on Amazon and expansions on Gumroad.',
+            text: 'Children\'s coloring, activity, and storytime series by b. floore, begun for his nieces and nephews. Published titles on Amazon; expansions on Gumroad.',
             links: [{ href: 'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', label: 'Amazon author store' }]
           },
-          { title: 'Musicals in progress', href: 'https://slopthemusical.com', text: 'Three musicals in various stages of completion: SLOP!, Geoff & Maxie, and spun.' },
-          { title: 'Podcasts and stock photography', text: 'Cultivating Ethical AI and The Lying Liars. Getty Images contributor with monthly licensing. Adobe Stock contributor, with no paid licensing yet.' }
+          { title: 'Musicals in progress', href: 'https://slopthemusical.com', text: 'SLOP!, Geoff & Maxie, and spun.' },
+          { title: 'Podcasts and stock photography', text: 'Cultivating Ethical AI, season 4, and The Lying Liars (novel in editing; chapter podcasts and companion music). Getty Images contributor with monthly licensing. Adobe Stock contributor, with no paid licensing yet.' }
         ])
       },
       creative: {
-        entries: projectLead.slice(0, 2).concat(creativePortfolio)
+        entries: liveSites.concat(creativePortfolio)
       },
       full: {
-        entries: projectLead.concat([
+        entries: liveSites.concat([
+          creativeWorkLine,
           { title: 'Ongoing publishing', text: 'Multi-platform content and ops.' }
         ]).concat(creativePortfolio)
       }
@@ -515,7 +525,7 @@ const modules = [
           'Multi-platform content systems',
           'Podcast production',
           'Musical book, lyric, and composition',
-          'Children\'s STEM/SEL content',
+          'Children\'s coloring, activity, and storytime',
           'Stock photography and licensing',
           'Brand ownership across Instagram, YouTube, and TikTok',
           'Affiliate and merch ops'
@@ -547,8 +557,10 @@ const variantMap = {
    education. Customer service and clinical off. Operator skills off.
    Freelancer: freelance summary, practice-length projects, operator skills,
    selected client-ops roles, education, AI experience as support.
-   Practice projects name the series, musicals, podcasts, and stock work
+   Practice projects name the live sites, series, musicals, podcasts, and stock work
    without the channel-by-channel portfolio used by Content creation.
+   Light projects name the live sites only, plus one creative line.
+   Health and support presets leave projects off.
    Health / education: health summary, Pearson and Appen healthcare lens,
    crisis-focused customer service, enriched clinical background,
    education, health skills. Projects and operator skills off.

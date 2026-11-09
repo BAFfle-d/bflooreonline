@@ -131,7 +131,7 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: CFG.person.full,
-    alternateName: CFG.person.display,
+    alternateName: CFG.person.alternateName,
     address: {
       '@type': 'PostalAddress',
       addressLocality: CFG.person.city,
@@ -163,6 +163,9 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     String(CFG.person.phoneE164).replace(/-/g, ''), String(CFG.person.smsE164).replace(/-/g, '')
   ].forEach(function (bit) {
     if (html.indexOf(bit) !== -1) throw new Error('Page source still contains plaintext contact');
+  });
+  ['barry.floore@gmail.com', 'jaxdata'].forEach(function (bit) {
+    if (html.toLowerCase().indexOf(bit) !== -1) throw new Error('Page source still contains retired contact');
   });
 
   rmrf(OUT);
