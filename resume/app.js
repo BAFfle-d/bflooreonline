@@ -1,5 +1,5 @@
-/* Client for the static resume. No network calls.
-   Remixes, section toggles, the full CV view, and the share URL. */
+/* Client for the resume. Remixes, section toggles, the full CV view,
+   the share URL, and the contact form. The form posts to /api/contact. */
 (function () {
   var RS = globalThis.ResumeState;
   var R = globalThis.ResumeRender;
@@ -22,7 +22,6 @@
     function reachSpecs() {
       var c = R.openReach(data.person);
       return {
-        mail: { href: 'mailto:' + c.email, label: 'Email', print: c.email },
         voice: { href: 'tel:' + c.tel, label: 'Call', print: c.phone },
         sms: { href: 'sms:' + c.smsTel, label: 'Text', print: 'SMS ' + c.sms }
       };
@@ -40,6 +39,7 @@
     }
 
     paintReach('live');
+    wireContactForm();
     document.getElementById('vcard').addEventListener('click', function () {
       var blob = new Blob([R.contactCard(data)], { type: 'text/vcard;charset=utf-8' });
       var url = URL.createObjectURL(blob);
@@ -154,6 +154,101 @@
       paintReach('live');
     });
     document.getElementById('pdf').addEventListener('click', function () { window.print(); });
+
+    function wireContactForm() {
+      var form = document.getElementById('contact-form');
+      var statusEl = document.getElementById('form-status');
+      var sendBtn = document.getElementById('contact-send');
+      if (!form || !sendBtn || !statusEl) return;
+      var widgetId = null;
+      var ready = false;
+
+      function setStatus(text) { statusEl.textContent = text; }
+
+      function resetWidget() {
+        if (widgetId != null && window.turnstile) window.turnstile.reset(widgetId);
+      }
+
+      function mountTurnstile(siteKey) {
+        function renderWidget() {
+          if (!window.turnstile) return;
+          widgetId = window.turnstile.render('#turnstile', {
+            sitekey: siteKey,
+            action: 'contact',
+            theme: 'dark'
+          });
+          ready = true;
+          sendBtn.disabled = false;
+          setStatus('');
+        }
+        if (window.turnstile) { renderWidget(); return; }
+        var script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', renderWidget);
+        script.addEventListener('error', function () {
+          setStatus('The contact form is not available yet. Book a time still works.');
+        });
+        document.head.appendChild(script);
+      }
+
+      fetch('/api/contact', { headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.json(); })
+        .then(function (body) {
+          if (!body || !body.configured || !body.turnstileSiteKey) {
+            setStatus('The contact form is not set up yet. Book a time still works.');
+            return;
+          }
+          mountTurnstile(body.turnstileSiteKey);
+        })
+        .catch(function () {
+          setStatus('The contact form is not available yet. Book a time still works.');
+        });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!ready || sendBtn.disabled) return;
+        var token = window.turnstile && widgetId != null ? (window.turnstile.getResponse(widgetId) || '') : '';
+        if (!token) {
+          setStatus('Confirm the check, then send again.');
+          return;
+        }
+        sendBtn.disabled = true;
+        setStatus('Sending…');
+        fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            name: form.name.value,
+            email: form.email.value,
+            message: form.message.value,
+            company: form.company.value,
+            'cf-turnstile-response': token,
+            page: location.href
+          })
+        }).then(function (res) {
+          return res.json().then(function (body) {
+            return { ok: res.ok, body: body };
+          }, function () {
+            return { ok: false, body: {} };
+          });
+        }).then(function (out) {
+          resetWidget();
+          if (out.ok && out.body && out.body.ok) {
+            form.reset();
+            setStatus('Sent. Thanks for writing.');
+          } else {
+            setStatus((out.body && out.body.error) || 'The message could not be sent. Book a time, or try again later.');
+          }
+        }).catch(function () {
+          resetWidget();
+          setStatus('The message could not be sent. Book a time, or try again later.');
+        }).then(function () {
+          if (ready) sendBtn.disabled = false;
+        });
+      });
+    }
 
     window.addEventListener('popstate', function () {
       state = RS.parseState(location.search, catalog);

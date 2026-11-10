@@ -10,6 +10,7 @@ const catalog = { moduleIds: CONTENT.moduleIds, presets: CONTENT.presets };
 const data = Object.assign({}, CONTENT, {
   siteTitle: CFG.siteTitle,
   hubUrl: CFG.hubUrl,
+  calendlyUrl: CFG.calendlyUrl,
   person: CFG.person,
   qrSvg: '<svg></svg>'
 });
@@ -481,7 +482,9 @@ const who = R.whoHtml(sealedData);
 assert.ok(who.includes('Barry Floore'));
 assert.ok(who.includes('b. floore'));
 assert.ok(!who.includes('Michael'));
-assert.ok(who.includes('>Email</a>'));
+assert.ok(who.includes('Book a time'));
+assert.ok(who.includes('https://calendly.com/barryfloore'));
+assert.ok(!who.includes('>Email</a>'));
 assert.ok(who.includes('>Call</a>'));
 assert.ok(who.includes('>Text</a>'));
 assert.ok(!who.includes(CFG.person.email));
@@ -490,9 +493,162 @@ assert.ok(!who.includes('mailto:'));
 assert.ok(!who.includes('tel:'));
 const contact = R.contactHtml(sealedData);
 assert.ok(contact.includes('Download vCard'));
+assert.ok(contact.includes('id="contact-form"'));
+assert.ok(contact.includes('name="company"'));
+assert.ok(contact.includes('Book a time'));
+assert.ok(contact.includes('id="contact-send" disabled'));
 assert.ok(!contact.includes(CFG.person.email));
 assert.ok(!contact.includes(CFG.person.phone));
+assert.ok(!contact.includes('mailto:'));
+assert.ok(!contact.includes('barry.floore@gmail.com'));
 assert.strictEqual(R.contactCard(sealedData), card);
 assert.ok(!/download full/i.test(R.deckText(data, { view: 'cv', remix: 'general', on: CONTENT.moduleIds })));
 
-console.log('ok ' + CONTENT.modules.length + ' modules · ' + CONTENT.remixes.length + ' remixes · vCard ' + card.length + ' bytes');
+const fs = require('fs');
+const path = require('path');
+['app.js', 'render.js', 'state.js', 'contact-core.mjs', 'functions/api/contact.js'].forEach(function (rel) {
+  const text = fs.readFileSync(path.join(__dirname, rel), 'utf8').toLowerCase();
+  ['barry.floore@gmail.com', 'floorebarry@gmail.com', 'jaxdata', '904-438-1866', '9044381866', '904-600-4423', '9046004423'].forEach(function (bit) {
+    assert.ok(text.indexOf(bit) === -1, rel + ' contains ' + bit);
+  });
+});
+
+function contactRequest(method, body, headers) {
+  const init = { method: method, headers: headers || {} };
+  if (body != null) init.body = typeof body === 'string' ? body : JSON.stringify(body);
+  return new Request('https://resume.bfloore.online/api/contact', init);
+}
+
+const contactEnv = {
+  RESEND_API_KEY: 're_test_key',
+  CONTACT_TO: 'one@example.com, two@example.com',
+  CONTACT_FROM: 'Resume <resume@example.com>',
+  TURNSTILE_SECRET: 'turnstile-secret',
+  TURNSTILE_SITE_KEY: '0xpublic-site-key',
+  TURNSTILE_HOSTNAMES: 'resume.bfloore.online'
+};
+
+function jsonHeaders(extra) {
+  return Object.assign({
+    origin: 'https://resume.bfloore.online',
+    'content-type': 'application/json',
+    'cf-connecting-ip': '203.0.113.10'
+  }, extra || {});
+}
+
+async function contactTests() {
+  const core = await import('./contact-core.mjs');
+  assert.strictEqual(core.isConfigured({}), false);
+  assert.strictEqual(core.isConfigured(contactEnv), true);
+  assert.deepStrictEqual(core.recipients(contactEnv.CONTACT_TO), ['one@example.com', 'two@example.com']);
+  assert.deepStrictEqual(core.hostnamesOf({}), ['resume.bfloore.online']);
+
+  const bare = await core.handleContact(contactRequest('GET'), {});
+  const bareBody = await bare.json();
+  assert.strictEqual(bare.status, 200);
+  assert.strictEqual(bareBody.configured, false);
+  assert.ok(!bareBody.turnstileSiteKey);
+
+  const calls = [];
+  function fakeFetch(url, opts) {
+    const href = String(url);
+    calls.push({ url: href, body: opts && opts.body });
+    if (href.indexOf('siteverify') !== -1) {
+      const params = new URLSearchParams(String(opts.body));
+      const token = params.get('response');
+      const ok = token === 'good-token';
+      return Promise.resolve(new Response(JSON.stringify({
+        success: ok,
+        action: ok ? 'contact' : 'other',
+        hostname: ok ? 'resume.bfloore.online' : 'evil.example'
+      }), { status: 200, headers: { 'content-type': 'application/json' } }));
+    }
+    if (href.indexOf('api.resend.com') !== -1) {
+      return Promise.resolve(new Response(JSON.stringify({ id: 'email_1', to: ['one@example.com'] }), { status: 200 }));
+    }
+    return Promise.reject(new Error('unexpected fetch'));
+  }
+
+  const store = new Map();
+  const deps = { fetch: fakeFetch, store: store, now: 1_000_000 };
+  const listed = await core.handleContact(contactRequest('GET'), contactEnv, deps);
+  const listedBody = await listed.json();
+  assert.strictEqual(listedBody.configured, true);
+  assert.strictEqual(listedBody.turnstileSiteKey, '0xpublic-site-key');
+  assert.ok(!JSON.stringify(listedBody).includes('turnstile-secret'));
+  assert.ok(!JSON.stringify(listedBody).includes('one@example.com'));
+  assert.strictEqual(calls.length, 0);
+
+  const missing = await core.handleContact(contactRequest('POST', {
+    name: 'Ada',
+    email: 'ada@example.com',
+    message: 'Hello',
+    'cf-turnstile-response': 'good-token'
+  }, jsonHeaders()), {}, deps);
+  assert.strictEqual(missing.status, 503);
+  const missingBody = await missing.json();
+  assert.strictEqual(missingBody.error, core.MESSAGES.unconfigured);
+  assert.strictEqual(calls.length, 0);
+
+  const honeypot = await core.handleContact(contactRequest('POST', {
+    name: 'Ada',
+    email: 'ada@example.com',
+    message: 'Hello',
+    company: 'http://spam.example',
+    'cf-turnstile-response': 'good-token'
+  }, jsonHeaders()), contactEnv, deps);
+  assert.strictEqual(honeypot.status, 200);
+  assert.strictEqual((await honeypot.json()).ok, true);
+  assert.strictEqual(calls.length, 0);
+
+  const badToken = await core.handleContact(contactRequest('POST', {
+    name: 'Ada',
+    email: 'ada@example.com',
+    message: 'Hello',
+    'cf-turnstile-response': 'bad-token'
+  }, jsonHeaders()), contactEnv, deps);
+  assert.strictEqual(badToken.status, 403);
+  assert.strictEqual(calls.length, 1);
+  assert.ok(calls[0].url.indexOf('siteverify') !== -1);
+
+  const offOrigin = await core.handleContact(contactRequest('POST', {
+    name: 'Ada',
+    email: 'ada@example.com',
+    message: 'Hello',
+    'cf-turnstile-response': 'good-token'
+  }, jsonHeaders({ origin: 'https://evil.example' })), contactEnv, deps);
+  assert.strictEqual(offOrigin.status, 403);
+  assert.strictEqual(calls.length, 1);
+
+  const sent = await core.handleContact(contactRequest('POST', {
+    name: 'Ada Lovelace',
+    email: 'ada@example.com',
+    message: 'Hello from the resume.',
+    company: '',
+    page: 'https://resume.bfloore.online/?remix=ai',
+    'cf-turnstile-response': 'good-token'
+  }, jsonHeaders()), contactEnv, deps);
+  assert.strictEqual(sent.status, 200);
+  assert.strictEqual((await sent.json()).ok, true);
+  assert.strictEqual(calls.length, 3);
+  const mail = JSON.parse(String(calls[2].body));
+  assert.deepStrictEqual(mail.to, ['one@example.com', 'two@example.com']);
+  assert.strictEqual(mail.reply_to, 'ada@example.com');
+  assert.strictEqual(mail.from, 'Resume <resume@example.com>');
+  assert.ok(mail.text.includes('Hello from the resume.'));
+  assert.ok(mail.text.includes('https://resume.bfloore.online/?remix=ai'));
+  assert.ok(!JSON.stringify(mail).includes('turnstile-secret'));
+
+  const limited = new Map();
+  for (let i = 0; i < 5; i++) {
+    assert.strictEqual(core.allowRate(limited, '203.0.113.10', 5_000_000), true);
+  }
+  assert.strictEqual(core.allowRate(limited, '203.0.113.10', 5_000_000), false);
+
+  console.log('ok ' + CONTENT.modules.length + ' modules · ' + CONTENT.remixes.length + ' remixes · vCard ' + card.length + ' bytes');
+}
+
+contactTests().catch(function (err) {
+  console.error(err);
+  process.exit(1);
+});

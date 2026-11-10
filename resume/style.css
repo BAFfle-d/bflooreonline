@@ -87,6 +87,14 @@ button,input{font:inherit;color:inherit}
 .qr-frame{background:#fff;border-radius:10px;padding:10px;margin:12px 0}
 .qr-frame svg{width:100%;height:auto;display:block}
 .panel .btn{width:100%;margin-top:4px}
+.panel .book{margin-top:10px}
+.form{display:grid;gap:10px;margin:14px 0 8px}
+.form label{display:grid;gap:4px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.form input,.form textarea{font-family:var(--grot);font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink);background:#0a0e10;border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.form textarea{min-height:96px;resize:vertical}
+.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.form-status{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--soft);min-height:1.2em}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 .facts{display:grid;gap:10px;margin-top:16px}
 .facts div{display:grid;gap:2px}
 .facts dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}

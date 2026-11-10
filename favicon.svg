@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="b">
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2023"/>
+      <stop offset="0.55" stop-color="#0a0c0d"/>
+      <stop offset="1" stop-color="#13171a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="6" fill="url(#card)"/>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="5.5" fill="none" stroke="rgba(255,255,255,0.28)"/>
+  <path d="M6 6 H12 L6 12 Z" fill="rgba(255,255,255,0.62)"/>
+  <g transform="translate(21.239 40.397) scale(0.02581 -0.02581)">
+    <path d="M48 770H302V428L271 365V195L302 140V0H48ZM227 287Q237 381 276.5 449.5Q316 518 380.0 555.5Q444 593 525 593Q610 593 673.0 555.0Q736 517 771.5 448.0Q807 379 807 287Q807 196 771.5 127.0Q736 58 673.0 20.0Q610 -18 525 -18Q443 -18 379.5 20.0Q316 58 277.0 126.5Q238 195 227 287ZM551 287Q551 320 537.5 346.0Q524 372 499.5 387.0Q475 402 443 402Q410 402 379.0 387.0Q348 372 325.0 346.0Q302 320 292 287Q302 254 325.0 228.5Q348 203 379.0 188.0Q410 173 443 173Q475 173 499.5 188.0Q524 203 537.5 228.5Q551 254 551 287Z" fill="#ffffff"/>
+  </g>
+</svg>

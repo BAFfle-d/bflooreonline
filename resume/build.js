@@ -42,9 +42,22 @@ function page({ title, desc, canonical, body, jsonld, boot }) {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(CFG.siteUrl + canonical)}">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${esc(CFG.siteUrl + '/og.png')}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="b. floore">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(title || CFG.siteTitle)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(CFG.siteUrl + '/og.png')}">
+<meta name="twitter:image:alt" content="b. floore">
 <meta name="theme-color" content="#07090a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2307090a'/%3E%3Ctext x='32' y='45' font-family='monospace' font-size='38' font-weight='700' fill='%23ffd500' text-anchor='middle'%3Eb%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -60,7 +73,7 @@ ${jsonld || ''}
 ${body}
 <footer class="foot">
   <p>${esc(CFG.person.full)} · Jacksonville, Florida · ${esc(CFG.person.remote)}</p>
-  <p><a class="reach" data-reach="mail" href="/#contact">Email</a> · <a href="${esc(CFG.person.linkedin)}">LinkedIn</a> · <a href="${esc(CFG.hubUrl)}">bfloore.online</a></p>
+  <p><a href="/#contact">Contact</a> · <a href="${esc(CFG.calendlyUrl)}">Book a time</a> · <a href="${esc(CFG.person.linkedin)}">LinkedIn</a> · <a href="${esc(CFG.hubUrl)}">bfloore.online</a></p>
 </footer>
 ${boot || ''}
 </body>
@@ -83,6 +96,7 @@ async function main() {
     siteTitle: CFG.siteTitle,
     siteUrl: CFG.siteUrl,
     hubUrl: CFG.hubUrl,
+    calendlyUrl: CFG.calendlyUrl,
     person: R.sealPerson(CFG.person),
     identity: CONTENT.identity,
     remixes: CONTENT.remixes,
@@ -121,7 +135,7 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
         <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. The file matches the sections on screen. The vCard is a separate download.</p>
       </div>
       <div id="sections">${R.sectionsHtml(payload, defaultState)}</div>
-      <noscript><p class="note">Remixes, section toggles, and the vCard download use JavaScript. The QR code still adds Barry Floore to a phone.</p></noscript>
+      <noscript><p class="note">Remixes, PDF export, the contact form, and the vCard download use JavaScript. Book a time still works, and the QR code still adds Barry Floore to a phone.</p></noscript>
     </article>
     <aside class="panel" id="contact" aria-label="Contact">${R.contactHtml(payload)}</aside>
   </div>
@@ -153,9 +167,10 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   });
 
   if (/download full cv/i.test(html)) throw new Error('The page must not offer a full-CV download.');
-  if (!html.includes('Download PDF') || !html.includes('Download vCard')) {
-    throw new Error('PDF and vCard actions are missing.');
+  if (!html.includes('Download PDF') || !html.includes('Download vCard') || !html.includes('Book a time') || !html.includes('id="contact-form"')) {
+    throw new Error('PDF, vCard, booking, or contact form actions are missing.');
   }
+  if (html.includes('mailto:')) throw new Error('Page source still contains a mailto link.');
   CONTENT.remixes.forEach(function (remix) {
     if (!html.includes('data-remix="' + remix.id + '"')) throw new Error('Missing remix chip ' + remix.id);
   });
@@ -183,6 +198,51 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
 <url><loc>${esc(CFG.siteUrl)}/</loc></url>
 </urlset>
 `);
+  write('_routes.json', JSON.stringify({
+    version: 1,
+    include: ['/api/*'],
+    exclude: []
+  }, null, 2) + '\n');
+  write('site.webmanifest', JSON.stringify({
+    name: 'b. floore resume',
+    short_name: 'b. floore',
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' }
+    ],
+    theme_color: '#07090a',
+    background_color: '#07090a',
+    display: 'standalone'
+  }, null, 2) + '\n');
+
+  const brand = path.join(ROOT, 'brand');
+  fs.readdirSync(brand).forEach(function (name) {
+    const src = path.join(brand, name);
+    if (!fs.statSync(src).isFile()) return;
+    fs.copyFileSync(src, path.join(OUT, name));
+  });
+
+  const banned = [
+    'barry.floore@gmail.com',
+    'floorebarry@gmail.com',
+    'jaxdata',
+    '904-438-1866',
+    '9044381866',
+    '904-600-4423',
+    '9046004423'
+  ];
+  function scanTree(dir) {
+    fs.readdirSync(dir, { withFileTypes: true }).forEach(function (ent) {
+      const file = path.join(dir, ent.name);
+      if (ent.isDirectory()) { scanTree(file); return; }
+      if (/\.(png|jpg|jpeg|ico|woff2?)$/i.test(ent.name)) return;
+      const text = fs.readFileSync(file).toString('utf8').toLowerCase();
+      banned.forEach(function (bit) {
+        if (text.indexOf(bit) !== -1) throw new Error(file + ' contains plaintext contact: ' + bit);
+      });
+    });
+  }
+  scanTree(OUT);
 
   console.log('Built resume into dist/.');
   console.log('vCard ' + card.length + ' bytes · QR svg ' + qr.length + ' bytes · ' + CONTENT.modules.length + ' modules.');
