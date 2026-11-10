@@ -483,7 +483,7 @@ assert.ok(who.includes('Barry Floore'));
 assert.ok(who.includes('b. floore'));
 assert.ok(!who.includes('Michael'));
 assert.ok(who.includes('Book a time'));
-assert.ok(who.includes('https://calendly.com/barryfloore'));
+assert.strictEqual(hasExactUrl(who, CFG.calendlyUrl), true);
 assert.ok(!who.includes('>Email</a>'));
 assert.ok(who.includes('>Call</a>'));
 assert.ok(who.includes('>Text</a>'));
@@ -496,6 +496,7 @@ assert.ok(contact.includes('Download vCard'));
 assert.ok(contact.includes('id="contact-form"'));
 assert.ok(contact.includes('name="company"'));
 assert.ok(contact.includes('Book a time'));
+assert.strictEqual(hasExactUrl(contact, CFG.calendlyUrl), true);
 assert.ok(contact.includes('id="contact-send" disabled'));
 assert.ok(!contact.includes(CFG.person.email));
 assert.ok(!contact.includes(CFG.person.phone));
@@ -512,6 +513,24 @@ const path = require('path');
     assert.ok(text.indexOf(bit) === -1, rel + ' contains ' + bit);
   });
 });
+
+function parsedUrl(value) {
+  return new URL(String(value));
+}
+
+function hasExactUrl(html, expected) {
+  const want = parsedUrl(expected);
+  const re = /href="([^"]*)"/g;
+  let match;
+  while ((match = re.exec(html))) {
+    let url;
+    try { url = parsedUrl(match[1]); } catch (err) { continue; }
+    if (url.origin === want.origin && url.pathname === want.pathname && url.search === want.search && url.hash === want.hash) {
+      return true;
+    }
+  }
+  return false;
+}
 
 function contactRequest(method, body, headers) {
   const init = { method: method, headers: headers || {} };
@@ -551,9 +570,9 @@ async function contactTests() {
 
   const calls = [];
   function fakeFetch(url, opts) {
-    const href = String(url);
-    calls.push({ url: href, body: opts && opts.body });
-    if (href.indexOf('siteverify') !== -1) {
+    const parsed = parsedUrl(url);
+    calls.push({ url: parsed, body: opts && opts.body });
+    if (parsed.origin === 'https://challenges.cloudflare.com' && parsed.pathname === '/turnstile/v0/siteverify') {
       const params = new URLSearchParams(String(opts.body));
       const token = params.get('response');
       const ok = token === 'good-token';
@@ -563,10 +582,10 @@ async function contactTests() {
         hostname: ok ? 'resume.bfloore.online' : 'evil.example'
       }), { status: 200, headers: { 'content-type': 'application/json' } }));
     }
-    if (href.indexOf('api.resend.com') !== -1) {
+    if (parsed.origin === 'https://api.resend.com' && parsed.pathname === '/emails') {
       return Promise.resolve(new Response(JSON.stringify({ id: 'email_1', to: ['one@example.com'] }), { status: 200 }));
     }
-    return Promise.reject(new Error('unexpected fetch'));
+    return Promise.reject(new Error('unexpected fetch ' + parsed.origin + parsed.pathname));
   }
 
   const store = new Map();
@@ -609,7 +628,8 @@ async function contactTests() {
   }, jsonHeaders()), contactEnv, deps);
   assert.strictEqual(badToken.status, 403);
   assert.strictEqual(calls.length, 1);
-  assert.ok(calls[0].url.indexOf('siteverify') !== -1);
+  assert.strictEqual(calls[0].url.origin, 'https://challenges.cloudflare.com');
+  assert.strictEqual(calls[0].url.pathname, '/turnstile/v0/siteverify');
 
   const offOrigin = await core.handleContact(contactRequest('POST', {
     name: 'Ada',
@@ -636,7 +656,13 @@ async function contactTests() {
   assert.strictEqual(mail.reply_to, 'ada@example.com');
   assert.strictEqual(mail.from, 'Resume <resume@example.com>');
   assert.ok(mail.text.includes('Hello from the resume.'));
-  assert.ok(mail.text.includes('https://resume.bfloore.online/?remix=ai'));
+  const pageLine = mail.text.split('\n').filter(function (line) { return line.indexOf('Page: ') === 0; })[0];
+  const pageUrl = parsedUrl(pageLine.slice('Page: '.length));
+  const wantPage = parsedUrl('https://resume.bfloore.online/?remix=ai');
+  assert.strictEqual(pageUrl.origin, wantPage.origin);
+  assert.strictEqual(pageUrl.hostname, wantPage.hostname);
+  assert.strictEqual(pageUrl.pathname, wantPage.pathname);
+  assert.strictEqual(pageUrl.search, wantPage.search);
   assert.ok(!JSON.stringify(mail).includes('turnstile-secret'));
 
   const limited = new Map();
