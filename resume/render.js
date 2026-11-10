@@ -86,9 +86,13 @@
 
   function bookLink(data, className) {
     var href = data.calendlyUrl || '';
-    if (!/^https:\/\/calendly\.com\/[^\s"'<>]+$/.test(href)) return '';
+    var url;
+    try { url = new URL(href); } catch (err) { return ''; }
+    if (url.protocol !== 'https:' || url.hostname !== 'calendly.com' || url.pathname.length < 2) return '';
+    if (url.username || url.password) return '';
+    var safe = url.origin + url.pathname + url.search + url.hash;
     var cls = className ? ' class="' + className + '"' : '';
-    return '<a' + cls + ' href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">Book a time</a>';
+    return '<a' + cls + ' href="' + esc(safe) + '" target="_blank" rel="noopener noreferrer">Book a time</a>';
   }
 
   function contactCard(data) {

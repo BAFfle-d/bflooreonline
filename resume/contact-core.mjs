@@ -64,7 +64,9 @@ export function hostnamesOf(env) {
     .map(function (part) { return part.trim().toLowerCase(); })
     .filter(Boolean);
   return parts.filter(function (host) {
-    return /^[a-z0-9.-]+$/.test(host) && host.indexOf('..') === -1 && host.length <= 253;
+    if (!/^[a-z0-9.-]+$/.test(host) || host.length > 253 || host.length < 1) return false;
+    const labels = host.split('.');
+    return labels.every(function (label) { return label.length > 0; });
   });
 }
 

@@ -19,6 +19,54 @@ function eq(a, b, msg) {
   assert.deepStrictEqual(a, b, msg || JSON.stringify(a) + ' !== ' + JSON.stringify(b));
 }
 
+function parsedUrl(value) {
+  return new URL(String(value));
+}
+
+function sameUrl(actual, expected) {
+  return actual.protocol === expected.protocol &&
+    actual.hostname === expected.hostname &&
+    actual.pathname === expected.pathname &&
+    actual.search === expected.search &&
+    actual.hash === expected.hash;
+}
+
+function urlsIn(text) {
+  const found = [];
+  const source = String(text).replace(/&amp;/g, '&');
+  const re = /https?:\/\/[^\s"'<>]+/g;
+  let match;
+  while ((match = re.exec(source))) {
+    const raw = match[0].replace(/[),.;]+$/g, '');
+    try { found.push(parsedUrl(raw)); } catch (err) { /* not a URL */ }
+  }
+  return found;
+}
+
+function hasExactUrl(text, expected) {
+  let want;
+  try { want = parsedUrl(expected); } catch (err) { return false; }
+  return urlsIn(text).some(function (url) { return sameUrl(url, want); });
+}
+
+function hostnamesIn(text) {
+  const names = [];
+  urlsIn(text).forEach(function (url) { names.push(url.hostname.toLowerCase()); });
+  const source = String(text).replace(/&amp;/g, '&');
+  const re = /(?:^|[^A-Za-z0-9.-])((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?![A-Za-z0-9.-])/g;
+  let match;
+  while ((match = re.exec(source))) names.push(match[1].toLowerCase());
+  return names;
+}
+
+function hasHostname(text, hostname) {
+  const host = String(hostname).replace(/\/+$/, '').toLowerCase();
+  const names = hostnamesIn(text);
+  for (let i = 0; i < names.length; i++) if (names[i] === host) return true;
+  return false;
+}
+
+
 assert.deepStrictEqual(CONTENT.remixes.map(function (r) { return r.id; }), ['general', 'ai', 'freelance', 'health', 'support', 'creative']);
 assert.deepStrictEqual(CONTENT.remixes.map(function (r) { return r.label; }), ['General', 'AI trainer', 'Business owner / freelancer', 'Health / education', 'Remote support / crisis', 'Content creation']);
 assert.strictEqual(CONTENT.remixes.length, 6);
@@ -105,21 +153,21 @@ assert.ok(!JSON.stringify(projects.variants.creative).includes('visual media'));
 assert.ok(!JSON.stringify(projects.variants.light).includes('SLOP!'));
 assert.ok(JSON.stringify(projects.variants.practice).includes('no paid licensing yet'));
 assert.ok(JSON.stringify(projects.variants.creative).includes('no paid licensing yet'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'));
-assert.ok(!JSON.stringify(projects.variants.practice).includes('open.spotify.com'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://friendlyrobots.online'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://slopthemusical.com'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://spuncalliope.wordpress.com'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://thelyingliars.online'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://serialimages.vercel.app'));
-assert.ok(JSON.stringify(projects.variants.light).includes('https://stashandset.com'));
-assert.ok(JSON.stringify(projects.variants.light).includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'), true);
+assert.strictEqual(hasHostname(JSON.stringify(projects.variants.practice), 'open.spotify.com'), false);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://friendlyrobots.online'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://slopthemusical.com'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://spuncalliope.wordpress.com'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://thelyingliars.online'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://serialimages.vercel.app'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.light), 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.light), 'https://dataonezero.com'), true);
 assert.ok(JSON.stringify(projects.variants.light).includes('Property assistants'));
-assert.ok(!JSON.stringify(projects.variants.light).includes('https://friendlyrobots.online'));
-assert.ok(JSON.stringify(projects.variants.practice).includes('https://stashandset.com'));
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.light), 'https://friendlyrobots.online'), false);
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.practice), 'https://stashandset.com'), true);
 assert.ok(JSON.stringify(projects.variants.practice).includes('RedKey'));
 assert.ok(!JSON.stringify(projects.variants.practice).includes('DJ Staxxx'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://dataonezero.com'), true);
 assert.ok(JSON.stringify(projects.variants.creative).includes('DJ Staxxx'));
 assert.ok(JSON.stringify(projects.variants.creative).includes('nieces and nephews'));
 assert.ok(JSON.stringify(projects.variants.full).includes('Property assistants'));
@@ -192,7 +240,10 @@ assert.strictEqual(CFG.person.email, 'floorebarry@gmail.com');
 assert.deepStrictEqual(CFG.person.alternateName, ['b. floore', 'Michael Floore']);
 assert.strictEqual(CFG.person.full, 'Barry Floore');
 assert.strictEqual(CFG.person.display, 'b. floore');
-['FN:Barry Floore', 'floorebarry@gmail.com', '+1-904-438-1866', '+1-904-600-4423', 'https://linkedin.com/in/mbfloore', 'https://www.bfloore.online', 'Jacksonville'].forEach(function (bit) {
+['https://linkedin.com/in/mbfloore', 'https://www.bfloore.online'].forEach(function (url) {
+  assert.strictEqual(hasExactUrl(card, url), true, 'vCard missing ' + url);
+});
+['FN:Barry Floore', 'floorebarry@gmail.com', '+1-904-438-1866', '+1-904-600-4423', 'Jacksonville'].forEach(function (bit) {
   assert.ok(card.includes(bit), 'vCard missing ' + bit);
 });
 assert.ok(!card.includes('barry.floore@gmail.com'));
@@ -211,11 +262,11 @@ function htmlFor(search) {
 
 const gHtml = htmlFor('');
 assert.ok(gHtml.includes('5+ years'));
-assert.ok(gHtml.includes('https://stashandset.com'));
-assert.ok(gHtml.includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(gHtml, 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(gHtml, 'https://dataonezero.com'), true);
 assert.ok(gHtml.includes('Property assistants'));
 assert.ok(!gHtml.includes('thelyingliars'));
-assert.ok(!gHtml.includes('open.spotify.com'));
+assert.strictEqual(hasHostname(gHtml, 'open.spotify.com'), false);
 assert.ok(gHtml.includes('Handshake AI'));
 assert.ok(gHtml.includes('Sigma Theta Tau'));
 assert.ok(gHtml.includes('Safety labeling and moderation'));
@@ -229,9 +280,9 @@ const aiHtml = htmlFor('?remix=ai');
 assert.ok(aiHtml.includes('supporting LLMs through safety labeling'));
 assert.ok(aiHtml.includes('Multimodal review (text, image, video, speech).'));
 assert.ok(aiHtml.includes('HIPAA'));
-assert.ok(aiHtml.includes('bfloore.online'));
-assert.ok(aiHtml.includes('https://stashandset.com'));
-assert.ok(aiHtml.includes('https://dataonezero.com'));
+assert.strictEqual(hasHostname(aiHtml, 'bfloore.online'), true);
+assert.strictEqual(hasExactUrl(aiHtml, 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(aiHtml, 'https://dataonezero.com'), true);
 assert.ok(!aiHtml.includes('visual media'));
 assert.ok(!aiHtml.includes('Brand ownership'));
 assert.ok(!aiHtml.includes('Direct Interactions'));
@@ -240,8 +291,8 @@ assert.ok(!aiHtml.includes('Skills — operator'));
 
 const frHtml = htmlFor('?remix=freelance');
 assert.ok(frHtml.includes('property-specific assistants'));
-assert.ok(frHtml.includes('https://stashandset.com'));
-assert.ok(frHtml.includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(frHtml, 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(frHtml, 'https://dataonezero.com'), true);
 assert.ok(frHtml.includes('RedKey'));
 assert.ok(!frHtml.includes('without a corporate scaffold'));
 assert.ok(frHtml.includes('Client operations'));
@@ -267,14 +318,14 @@ assert.ok(!aiHtml.includes('EPIC and Cerner'));
 assert.ok(!aiHtml.includes('Skills — health'));
 assert.ok(!aiHtml.includes('healthcare and education lens'));
 assert.ok(!gHtml.includes('SLOP!'));
-assert.ok(!gHtml.includes('friendlyrobots.online'));
+assert.strictEqual(hasHostname(gHtml, 'friendlyrobots.online'), false);
 assert.ok(!aiHtml.includes('SLOP!'));
 assert.ok(!/world-record nominated/i.test(frHtml));
-assert.ok(!frHtml.includes('open.spotify.com'));
+assert.strictEqual(hasHostname(frHtml, 'open.spotify.com'), false);
 assert.ok(!frHtml.includes('Skills — creative'));
 assert.ok(!frHtml.includes('Crisis intervention and de-escalation'));
 assert.ok(frHtml.includes('visual media'));
-assert.ok(frHtml.includes('friendlyrobots.online'));
+assert.strictEqual(hasHostname(frHtml, 'friendlyrobots.online'), true);
 assert.ok(frHtml.includes('SLOP!'));
 assert.ok(frHtml.includes('no paid licensing yet'));
 assert.ok(frHtml.includes('Listed on the hub.'));
@@ -289,7 +340,7 @@ assert.ok(healthHtml.includes('de-escalated angry/crisis guests'));
 assert.ok(healthHtml.includes('inbound fundraising'));
 assert.ok(healthHtml.includes('Direct Interactions'));
 assert.ok(healthHtml.includes('Samsung.com Mobile via ibbu'));
-assert.ok(healthHtml.includes('HotelPlanner.com'));
+assert.strictEqual(hasHostname(healthHtml, 'HotelPlanner.com'), true);
 assert.ok(healthHtml.includes('ACD Direct for PBS/NPR'));
 assert.ok(!healthHtml.includes('Omaha Steaks'));
 assert.ok(healthHtml.includes('Baptist Health'));
@@ -378,35 +429,35 @@ const creativeHtml = htmlFor('?remix=creative');
 assert.ok(creativeHtml.includes('Writer, composer, and producer'));
 assert.ok(creativeHtml.includes('are underway'));
 assert.ok(creativeHtml.includes('nieces and nephews'));
-assert.ok(creativeHtml.includes('https://stashandset.com'));
-assert.ok(creativeHtml.includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://dataonezero.com'), true);
 assert.ok(!creativeHtml.includes('160k'));
 assert.ok(creativeHtml.includes('World-record nominated'));
-assert.ok(creativeHtml.includes('https://friendlyrobots.online'));
-assert.ok(creativeHtml.includes('https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://friendlyrobots.online'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH'), true);
 assert.ok(creativeHtml.includes('Amazon author store'));
 assert.ok(creativeHtml.includes('Published novella.'));
-assert.ok(creativeHtml.includes('https://thelyingliars.online'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://thelyingliars.online'), true);
 assert.ok(creativeHtml.includes('The Lying Liars Who Lied When They Said They Loved You'));
 assert.ok(creativeHtml.includes('fictionalized semi-autobiographical novel in editing'));
-assert.ok(creativeHtml.includes('https://slopthemusical.com'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://slopthemusical.com'), true);
 assert.ok(creativeHtml.includes('Geoff &amp; Maxie'));
-assert.ok(creativeHtml.includes('https://spuncalliope.wordpress.com'));
-assert.ok(creativeHtml.includes('https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://spuncalliope.wordpress.com'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'), true);
 assert.ok(creativeHtml.includes('that ranking is the show\'s claim'));
 assert.ok(creativeHtml.includes('Apple Podcasts and iHeart'));
 assert.ok(creativeHtml.includes('Monsters, Marvels'));
 assert.ok(creativeHtml.includes('Lyrics by DJ Staxxx'));
 assert.ok(creativeHtml.includes('AI-assisted instrumentation via Suno'));
 assert.ok(creativeHtml.includes('Adult.'));
-assert.ok(creativeHtml.includes('https://instagram.com/barrylikethefruit'));
-assert.ok(creativeHtml.includes('https://youtube.com/@bfloore_online'));
-assert.ok(creativeHtml.includes('https://tiktok.com/@b_floore'));
-assert.ok(creativeHtml.includes('https://barryfloore.substack.com'));
-assert.ok(creativeHtml.includes('https://medium.com/@bfloore'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://instagram.com/barrylikethefruit'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://youtube.com/@bfloore_online'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://tiktok.com/@b_floore'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://barryfloore.substack.com'), true);
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://medium.com/@bfloore'), true);
 assert.ok(creativeHtml.includes('active monthly licensing'));
 assert.ok(creativeHtml.includes('no paid licensing yet'));
-assert.ok(creativeHtml.includes('https://serialimages.vercel.app'));
+assert.strictEqual(hasExactUrl(creativeHtml, 'https://serialimages.vercel.app'), true);
 assert.ok(creativeHtml.includes('Merch on Etsy and downloads on Gumroad'));
 assert.ok(creativeHtml.includes('Sigma Theta Tau'));
 assert.ok(creativeHtml.includes('CRM familiarity'));
@@ -432,8 +483,8 @@ assert.ok(creativeChips.includes('data-remix="creative" aria-pressed="true">Cont
 const cvHtml = htmlFor('?view=cv');
 assert.ok(cvHtml.includes('supporting LLMs through safety labeling'));
 assert.ok(cvHtml.includes('property-specific assistants'));
-assert.ok(cvHtml.includes('https://stashandset.com'));
-assert.ok(cvHtml.includes('https://dataonezero.com'));
+assert.strictEqual(hasExactUrl(cvHtml, 'https://stashandset.com'), true);
+assert.strictEqual(hasExactUrl(cvHtml, 'https://dataonezero.com'), true);
 assert.ok(cvHtml.includes('RedKey'));
 assert.ok(cvHtml.includes('DJ Staxxx'));
 assert.ok(cvHtml.includes('Baptist Health'));
@@ -455,8 +506,8 @@ assert.ok(cvHtml.includes('Skills — health'));
 assert.ok(cvHtml.includes('Health education and AOD risk reduction'));
 assert.ok(!cvHtml.includes('healthcare and education lens'));
 assert.ok(cvHtml.includes('World-record nominated'));
-assert.ok(cvHtml.includes('https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'));
-assert.ok(cvHtml.includes('https://friendlyrobots.online'));
+assert.strictEqual(hasExactUrl(cvHtml, 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'), true);
+assert.strictEqual(hasExactUrl(cvHtml, 'https://friendlyrobots.online'), true);
 assert.ok(cvHtml.includes('no paid licensing yet'));
 assert.ok(cvHtml.includes('Skills — creative'));
 assert.ok(cvHtml.includes('Crisis intervention and de-escalation'));
@@ -483,7 +534,7 @@ assert.ok(who.includes('Barry Floore'));
 assert.ok(who.includes('b. floore'));
 assert.ok(!who.includes('Michael'));
 assert.ok(who.includes('Book a time'));
-assert.ok(who.includes('https://calendly.com/barryfloore'));
+assert.strictEqual(hasExactUrl(who, 'https://calendly.com/barryfloore'), true);
 assert.ok(!who.includes('>Email</a>'));
 assert.ok(who.includes('>Call</a>'));
 assert.ok(who.includes('>Text</a>'));
@@ -551,9 +602,9 @@ async function contactTests() {
 
   const calls = [];
   function fakeFetch(url, opts) {
-    const href = String(url);
-    calls.push({ url: href, body: opts && opts.body });
-    if (href.indexOf('siteverify') !== -1) {
+    const parsed = parsedUrl(url);
+    calls.push({ url: parsed, body: opts && opts.body });
+    if (parsed.origin === 'https://challenges.cloudflare.com' && parsed.pathname === '/turnstile/v0/siteverify') {
       const params = new URLSearchParams(String(opts.body));
       const token = params.get('response');
       const ok = token === 'good-token';
@@ -563,7 +614,7 @@ async function contactTests() {
         hostname: ok ? 'resume.bfloore.online' : 'evil.example'
       }), { status: 200, headers: { 'content-type': 'application/json' } }));
     }
-    if (href.indexOf('api.resend.com') !== -1) {
+    if (parsed.origin === 'https://api.resend.com' && parsed.pathname === '/emails') {
       return Promise.resolve(new Response(JSON.stringify({ id: 'email_1', to: ['one@example.com'] }), { status: 200 }));
     }
     return Promise.reject(new Error('unexpected fetch'));
@@ -609,7 +660,8 @@ async function contactTests() {
   }, jsonHeaders()), contactEnv, deps);
   assert.strictEqual(badToken.status, 403);
   assert.strictEqual(calls.length, 1);
-  assert.ok(calls[0].url.indexOf('siteverify') !== -1);
+  assert.strictEqual(calls[0].url.origin, 'https://challenges.cloudflare.com');
+  assert.strictEqual(calls[0].url.pathname, '/turnstile/v0/siteverify');
 
   const offOrigin = await core.handleContact(contactRequest('POST', {
     name: 'Ada',
@@ -636,7 +688,12 @@ async function contactTests() {
   assert.strictEqual(mail.reply_to, 'ada@example.com');
   assert.strictEqual(mail.from, 'Resume <resume@example.com>');
   assert.ok(mail.text.includes('Hello from the resume.'));
-  assert.ok(mail.text.includes('https://resume.bfloore.online/?remix=ai'));
+  const pageUrl = parsedUrl(mail.text.split('\n').filter(function (line) { return line.slice(0, 6) === 'Page: '; })[0].slice(6));
+  const wantPage = parsedUrl('https://resume.bfloore.online/?remix=ai');
+  assert.strictEqual(pageUrl.origin, wantPage.origin);
+  assert.strictEqual(pageUrl.hostname, wantPage.hostname);
+  assert.strictEqual(pageUrl.pathname, wantPage.pathname);
+  assert.strictEqual(pageUrl.search, wantPage.search);
   assert.ok(!JSON.stringify(mail).includes('turnstile-secret'));
 
   const limited = new Map();
