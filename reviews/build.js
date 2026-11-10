@@ -48,16 +48,31 @@ function parse(raw, file) {
   return { meta, body: m[2] };
 }
 
+/* A parsed hostname equals the allowed host, or is a subdomain of it. */
+function hostIs(hostname, allowed) {
+  const host = String(hostname || '').toLowerCase().replace(/\.$/, '').replace(/^www\./, '');
+  const want = String(allowed || '').toLowerCase().replace(/\.$/, '').replace(/^www\./, '');
+  if (!host || !want) return false;
+  if (host === want) return true;
+  const labels = host.split('.');
+  const wantLabels = want.split('.');
+  if (!wantLabels.length || wantLabels.length >= labels.length) return false;
+  if (wantLabels.some((label) => label === '')) return false;
+  return labels.slice(labels.length - wantLabels.length).join('.') === want;
+}
+
 /* affiliate handling */
 function isAffiliate(href) {
-  try { const h = new URL(href).hostname.replace(/^www\./, ''); return CFG.affiliateHosts.some((a) => h === a || h.endsWith('.' + a)); }
-  catch (e) { return false; }
+  try {
+    const host = new URL(href).hostname;
+    return CFG.affiliateHosts.some((allowed) => hostIs(host, allowed));
+  } catch (e) { return false; }
 }
 function tagAmazon(href) {
   if (!CFG.amazonTag) return href;
   try {
     const u = new URL(href);
-    if (/(^|\.)amazon\.com$/.test(u.hostname)) { u.searchParams.set('tag', CFG.amazonTag); return u.toString(); }
+    if (hostIs(u.hostname, 'amazon.com')) { u.searchParams.set('tag', CFG.amazonTag); return u.toString(); }
   } catch (e) {}
   return href;
 }
