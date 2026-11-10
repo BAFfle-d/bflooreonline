@@ -14,7 +14,9 @@ module.exports = {
     family: 'Floore',
     display: 'b. floore',
     full: 'Barry Floore',
-    email: 'barry.floore@gmail.com',
+    /* Schema only. The visible header stays Barry Floore / b. floore. */
+    alternateName: ['b. floore', 'Michael Floore'],
+    email: 'floorebarry@gmail.com',
     phone: '904-438-1866',
     phoneE164: '+1-904-438-1866',
     sms: '904-600-4423',

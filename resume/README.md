@@ -70,6 +70,6 @@ The contact card is separate from the PDF. Its QR code encodes a vCard (name, em
 ## Edit the words
 
 - `content.js` — sections, remix presets, and which variant each remix shows
-- `site.config.js` — name, email, phones, links, site URL
+- `site.config.js` — name, email, phones, links, site URL. The visible name stays Barry Floore / b. floore. `alternateName` is schema only and is not shown in the header.
 
 Remix chips are General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, and Content creation.
