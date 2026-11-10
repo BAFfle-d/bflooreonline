@@ -1,7 +1,7 @@
 {
   "name": "bfloore-resume",
   "private": true,
-  "description": "resume.bfloore.online: static interactive resume.",
+  "description": "resume.bfloore.online: interactive resume with a Pages contact function.",
   "scripts": {
     "build": "node build.js",
     "test": "node test.js"

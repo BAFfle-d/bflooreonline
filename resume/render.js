@@ -84,6 +84,13 @@
     return '<a class="reach" data-reach="' + kind + '" href="#contact">' + label + '</a>';
   }
 
+  function bookLink(data, className) {
+    var href = data.calendlyUrl || '';
+    if (!/^https:\/\/calendly\.com\/[^\s"'<>]+$/.test(href)) return '';
+    var cls = className ? ' class="' + className + '"' : '';
+    return '<a' + cls + ' href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">Book a time</a>';
+  }
+
   function contactCard(data) {
     var p = data.person;
     var c = openReach(p);
@@ -109,7 +116,7 @@
       '<h1 id="name">' + esc(p.full) + '</h1>' +
       '<p class="identity">' + esc(data.identity.line) + '</p>' +
       '<ul class="contact-line">' +
-        '<li>' + reachLink('mail', 'Email') + '</li>' +
+        '<li>' + bookLink(data) + '</li>' +
         '<li>' + reachLink('voice', 'Call') + '</li>' +
         '<li>' + reachLink('sms', 'Text') + '</li>' +
         '<li>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</li>' +
@@ -121,12 +128,23 @@
   function contactHtml(data) {
     var p = data.person;
     return '<p class="kicker">// contact</p>' +
+      '<h2>Contact</h2>' +
+      '<p class="qr-note">Book a time, or send a note. The note goes through this site, so no address is shown here.</p>' +
+      bookLink(data, 'btn primary book') +
+      '<form class="form" id="contact-form" novalidate>' +
+        '<label for="contact-name">Name<input id="contact-name" name="name" type="text" required maxlength="80" autocomplete="name"></label>' +
+        '<label for="contact-email">Your email<input id="contact-email" name="email" type="email" required maxlength="120" autocomplete="email"></label>' +
+        '<label for="contact-message">Message<textarea id="contact-message" name="message" required maxlength="4000"></textarea></label>' +
+        '<div class="hp" aria-hidden="true"><label for="contact-company">Company<input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>' +
+        '<div id="turnstile"></div>' +
+        '<button type="submit" class="btn primary" id="contact-send" disabled>Send</button>' +
+        '<p class="form-status" id="form-status" role="status">Checking whether the contact form is available.</p>' +
+      '</form>' +
       '<h2>Save to phone</h2>' +
       '<div class="qr-frame" role="img" aria-label="QR code that adds Barry Floore to a phone\'s contacts">' + data.qrSvg + '</div>' +
       '<p class="qr-note">Scan the code to add Barry Floore, or download the same contact card.</p>' +
       '<button type="button" class="btn primary" id="vcard">Download vCard</button>' +
       '<dl class="facts">' +
-        '<div><dt>Email</dt><dd>' + reachLink('mail', 'Email') + '</dd></div>' +
         '<div><dt>Phone</dt><dd>' + reachLink('voice', 'Call') + '</dd></div>' +
         '<div><dt>SMS</dt><dd>' + reachLink('sms', 'Text') + '</dd></div>' +
         '<div><dt>Location</dt><dd>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</dd></div>' +

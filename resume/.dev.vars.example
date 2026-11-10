@@ -1,0 +1,8 @@
+# Copy to resume/.dev.vars for local `wrangler pages dev`.
+# Do not commit .dev.vars. Leave production hostnames off this local file.
+RESEND_API_KEY=
+CONTACT_TO=
+CONTACT_FROM=
+TURNSTILE_SECRET=
+TURNSTILE_SITE_KEY=
+TURNSTILE_HOSTNAMES=localhost,127.0.0.1

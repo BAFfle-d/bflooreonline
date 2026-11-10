@@ -8,6 +8,7 @@ module.exports = {
   siteUrl: 'https://resume.bfloore.online',
   hubUrl: 'https://www.bfloore.online',
   reviewsUrl: 'https://reviews.bfloore.online',
+  calendlyUrl: 'https://calendly.com/barryfloore',
   author: 'b. floore',
   person: {
     given: 'Barry',
