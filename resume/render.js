@@ -144,7 +144,7 @@
         '<button type="submit" class="btn primary" id="contact-send" disabled>Send</button>' +
         '<p class="form-status" id="form-status" role="status">Checking whether the contact form is available.</p>' +
       '</form>' +
-      '<h2>Save to phone</h2>' +
+      '<h3 class="subhead">Save to phone</h3>' +
       '<div class="qr-frame" role="img" aria-label="QR code that adds Barry Floore to a phone\'s contacts">' + data.qrSvg + '</div>' +
       '<p class="qr-note">Scan the code to add Barry Floore, or download the same contact card.</p>' +
       '<button type="button" class="btn primary" id="vcard">Download vCard</button>' +
@@ -191,10 +191,19 @@
     return 'Sections differ from ' + esc(remixById(data, state.remix).label) + '. <button type="button" id="reset">Reset sections</button>';
   }
 
-  function renderRole(job) {
+  var GROUPS = [
+    { id: 'summary', title: 'Summary', ids: ['summary'] },
+    { id: 'experience', title: 'Experience', ids: ['exp-ai', 'exp-cs', 'clinical'] },
+    { id: 'projects', title: 'Projects', ids: ['projects'] },
+    { id: 'education', title: 'Education', ids: ['education'] },
+    { id: 'skills', title: 'Skills', ids: ['skills-ai', 'skills-ops', 'skills-health', 'skills-creative'] }
+  ];
+
+  function renderRole(job, level) {
     var org = [job.org, job.where].filter(Boolean).join(' · ');
     var bullets = (job.bullets || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
-    return '<div class="role"><div class="role-top"><h3>' + esc(job.title) + '</h3>' +
+    var tag = level === 4 ? 'h4' : 'h3';
+    return '<div class="role"><div class="role-top"><' + tag + '>' + esc(job.title) + '</' + tag + '>' +
       (job.dates ? '<span class="when">' + esc(job.dates) + '</span>' : '') +
       '</div>' +
       (org ? '<p class="org">' + esc(org) + '</p>' : '') +
@@ -202,15 +211,34 @@
       '</div>';
   }
 
-  function renderModule(data, state, mod) {
+  function renderRoles(entries, level) {
+    var jobs = entries || [];
+    if (!jobs.length) return '';
+    var leadCount = jobs.length > 3 ? 2 : jobs.length;
+    var html = jobs.slice(0, leadCount).map(function (job) { return renderRole(job, level); }).join('');
+    var rest = jobs.slice(leadCount);
+    if (!rest.length) return html;
+    return html + '<details class="more"><summary>Earlier roles</summary>' +
+      rest.map(function (job) { return renderRole(job, level); }).join('') + '</details>';
+  }
+
+  function renderSkills(items) {
+    function list(rows) {
+      return '<ul class="skills">' + rows.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
+    }
+    var rows = items || [];
+    if (rows.length <= 8) return list(rows);
+    return list(rows.slice(0, 6)) + '<details class="more"><summary>More skills</summary>' + list(rows.slice(6)) + '</details>';
+  }
+
+  function trackBody(data, state, mod) {
     var variant = variantFor(data, state, mod);
-    var body = '';
     if (mod.kind === 'prose') {
-      body = '<div class="prose">' + variant.paragraphs.map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>';
-    } else if (mod.kind === 'roles') {
-      body = variant.entries.map(renderRole).join('');
-    } else if (mod.kind === 'credentials') {
-      body = variant.entries.map(function (job) {
+      return '<div class="prose">' + variant.paragraphs.map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>';
+    }
+    if (mod.kind === 'roles') return renderRoles(variant.entries, 4);
+    if (mod.kind === 'credentials') {
+      return variant.entries.map(function (job) {
         return '<div class="cred"><div class="role-top"><h3>' + esc(job.title) + '</h3>' +
           (job.dates ? '<span class="when">' + esc(job.dates) + '</span>' : '') +
           '</div>' +
@@ -218,8 +246,9 @@
           (job.notes ? '<p class="note">' + esc(job.notes) + '</p>' : '') +
           '</div>';
       }).join('');
-    } else if (mod.kind === 'items') {
-      body = variant.entries.map(function (it) {
+    }
+    if (mod.kind === 'items') {
+      return variant.entries.map(function (it) {
         var href = it.href && /^https:\/\//.test(it.href) ? it.href : '';
         var name = href ? '<a href="' + esc(href) + '">' + esc(it.title) + '</a>' : esc(it.title);
         var links = (it.links || []).map(function (link) {
@@ -229,19 +258,45 @@
         return '<p class="item"><strong>' + name + '</strong><span>' + esc(it.text) + '</span>' +
           (links ? '<span class="links">' + links + '</span>' : '') + '</p>';
       }).join('');
-    } else if (mod.kind === 'skills') {
-      body = '<ul class="skills">' + variant.items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
     }
-    var kicker = variant.kicker ? '<p class="sub">' + esc(variant.kicker) + '</p>' : '';
-    return '<section class="section" id="mod-' + esc(mod.id) + '"><h2>' + esc(mod.title) + '</h2>' + kicker + body + '</section>';
+    if (mod.kind === 'skills') return renderSkills(variant.items);
+    return '';
+  }
+
+  function trackHtml(data, state, mod, group) {
+    var variant = variantFor(data, state, mod);
+    var heading = mod.title === group.title ? (variant.kicker || '') : mod.title;
+    var kicker = variant.kicker && heading !== variant.kicker ? '<p class="sub">' + esc(variant.kicker) + '</p>' : '';
+    return '<div class="track" id="mod-' + esc(mod.id) + '">' +
+      (heading ? '<h3 class="track-title">' + esc(heading) + '</h3>' : '') +
+      kicker + trackBody(data, state, mod) + '</div>';
+  }
+
+  function visibleGroups(data, state) {
+    var on = {};
+    state.on.forEach(function (id) { on[id] = true; });
+    return GROUPS.filter(function (group) {
+      return group.ids.some(function (id) { return on[id]; });
+    });
+  }
+
+  function navHtml(data, state) {
+    var links = visibleGroups(data, state).map(function (group) {
+      return '<a href="#' + group.id + '">' + esc(group.title) + '</a>';
+    });
+    links.push('<a href="#contact">Contact</a>');
+    return links.join('');
   }
 
   function sectionsHtml(data, state) {
     if (!state.on.length) return '<p class="empty">Every section is hidden. Turn one back on to rebuild the page.</p>';
     var on = {};
     state.on.forEach(function (id) { on[id] = true; });
-    return data.modules.filter(function (mod) { return on[mod.id]; }).map(function (mod) {
-      return renderModule(data, state, mod);
+    return GROUPS.map(function (group) {
+      var mods = data.modules.filter(function (mod) { return group.ids.indexOf(mod.id) !== -1 && on[mod.id]; });
+      if (!mods.length) return '';
+      return '<section class="card" id="' + group.id + '"><h2>' + esc(group.title) + '</h2>' +
+        mods.map(function (mod) { return trackHtml(data, state, mod, group); }).join('') + '</section>';
     }).join('');
   }
 
@@ -258,6 +313,7 @@
     togglesHtml: togglesHtml,
     adjustHtml: adjustHtml,
     sectionsHtml: sectionsHtml,
+    navHtml: navHtml,
     variantFor: variantFor
   };
 });

@@ -65,7 +65,7 @@ function page({ title, desc, canonical, body, jsonld, boot }) {
 ${jsonld || ''}
 </head>
 <body>
-<a class="skip" href="#sheet">Skip to resume</a>
+<a class="skip" href="#name">Skip to resume</a>
 <header class="top">
   <a class="brand" href="/"><span class="b">b</span><span>resume</span></a>
   <nav><a href="#contact">Contact</a><a href="${esc(CFG.hubUrl)}">bfloore.online ↗</a></nav>
@@ -117,28 +117,27 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
 </script>`;
 
   const body = `<main class="wrap">
-  <div class="stage">
-    <article class="sheet" id="sheet" aria-labelledby="name">
-      <header class="who" id="who">${R.whoHtml(payload)}</header>
-      <div class="controls">
-        <p class="lede" id="deck">${esc(R.deckText(payload, defaultState))}</p>
-        <div class="chips" id="remixes" role="group" aria-label="Resume remix">${R.remixesHtml(payload, defaultState)}</div>
-        <div class="adjust" id="adjust" hidden></div>
-        <p class="kicker" id="sec-label">Sections</p>
-        <div class="chips" id="toggles" role="group" aria-labelledby="sec-label">${R.togglesHtml(payload, defaultState)}</div>
-        <div class="toolbar">
-          <button type="button" class="btn" id="cv" aria-pressed="false">Full CV</button>
-          <button type="button" class="btn" id="copy">Copy link</button>
-          <button type="button" class="btn primary" id="pdf" aria-describedby="pdf-hint">Download PDF</button>
-          <span class="copied" id="copied" role="status"></span>
-        </div>
-        <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. The file matches the sections on screen. The vCard is a separate download.</p>
-      </div>
-      <div id="sections">${R.sectionsHtml(payload, defaultState)}</div>
-      <noscript><p class="note">Remixes, PDF export, the contact form, and the vCard download use JavaScript. Book a time still works, and the QR code still adds Barry Floore to a phone.</p></noscript>
-    </article>
-    <aside class="panel" id="contact" aria-label="Contact">${R.contactHtml(payload)}</aside>
+  <header class="who card" id="who">${R.whoHtml(payload)}</header>
+  <div class="controls">
+    <p class="lede" id="deck">${esc(R.deckText(payload, defaultState))}</p>
+    <div class="chips" id="remixes" role="group" aria-label="Resume remix">${R.remixesHtml(payload, defaultState)}</div>
+    <div class="adjust" id="adjust" hidden></div>
+    <p class="kicker" id="sec-label">Sections</p>
+    <div class="chips" id="toggles" role="group" aria-labelledby="sec-label">${R.togglesHtml(payload, defaultState)}</div>
+    <div class="toolbar">
+      <button type="button" class="btn" id="cv" aria-pressed="false">Full CV</button>
+      <button type="button" class="btn" id="copy">Copy link</button>
+      <button type="button" class="btn primary" id="pdf" aria-describedby="pdf-hint">Download PDF</button>
+      <span class="copied" id="copied" role="status"></span>
+    </div>
+    <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. The file matches the sections on screen. The vCard is a separate download.</p>
   </div>
+  <nav class="jump" id="jump" aria-label="On this page">${R.navHtml(payload, defaultState)}</nav>
+  <div class="stage">
+    <div id="sections" class="cards">${R.sectionsHtml(payload, defaultState)}</div>
+    <aside class="panel card" id="contact" aria-label="Contact">${R.contactHtml(payload)}</aside>
+  </div>
+  <noscript><p class="note">Remixes, PDF export, the contact form, and the vCard download use JavaScript. Book a time still works, and the QR code still adds Barry Floore to a phone.</p></noscript>
 </main>`;
 
   const jsonld = `<script type="application/ld+json">${JSON.stringify({

@@ -15,6 +15,7 @@
     var deck = document.getElementById('deck');
     var cvBtn = document.getElementById('cv');
     var copied = document.getElementById('copied');
+    var jump = document.getElementById('jump');
 
     who.innerHTML = R.whoHtml(data);
     document.getElementById('contact').innerHTML = R.contactHtml(data);
@@ -83,6 +84,7 @@
       adjust.hidden = !note;
       adjust.innerHTML = note;
       sections.innerHTML = R.sectionsHtml(data, state);
+      if (jump) jump.innerHTML = R.navHtml(data, state);
       if (!opts.skipUrl) writeUrl(!!opts.push);
       focusAfter(focusKey);
     }
@@ -145,13 +147,20 @@
       write.then(function () { copied.textContent = 'Link copied.'; }, function () { copied.textContent = 'Copy the address bar to share this view.'; });
     });
 
+    var closedDetails = [];
     window.addEventListener('beforeprint', function () {
       document.title = R.pageTitle(data, state);
       paintReach('print');
+      closedDetails = [];
+      document.querySelectorAll('details.more').forEach(function (el) {
+        if (!el.open) { closedDetails.push(el); el.open = true; }
+      });
     });
     window.addEventListener('afterprint', function () {
       document.title = R.pageTitle(data, state) + ' · ' + data.siteTitle;
       paintReach('live');
+      closedDetails.forEach(function (el) { el.open = false; });
+      closedDetails = [];
     });
     document.getElementById('pdf').addEventListener('click', function () { window.print(); });
 
