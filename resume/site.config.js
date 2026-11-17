@@ -1,6 +1,8 @@
 /* ============================================================
    resume.bfloore.online — site identity and contact.
    The resume sections live in content.js.
+   Personal email and personal phone numbers are not stored here.
+   The contact form recipients stay in the Pages environment.
    ============================================================ */
 module.exports = {
   siteTitle: 'b. floore resume',
@@ -10,6 +12,12 @@ module.exports = {
   reviewsUrl: 'https://reviews.bfloore.online',
   calendlyUrl: 'https://calendly.com/barryfloore',
   author: 'b. floore',
+  /* Empty portfolio strings render no link. Fill a real https URL to show it. */
+  portfolios: {
+    instagram: 'https://www.instagram.com/barrylikethefruit/',
+    adobeStock: '',
+    getty: ''
+  },
   person: {
     given: 'Barry',
     family: 'Floore',
@@ -17,11 +25,9 @@ module.exports = {
     full: 'Barry Floore',
     /* Schema only. The visible header stays Barry Floore / b. floore. */
     alternateName: ['b. floore', 'Michael Floore'],
-    email: 'floorebarry@gmail.com',
-    phone: '904-438-1866',
-    phoneE164: '+1-904-438-1866',
-    sms: '904-600-4423',
-    smsE164: '+1-904-600-4423',
+    /* Business line for the vCard and QR only. The hub lists it as text only. */
+    workPhone: '904-297-8201',
+    workPhoneE164: '+1-904-297-8201',
     city: 'Jacksonville',
     region: 'FL',
     country: 'United States',

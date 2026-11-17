@@ -4,15 +4,15 @@ The interactive resume is the `resume/` app in this repository. It is deployed t
 
 ## What it does
 
-The page is one resume with six remixes. The chips are General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, and Content creation. General is the page you land on (`/`). The others are `/?remix=ai`, `freelance`, `health`, `support`, and `creative`.
+The page is one resume with six remixes. The chips are General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, and Content creation. General is the page you land on (`/`). The others are `/?remix=ai`, `freelance`, `health`, `support`, and `creative`. The remix chips and the section toggles sit in a side panel, not above the resume.
 
-Section chips show and hide modules. Copy link puts the current remix and the visible sections in the query string. Full CV turns every module on, using the long form of each section. Download PDF opens the print dialog for whatever is still on screen. There is no separate download of a hidden full CV. Choose Save as PDF in the print dialog, and turn off browser headers and footers for a clean page.
+Copy link puts the current remix and the visible sections in the query string. Full CV turns every module on, using the long form of each section. Download PDF opens the print dialog and expands Earlier roles and Show all. There is no separate download of a hidden full CV. Choose Save as PDF in the print dialog, and turn off browser headers and footers for a clean page.
 
 Contact is separate from the PDF:
 
 - Book a time goes to [https://calendly.com/barryfloore](https://calendly.com/barryfloore).
-- A contact form posts to a Pages Function. Recipient addresses are not in the page, the client script, or the JSON payload. Until the function’s environment is set, the form stays disabled and tells the visitor to book a time.
-- A QR code and a Download vCard button build the same vCard in the browser from reversed pieces (name, one email, voice number, SMS number, Jacksonville, LinkedIn, and the hub). The built files do not contain those values as plaintext. Call and Text links are filled in by the browser the same way. The page does not show an email address.
+- A contact form posts to a Pages Function. Recipient addresses are not in the page, the client script, or the JSON payload. Until the function's environment is set, the form stays disabled and tells the visitor to book a time.
+- A QR code and a Download vCard button build the same vCard in the browser from reversed pieces (name, business line, Jacksonville, LinkedIn, and the hub). The built files do not contain that number as plaintext. The page has no personal email, no personal phone number, and no `mailto:`, `tel:`, or `sms:` link.
 
 Spam controls on the form are Cloudflare Turnstile (checked on the server), a honeypot field, and a basic per-isolate rate limit. Mail is sent with the Resend HTTPS API so it does not depend on moving `bfloore.online` DNS onto Cloudflare. DNS for that domain stays at Namecheap.
 
@@ -20,7 +20,7 @@ Spam controls on the form are Cloudflare Turnstile (checked on the server), a ho
 
 `content.js` holds the sections, remix presets, and which variant each remix shows. `site.config.js` holds the public name, the schema alternate names, the vCard contact pieces, and the Calendly URL. `node build.js` (also `npm run build`) writes a static site to `dist/`. `npm test` checks the remix rules, the sealed contact data, the vCard, and the contact handler.
 
-The build seals the vCard contact into reversed pieces before it is embedded. JSON-LD names Barry Floore, with alternate names b. floore and Michael Floore, and does not include an email or a phone number. Brand files in `resume/brand/` (the hub’s “b” card as favicon SVG, ICO, PNG sizes, apple-touch icon, and a 1200×630 `og.png`) are copied into `dist/`.
+The build seals the vCard business line into reversed pieces before it is embedded. JSON-LD names Barry Floore, with alternate names b. floore and Michael Floore, and does not include an email or a phone number. Brand files in `resume/brand/` (the hub’s “b” card as favicon SVG, ICO, PNG sizes, apple-touch icon, and a 1200×630 `og.png`) are copied into `dist/`.
 
 `resume/functions/api/contact.js` is a Cloudflare Pages Function. `GET /api/contact` reports whether the form is configured and, if it is, returns only the public Turnstile site key. `POST /api/contact` checks the origin, the honeypot, the rate limit, and Turnstile’s siteverify result (`success`, action `contact`, and an allowed hostname) before it calls Resend. A filled honeypot gets a success response and no email. Missing configuration returns a clear “not set up” response and does not call Resend.
 

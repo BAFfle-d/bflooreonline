@@ -27,7 +27,7 @@
   }
 
   function deckText(data, state) {
-    if (state.view === 'cv') return 'Full CV. Hide any section. PDF exports only what stays on screen.';
+    if (state.view === 'cv') return 'Full CV. Hide any section. PDF exports the sections on screen, with Earlier roles and Show all expanded.';
     return remixById(data, state.remix).deck;
   }
 
@@ -41,9 +41,8 @@
     return String(s).split('').reverse().join('');
   }
 
-  /* Contact is stored as reversed pieces so the shipped page has no raw address or number. */
+  /* The business line is stored reversed so the shipped page has no raw number. */
   function sealPerson(person) {
-    var at = String(person.email).split('@');
     return {
       given: person.given,
       family: person.family,
@@ -57,31 +56,18 @@
       linkedin: person.linkedin,
       linkedinLabel: person.linkedinLabel,
       reach: {
-        m: at.map(function (part) { return part.split('.').map(rev); }),
-        v: String(person.phone).split('-').map(rev),
-        s: String(person.sms).split('-').map(rev)
+        w: String(person.workPhone || '').split('-').filter(Boolean).map(rev)
       }
     };
   }
 
   function openReach(person) {
     var reach = (person && person.reach) || {};
-    var email = (reach.m || []).map(function (group) {
-      return (group || []).map(rev).join('.');
-    }).join('@');
-    var v = (reach.v || []).map(rev);
-    var s = (reach.s || []).map(rev);
+    var w = (reach.w || []).map(rev);
     return {
-      email: email,
-      phone: v.join('-'),
-      sms: s.join('-'),
-      tel: v.length ? '+1' + v.join('') : '',
-      smsTel: s.length ? '+1' + s.join('') : ''
+      phone: w.join('-'),
+      tel: w.length && w.join('') ? '+1' + w.join('') : ''
     };
-  }
-
-  function reachLink(kind, label) {
-    return '<a class="reach" data-reach="' + kind + '" href="#contact">' + label + '</a>';
   }
 
   function bookLink(data, className) {
@@ -103,12 +89,10 @@
       'VERSION:3.0',
       'N:' + p.family + ';' + p.given + ';;;',
       'FN:' + p.full,
-      'EMAIL:' + c.email,
-      'TEL;TYPE=VOICE:+1-' + c.phone,
-      'TEL;TYPE=CELL:+1-' + c.sms,
-      'ADR;TYPE=HOME:;;' + p.city + ';' + p.region + ';;USA',
-      'URL:' + p.linkedin,
+      'TEL;TYPE=TEXT:+1-' + c.phone,
+      'ADR;TYPE=WORK:;;' + p.city + ';' + p.region + ';;USA',
       'URL:' + data.hubUrl,
+      'URL:' + p.linkedin,
       'END:VCARD'
     ];
     return lines.join('\r\n') + '\r\n';
@@ -116,23 +100,30 @@
 
   function whoHtml(data) {
     var p = data.person;
+    var creds = (data.hero || []).map(function (line) {
+      return '<li>' + esc(line) + '</li>';
+    }).join('');
     return '<p class="kicker">// ' + esc(p.display) + '</p>' +
       '<h1 id="name">' + esc(p.full) + '</h1>' +
       '<p class="identity">' + esc(data.identity.line) + '</p>' +
+      (creds ? '<ul class="credentials">' + creds + '</ul>' : '') +
+      '<div class="toolbar">' +
+        '<button type="button" class="btn primary" id="pdf" aria-describedby="pdf-hint">Download PDF</button>' +
+        '<button type="button" class="btn" id="copy">Copy link</button>' +
+        '<button type="button" class="btn versions-btn" id="versions" aria-expanded="false" aria-controls="rail">Versions</button>' +
+        '<span class="copied" id="copied" role="status"></span>' +
+      '</div>' +
       '<ul class="contact-line">' +
-        '<li>' + bookLink(data) + '</li>' +
-        '<li>' + reachLink('voice', 'Call') + '</li>' +
-        '<li>' + reachLink('sms', 'Text') + '</li>' +
         '<li>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</li>' +
         '<li><a href="' + esc(p.linkedin) + '">' + esc(p.linkedinLabel) + '</a></li>' +
         '<li><a href="' + esc(data.hubUrl) + '">bfloore.online</a></li>' +
+        '<li>' + bookLink(data) + '</li>' +
       '</ul>';
   }
 
   function contactHtml(data) {
     var p = data.person;
-    return '<p class="kicker">// contact</p>' +
-      '<h2>Contact</h2>' +
+    return '<h2>Contact</h2>' +
       '<p class="qr-note">Book a time, or send a note. The note goes through this site, so no address is shown here.</p>' +
       bookLink(data, 'btn primary book') +
       '<form class="form" id="contact-form" novalidate>' +
@@ -145,15 +136,13 @@
         '<p class="form-status" id="form-status" role="status">Checking whether the contact form is available.</p>' +
       '</form>' +
       '<h3 class="subhead">Save to phone</h3>' +
-      '<div class="qr-frame" role="img" aria-label="QR code that adds Barry Floore to a phone\'s contacts">' + data.qrSvg + '</div>' +
-      '<p class="qr-note">Scan the code to add Barry Floore, or download the same contact card.</p>' +
+      '<div class="qr-frame" role="img" aria-label="QR code that saves a contact card for Barry Floore">' + data.qrSvg + '</div>' +
+      '<p class="qr-note">Scan the code to save the contact card, or download the same card.</p>' +
       '<button type="button" class="btn primary" id="vcard">Download vCard</button>' +
       '<dl class="facts">' +
-        '<div><dt>Phone</dt><dd>' + reachLink('voice', 'Call') + '</dd></div>' +
-        '<div><dt>SMS</dt><dd>' + reachLink('sms', 'Text') + '</dd></div>' +
         '<div><dt>Location</dt><dd>' + esc(p.localityLabel) + ' · ' + esc(p.remote) + '</dd></div>' +
         '<div><dt>LinkedIn</dt><dd><a href="' + esc(p.linkedin) + '">' + esc(p.linkedinLabel) + '</a></dd></div>' +
-        '<div><dt>Hub</dt><dd><a href="' + esc(data.hubUrl) + '">bfloore.online</a></dd></div>' +
+        '<div><dt>Website</dt><dd><a href="' + esc(data.hubUrl) + '">bfloore.online</a></dd></div>' +
       '</dl>';
   }
 
@@ -194,32 +183,71 @@
   var GROUPS = [
     { id: 'summary', title: 'Summary', ids: ['summary'] },
     { id: 'experience', title: 'Experience', ids: ['exp-ai', 'exp-cs', 'clinical'] },
-    { id: 'projects', title: 'Projects', ids: ['projects'] },
     { id: 'education', title: 'Education', ids: ['education'] },
+    { id: 'projects', title: 'Projects', ids: ['projects'] },
     { id: 'skills', title: 'Skills', ids: ['skills-ai', 'skills-ops', 'skills-health', 'skills-creative'] }
   ];
 
-  function renderRole(job, level) {
-    var org = [job.org, job.where].filter(Boolean).join(' · ');
-    var bullets = (job.bullets || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
-    var tag = level === 4 ? 'h4' : 'h3';
-    return '<div class="role"><div class="role-top"><' + tag + '>' + esc(job.title) + '</' + tag + '>' +
-      (job.dates ? '<span class="when">' + esc(job.dates) + '</span>' : '') +
-      '</div>' +
-      (org ? '<p class="org">' + esc(org) + '</p>' : '') +
-      (bullets ? '<ul>' + bullets + '</ul>' : '') +
-      '</div>';
+  function monogram(org) {
+    var raw = String(org || '').trim();
+    if (!raw) return '';
+    var primary = raw.split(/\s+(?:via|for)\s+/i)[0];
+    var parts = primary.split(/\s*[/&]\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
+    function words(s) {
+      return String(s)
+        .replace(/\.(com|org|net)\b/ig, '')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .split(/[^A-Za-z0-9]+/)
+        .filter(function (w) { return w && !/^(the|and|of)$/i.test(w); });
+    }
+    var letters = [];
+    if (parts.length >= 2) {
+      parts.slice(0, 2).forEach(function (p) {
+        var w = words(p);
+        if (w[0]) letters.push(w[0].charAt(0));
+      });
+    } else {
+      var w = words(parts[0] || '');
+      if (w[0]) letters.push(w[0].charAt(0));
+      if (w[1]) letters.push(w[1].charAt(0));
+    }
+    return letters.join('').toUpperCase();
   }
 
-  function renderRoles(entries, level) {
+  function renderRole(job, withBadge) {
+    var meta = [job.dates, job.where].filter(Boolean).join(' · ');
+    var bullets = (job.bullets || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
+    var mark = withBadge ? monogram(job.org) : '';
+    var badge = mark ? '<span class="badge" aria-hidden="true">' + esc(mark) + '</span>' : '';
+    return '<article class="role">' + badge +
+      '<div class="role-body">' +
+        '<div class="role-top"><h3>' + esc(job.title) + '</h3>' +
+          (meta ? '<p class="meta">' + esc(meta) + '</p>' : '') +
+        '</div>' +
+        (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
+        (bullets ? '<ul>' + bullets + '</ul>' : '') +
+      '</div></article>';
+  }
+
+  function renderRoles(entries, collapse) {
     var jobs = entries || [];
     if (!jobs.length) return '';
-    var leadCount = jobs.length > 3 ? 2 : jobs.length;
-    var html = jobs.slice(0, leadCount).map(function (job) { return renderRole(job, level); }).join('');
-    var rest = jobs.slice(leadCount);
-    if (!rest.length) return html;
-    return html + '<details class="more"><summary>Earlier roles</summary>' +
-      rest.map(function (job) { return renderRole(job, level); }).join('') + '</details>';
+    function list(rows) {
+      return rows.map(function (job) { return renderRole(job, true); }).join('');
+    }
+    if (!collapse || jobs.length <= 2) return list(jobs);
+    return list(jobs.slice(0, 2)) +
+      '<details class="more"><summary>Earlier roles</summary>' + list(jobs.slice(2)) + '</details>';
+  }
+
+  function renderCred(job) {
+    return '<article class="cred"><div class="role-body">' +
+      '<div class="role-top"><h3>' + esc(job.title) + '</h3>' +
+        (job.dates ? '<p class="meta">' + esc(job.dates) + '</p>' : '') +
+      '</div>' +
+      (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
+      (job.notes ? '<p class="note">' + esc(job.notes) + '</p>' : '') +
+      '</div></article>';
   }
 
   function renderSkills(items) {
@@ -231,34 +259,52 @@
     return list(rows.slice(0, 6)) + '<details class="more"><summary>More skills</summary>' + list(rows.slice(6)) + '</details>';
   }
 
+  function resolveHref(data, it) {
+    var href = it && it.href ? String(it.href).trim() : '';
+    if (!href && it && it.portfolio && data && data.portfolios) {
+      href = String(data.portfolios[it.portfolio] || '').trim();
+    }
+    if (!/^https:\/\//.test(href)) return '';
+    var url;
+    try { url = new URL(href); } catch (err) { return ''; }
+    if (url.protocol !== 'https:' || url.username || url.password) return '';
+    return url.origin + url.pathname + url.search + url.hash;
+  }
+
+  function renderItems(data, entries) {
+    var shown = 0;
+    var visible = [];
+    var hidden = [];
+    (entries || []).forEach(function (it) {
+      var href = resolveHref(data, it);
+      if (it.linkOnly && !href) return;
+      var name = href ? '<a href="' + esc(href) + '">' + esc(it.title) + '</a>' : esc(it.title);
+      var links = (it.links || []).map(function (link) {
+        if (!link || !link.href || !/^https:\/\//.test(link.href)) return '';
+        return '<a href="' + esc(link.href) + '">' + esc(link.label || link.href) + '</a>';
+      }).join('');
+      var text = it.text ? '<span>' + esc(it.text) + '</span>' : '';
+      var html = '<p class="item"><strong>' + name + '</strong>' + text +
+        (links ? '<span class="links">' + links + '</span>' : '') + '</p>';
+      if (shown < 6) visible.push(html);
+      else hidden.push(html);
+      shown += 1;
+    });
+    if (!hidden.length) return visible.join('');
+    return visible.join('') + '<details class="more"><summary>Show all</summary>' + hidden.join('') + '</details>';
+  }
+
   function trackBody(data, state, mod) {
     var variant = variantFor(data, state, mod);
+    var collapseRoles = state.view !== 'cv' && state.remix === 'general';
     if (mod.kind === 'prose') {
       return '<div class="prose">' + variant.paragraphs.map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>';
     }
-    if (mod.kind === 'roles') return renderRoles(variant.entries, 4);
+    if (mod.kind === 'roles') return renderRoles(variant.entries, collapseRoles);
     if (mod.kind === 'credentials') {
-      return variant.entries.map(function (job) {
-        return '<div class="cred"><div class="role-top"><h3>' + esc(job.title) + '</h3>' +
-          (job.dates ? '<span class="when">' + esc(job.dates) + '</span>' : '') +
-          '</div>' +
-          (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
-          (job.notes ? '<p class="note">' + esc(job.notes) + '</p>' : '') +
-          '</div>';
-      }).join('');
+      return variant.entries.map(renderCred).join('');
     }
-    if (mod.kind === 'items') {
-      return variant.entries.map(function (it) {
-        var href = it.href && /^https:\/\//.test(it.href) ? it.href : '';
-        var name = href ? '<a href="' + esc(href) + '">' + esc(it.title) + '</a>' : esc(it.title);
-        var links = (it.links || []).map(function (link) {
-          if (!link || !link.href || !/^https:\/\//.test(link.href)) return '';
-          return '<a href="' + esc(link.href) + '">' + esc(link.label || link.href) + '</a>';
-        }).join('');
-        return '<p class="item"><strong>' + name + '</strong><span>' + esc(it.text) + '</span>' +
-          (links ? '<span class="links">' + links + '</span>' : '') + '</p>';
-      }).join('');
-    }
+    if (mod.kind === 'items') return renderItems(data, variant.entries);
     if (mod.kind === 'skills') return renderSkills(variant.items);
     return '';
   }
@@ -266,10 +312,11 @@
   function trackHtml(data, state, mod, group) {
     var variant = variantFor(data, state, mod);
     var heading = mod.title === group.title ? (variant.kicker || '') : mod.title;
-    var kicker = variant.kicker && heading !== variant.kicker ? '<p class="sub">' + esc(variant.kicker) + '</p>' : '';
+    var kicker = variant.kicker && heading !== variant.kicker ? variant.kicker : '';
     return '<div class="track" id="mod-' + esc(mod.id) + '">' +
-      (heading ? '<h3 class="track-title">' + esc(heading) + '</h3>' : '') +
-      kicker + trackBody(data, state, mod) + '</div>';
+      (heading ? '<p class="sub">' + esc(heading) + '</p>' : '') +
+      (kicker ? '<p class="sub">' + esc(kicker) + '</p>' : '') +
+      trackBody(data, state, mod) + '</div>';
   }
 
   function visibleGroups(data, state) {
@@ -295,7 +342,7 @@
     return GROUPS.map(function (group) {
       var mods = data.modules.filter(function (mod) { return group.ids.indexOf(mod.id) !== -1 && on[mod.id]; });
       if (!mods.length) return '';
-      return '<section class="card" id="' + group.id + '"><h2>' + esc(group.title) + '</h2>' +
+      return '<section class="block card" id="' + group.id + '"><h2>' + esc(group.title) + '</h2>' +
         mods.map(function (mod) { return trackHtml(data, state, mod, group); }).join('') + '</section>';
     }).join('');
   }

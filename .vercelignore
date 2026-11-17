@@ -1,0 +1,4 @@
+# The hub at www.bfloore.online is this repo root on Vercel.
+# The resume deploys on its own from Cloudflare Pages (project bfloore-resume).
+# Leaving resume/ out of the hub upload keeps resume/site.config.js off the public hub.
+resume/

@@ -1,5 +1,5 @@
-/* Client for the resume. Remixes, section toggles, the full CV view,
-   the share URL, and the contact form. The form posts to /api/contact. */
+/* Client for the resume. Remixes and section toggles live in the side panel.
+   The share URL and the contact form stay here. The form posts to /api/contact. */
 (function () {
   var RS = globalThis.ResumeState;
   var R = globalThis.ResumeRender;
@@ -15,31 +15,16 @@
     var deck = document.getElementById('deck');
     var cvBtn = document.getElementById('cv');
     var copied = document.getElementById('copied');
-    var jump = document.getElementById('jump');
+    var versionsBtn = document.getElementById('versions');
+    var rail = document.getElementById('rail');
+    var backdrop = document.getElementById('rail-backdrop');
+    var closeBtn = document.getElementById('versions-close');
 
     who.innerHTML = R.whoHtml(data);
     document.getElementById('contact').innerHTML = R.contactHtml(data);
+    versionsBtn = document.getElementById('versions');
+    copied = document.getElementById('copied');
 
-    function reachSpecs() {
-      var c = R.openReach(data.person);
-      return {
-        voice: { href: 'tel:' + c.tel, label: 'Call', print: c.phone },
-        sms: { href: 'sms:' + c.smsTel, label: 'Text', print: 'SMS ' + c.sms }
-      };
-    }
-
-    function paintReach(mode) {
-      var specs = reachSpecs();
-      document.querySelectorAll('[data-reach]').forEach(function (el) {
-        var spec = specs[el.getAttribute('data-reach')];
-        if (!spec) return;
-        el.setAttribute('href', spec.href);
-        var printed = mode === 'print' && el.closest('.contact-line');
-        el.textContent = printed ? spec.print : spec.label;
-      });
-    }
-
-    paintReach('live');
     wireContactForm();
     document.getElementById('vcard').addEventListener('click', function () {
       var blob = new Blob([R.contactCard(data)], { type: 'text/vcard;charset=utf-8' });
@@ -52,6 +37,55 @@
       a.remove();
       URL.revokeObjectURL(url);
     });
+
+    function mobileRail() {
+      return window.matchMedia('(max-width: 860px)').matches;
+    }
+
+    function setRail(open) {
+      if (!rail) return;
+      if (!mobileRail()) open = false;
+      rail.classList.toggle('open', open);
+      if (backdrop) backdrop.hidden = !open;
+      if (versionsBtn) versionsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (mobileRail() && !open) rail.setAttribute('inert', '');
+      else rail.removeAttribute('inert');
+      document.body.classList.toggle('rail-lock', !!open);
+    }
+
+    if (versionsBtn) {
+      versionsBtn.addEventListener('click', function () {
+        setRail(!rail.classList.contains('open'));
+        if (rail.classList.contains('open') && closeBtn) closeBtn.focus();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        setRail(false);
+        if (versionsBtn) versionsBtn.focus();
+      });
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', function () {
+        setRail(false);
+        if (versionsBtn) versionsBtn.focus();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && rail && rail.classList.contains('open')) {
+        setRail(false);
+        if (versionsBtn) versionsBtn.focus();
+      }
+    });
+    var wasMobile = mobileRail();
+    window.addEventListener('resize', function () {
+      var now = mobileRail();
+      if (now !== wasMobile) {
+        setRail(false);
+        wasMobile = now;
+      }
+    });
+    setRail(false);
 
     function writeUrl(push) {
       var qs = RS.serializeState(state, catalog);
@@ -84,7 +118,6 @@
       adjust.hidden = !note;
       adjust.innerHTML = note;
       sections.innerHTML = R.sectionsHtml(data, state);
-      if (jump) jump.innerHTML = R.navHtml(data, state);
       if (!opts.skipUrl) writeUrl(!!opts.push);
       focusAfter(focusKey);
     }
@@ -97,6 +130,7 @@
       state.on = RS.inOrder(data.moduleIds, data.presets[state.remix]);
       copied.textContent = '';
       render({ push: true });
+      if (mobileRail()) setRail(false);
     });
 
     toggles.addEventListener('click', function (e) {
@@ -114,6 +148,7 @@
       state.on = data.moduleIds.slice();
       copied.textContent = '';
       render({ push: true });
+      if (mobileRail()) setRail(false);
     });
 
     adjust.addEventListener('click', function (e) {
@@ -150,7 +185,6 @@
     var closedDetails = [];
     window.addEventListener('beforeprint', function () {
       document.title = R.pageTitle(data, state);
-      paintReach('print');
       closedDetails = [];
       document.querySelectorAll('details.more').forEach(function (el) {
         if (!el.open) { closedDetails.push(el); el.open = true; }
@@ -158,7 +192,6 @@
     });
     window.addEventListener('afterprint', function () {
       document.title = R.pageTitle(data, state) + ' · ' + data.siteTitle;
-      paintReach('live');
       closedDetails.forEach(function (el) { el.open = false; });
       closedDetails = [];
     });

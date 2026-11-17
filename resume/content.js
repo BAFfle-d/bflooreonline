@@ -5,7 +5,9 @@
    Each module has a `full` variant (used by the full CV view) and
    a shorter variant where a remix should stay light.
    Edit the words here. Preset membership is which sections start on.
+   Portfolio URLs that are still blank live in site.config.js.
    ============================================================ */
+const CFG = require('./site.config');
 
 /* Shared by the exp-cs `crisis` variant and by `full` (full also keeps seasonal work). */
 const crisisServiceRoles = [
@@ -73,13 +75,16 @@ const creativePortfolio = [
     text: 'Sci-fi ethics podcast, season 4: Lessons for Modern AI Models from the Monsters, Marvels, & Mentors of SciFI. Produced by Barry Floore. Built with free AI tools. Also on Apple Podcasts and iHeart. The show claims an Apple Podcasts number-one ranking for ethical AI; that ranking is the show\'s claim.'
   },
   { title: 'The Lying Liars podcast', text: 'Chapter podcasts and companion music for the novel. Lyrics by DJ Staxxx; arrangement and production by B. Floore; AI-assisted instrumentation via Suno. Adult.' },
-  { title: 'Instagram', href: 'https://instagram.com/barrylikethefruit', text: 'World-record nominated channel.' },
+  { title: 'Instagram', href: CFG.portfolios.instagram, text: '@barrylikethefruit. Photography.' },
   { title: 'YouTube', href: 'https://youtube.com/@bfloore_online', text: 'Video channel.' },
   { title: 'TikTok', href: 'https://tiktok.com/@b_floore', text: 'Short-form channel.' },
   { title: 'Substack', href: 'https://barryfloore.substack.com', text: 'Writing and posts.' },
   { title: 'Medium', href: 'https://medium.com/@bfloore', text: 'Essays and posts.' },
   { title: 'Getty Images', text: 'Contributor with active monthly licensing.' },
   { title: 'Adobe Stock', text: 'Contributor; listed, with no paid licensing yet.' },
+  /* Link rows. render.js omits a row when its portfolio URL is blank. */
+  { title: 'Getty Images portfolio', portfolio: 'getty', linkOnly: true },
+  { title: 'Adobe Stock contributor portfolio', portfolio: 'adobeStock', linkOnly: true },
   { title: 'Serial Images', href: 'https://serialimages.vercel.app', text: 'App listed on the hub.' },
   { title: 'Etsy and Gumroad', text: 'Merch on Etsy and downloads on Gumroad, linked from the hub.' }
 ];
@@ -103,6 +108,13 @@ const creativeWorkLine = {
 const identity = {
   line: 'Writer, composer, producer; AI data trainer; remote professional.'
 };
+
+/* Short lines under the name. Each one is already in the sections below. */
+const hero = [
+  'M.S. Nursing (Jacksonville University, Cum Laude)',
+  'AI training and auditing, 5+ years (Handshake AI, Mercor)',
+  'Critical Care RN, Baptist Health Jacksonville'
+];
 
 const remixes = [
   {
@@ -552,7 +564,8 @@ const variantMap = {
 };
 
 /* General: blended summary, light AI experience, light projects,
-   education, core skills. Customer service off. Clinical off.
+   education, core AI skills. Customer service, clinical, and the
+   extra skill tracks stay off until a specialized remix turns them on.
    AI trainer: AI summary, full AI experience, light projects, AI skills,
    education. Customer service and clinical off. Operator skills off.
    Freelancer: freelance summary, practice-length projects, operator skills,
@@ -569,7 +582,7 @@ const variantMap = {
    Content creation: creative summary, portfolio projects, education,
    operator skills, creative skills. Customer service and clinical off. */
 const presets = {
-  general: ['summary', 'exp-ai', 'projects', 'education', 'skills-ai', 'skills-ops'],
+  general: ['summary', 'exp-ai', 'projects', 'education', 'skills-ai'],
   ai: ['summary', 'exp-ai', 'projects', 'education', 'skills-ai'],
   freelance: ['summary', 'exp-ai', 'exp-cs', 'projects', 'education', 'skills-ops'],
   health: ['summary', 'exp-ai', 'exp-cs', 'clinical', 'education', 'skills-health'],
@@ -579,6 +592,7 @@ const presets = {
 
 module.exports = {
   identity: identity,
+  hero: hero,
   remixes: remixes,
   modules: modules,
   variantMap: variantMap,
