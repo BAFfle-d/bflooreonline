@@ -5,7 +5,7 @@
   --amber:#ffd500;--amber-soft:rgba(255,213,0,.12);
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --grot:'Space Grotesk',system-ui,sans-serif;
-  --serif:'Newsreader',Georgia,serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
   --disp:'Unbounded',sans-serif;
   color-scheme:dark;
 }
@@ -79,17 +79,9 @@ button,input,textarea{font:inherit;color:inherit}
 .prose p{font-family:var(--serif);font-size:18px;line-height:1.55;color:var(--ink)}
 .prose p+p{margin-top:.8em}
 
-.role,.cred{
-  display:flex;gap:12px;align-items:flex-start;
-  border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:rgba(255,255,255,.02);
-}
-.role+.role,.cred+.cred,.role+.more,.more+.role{margin-top:10px}
-.role-body{min-width:0;flex:1}
-.badge{
-  flex:0 0 26px;width:26px;height:26px;display:grid;place-items:center;margin-top:1px;
-  border:1px solid var(--line);border-radius:6px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--dim);
-}
+.role,.cred{display:block;padding:0;border:0;background:transparent}
+.role+.role,.cred+.cred,.role+.more,.more+.role{margin-top:18px}
+.role-body{min-width:0}
 .role-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .role h3,.cred h3,.subhead{
   font-family:var(--grot);font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-.01em;margin:0;
@@ -197,9 +189,12 @@ button,input,textarea{font:inherit;color:inherit}
   .wrap{padding:12px 16px 36px}
   .layout{display:block}
   .column{max-width:70ch}
-  .who{padding:14px 16px 12px}
+  .who{padding:10px 16px 8px}
   .who h1{font-size:32px}
-  .block{margin-top:48px;padding:4px 16px 16px}
+  .credentials{margin-top:8px}
+  .toolbar{margin-top:10px}
+  .contact-line{margin-top:8px}
+  .block{margin-top:40px;padding:4px 16px 16px}
   .block > h2{font-size:28px}
   .versions-btn{display:inline-flex}
   .rail{
@@ -247,15 +242,13 @@ button,input,textarea{font:inherit;color:inherit}
     border-top:2px solid #111;padding-top:6px;margin:0 0 8px;break-after:avoid;
   }
   .sub{font-family:'Space Grotesk',sans-serif;font-size:9pt;letter-spacing:.06em;color:#333}
-  .prose p{font-family:Georgia,'Newsreader',serif;font-size:11pt;line-height:1.45;color:#1a1a1a}
+  .prose p{font-family:'Space Grotesk',sans-serif;font-size:11pt;line-height:1.45;color:#1a1a1a}
   .role,.cred,.item{break-inside:avoid}
   .role h3,.cred h3,.item strong{font-family:'Space Grotesk',sans-serif;font-size:12pt;font-weight:600;color:#111}
   .org{font-family:'Space Grotesk',sans-serif;font-size:11pt;color:#222}
   .meta,.note,.role li,.item span{color:#222;font-size:10.5pt}
   .meta{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9pt}
-  .badge{border-color:#bbb;color:#333;print-color-adjust:exact}
-  .role,.cred{border-color:#ccc;background:transparent}
-  .item span,.note,.role li{font-family:Georgia,'Newsreader',serif}
+  .item span,.note,.role li{font-family:'Space Grotesk',sans-serif}
   .role ul{font-size:10.5pt}
   .skills{display:block}
   .skills li{display:inline;border:0;padding:0;border-radius:0;font-family:'Space Grotesk',sans-serif;font-size:10.5pt;color:#222}

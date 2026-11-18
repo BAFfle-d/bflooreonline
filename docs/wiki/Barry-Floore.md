@@ -68,7 +68,7 @@ Creative work on the resume:
 - Cultivating Ethical AI — sci-fi ethics podcast, season 4, produced by Barry Floore and built with free AI tools. Also on Apple Podcasts and iHeart. The resume says the show claims an Apple Podcasts number-one ranking for ethical AI, and that the ranking is the show’s claim.
 - Instagram (`@barrylikethefruit`), photography. The resume links `https://www.instagram.com/barrylikethefruit/`.
 - YouTube (`@bfloore_online`), TikTok (`@b_floore`), Substack, and Medium.
-- Getty Images contributor with active monthly licensing. Adobe Stock contributor, listed, with no paid licensing yet.
+- Getty Images contributor with active monthly licensing. Adobe Stock contributor with paid licensing.
 - Serial Images, an app listed on the hub. Merch on Etsy and downloads on Gumroad, linked from the hub.
 
 Operator skills on the full CV include publishing and site ops, affiliate hygiene, multi-channel client delivery, CRM familiarity, content systems, brand ownership, sales conversion, remote reliability, crisis intervention, trauma-informed communication, and night-shift reliability.

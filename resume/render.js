@@ -188,44 +188,15 @@
     { id: 'skills', title: 'Skills', ids: ['skills-ai', 'skills-ops', 'skills-health', 'skills-creative'] }
   ];
 
-  function monogram(org) {
-    var raw = String(org || '').trim();
-    if (!raw) return '';
-    var primary = raw.split(/\s+(?:via|for)\s+/i)[0];
-    var parts = primary.split(/\s*[/&]\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
-    function words(s) {
-      return String(s)
-        .replace(/\.(com|org|net)\b/ig, '')
-        .replace(/([a-z])([A-Z])/g, '$1 $2')
-        .split(/[^A-Za-z0-9]+/)
-        .filter(function (w) { return w && !/^(the|and|of)$/i.test(w); });
-    }
-    var letters = [];
-    if (parts.length >= 2) {
-      parts.slice(0, 2).forEach(function (p) {
-        var w = words(p);
-        if (w[0]) letters.push(w[0].charAt(0));
-      });
-    } else {
-      var w = words(parts[0] || '');
-      if (w[0]) letters.push(w[0].charAt(0));
-      if (w[1]) letters.push(w[1].charAt(0));
-    }
-    return letters.join('').toUpperCase();
-  }
-
-  function renderRole(job, withBadge) {
+  function renderRole(job) {
     var meta = [job.dates, job.where].filter(Boolean).join(' · ');
     var bullets = (job.bullets || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
-    var mark = withBadge ? monogram(job.org) : '';
-    var badge = mark ? '<span class="badge" aria-hidden="true">' + esc(mark) + '</span>' : '';
-    return '<article class="role">' + badge +
-      '<div class="role-body">' +
-        '<div class="role-top"><h3>' + esc(job.title) + '</h3>' +
-          (meta ? '<p class="meta">' + esc(meta) + '</p>' : '') +
-        '</div>' +
-        (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
-        (bullets ? '<ul>' + bullets + '</ul>' : '') +
+    return '<article class="role"><div class="role-body">' +
+      '<div class="role-top"><h3>' + esc(job.title) + '</h3>' +
+        (meta ? '<p class="meta">' + esc(meta) + '</p>' : '') +
+      '</div>' +
+      (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
+      (bullets ? '<ul>' + bullets + '</ul>' : '') +
       '</div></article>';
   }
 
@@ -233,11 +204,14 @@
     var jobs = entries || [];
     if (!jobs.length) return '';
     function list(rows) {
-      return rows.map(function (job) { return renderRole(job, true); }).join('');
+      return rows.map(function (job) { return renderRole(job); }).join('');
     }
-    if (!collapse || jobs.length <= 2) return list(jobs);
-    return list(jobs.slice(0, 2)) +
-      '<details class="more"><summary>Earlier roles</summary>' + list(jobs.slice(2)) + '</details>';
+    if (!collapse) return list(jobs);
+    var open = jobs.filter(function (job) { return !job.collapsed; });
+    var hidden = jobs.filter(function (job) { return job.collapsed; });
+    if (!hidden.length) return list(jobs);
+    return list(open) +
+      '<details class="more"><summary>Earlier roles</summary>' + list(hidden) + '</details>';
   }
 
   function renderCred(job) {

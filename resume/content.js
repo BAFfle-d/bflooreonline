@@ -81,7 +81,7 @@ const creativePortfolio = [
   { title: 'Substack', href: 'https://barryfloore.substack.com', text: 'Writing and posts.' },
   { title: 'Medium', href: 'https://medium.com/@bfloore', text: 'Essays and posts.' },
   { title: 'Getty Images', text: 'Contributor with active monthly licensing.' },
-  { title: 'Adobe Stock', text: 'Contributor; listed, with no paid licensing yet.' },
+  { title: 'Adobe Stock', text: 'Contributor with paid licensing.' },
   /* Link rows. render.js omits a row when its portfolio URL is blank. */
   { title: 'Getty Images portfolio', portfolio: 'getty', linkOnly: true },
   { title: 'Adobe Stock contributor portfolio', portfolio: 'adobeStock', linkOnly: true },
@@ -106,7 +106,7 @@ const creativeWorkLine = {
 };
 
 const identity = {
-  line: 'Writer, composer, producer; AI data trainer; remote professional.'
+  line: 'AI trainer and evaluator. MSN, former critical care RN. Writer and composer.'
 };
 
 /* Short lines under the name. Each one is already in the sections below. */
@@ -115,6 +115,26 @@ const hero = [
   'AI training and auditing, 5+ years (Handshake AI, Mercor)',
   'Critical Care RN, Baptist Health Jacksonville'
 ];
+
+/* Already used for the combined Handshake / Mercor / contract line. */
+const handshakeBullet = 'Safety labeling, preference ranking, output auditing, and multimodal review across long-running and single-use projects.';
+
+const baptistLine = {
+  title: 'Staff Critical Care RN',
+  org: 'Baptist Health Jacksonville',
+  dates: '2011–2019'
+};
+
+const centificRole = {
+  title: 'Healthcare SME & QA Analyst',
+  org: 'Centific / Pactera Edge',
+  dates: '2022–2023',
+  bullets: [
+    'Validated AI healthcare chatbot responses against clinical standards.',
+    'Flagged hallucinated diagnoses, contraindicated treatments, and dangerous patient-facing misinformation.',
+    'Applied MSN-level clinical judgment to edge cases beyond labeling guidelines.'
+  ]
+};
 
 const remixes = [
   {
@@ -185,7 +205,7 @@ const modules = [
       },
       creative: {
         paragraphs: [
-          'Writer, composer, and producer in Jacksonville, FL. FRIENDLY ROBOTS! is a children\'s coloring, activity, and storytime series begun for his nieces and nephews, with published titles on Amazon and expansions on Gumroad. Fiction: Benny, a published novella, and The Lying Liars, a fictionalized semi-autobiographical novel in editing, with chapter podcasts and companion music. SLOP!, Geoff & Maxie, and spun are underway. Cultivating Ethical AI is a sci-fi ethics podcast in season 4. Getty Images licensing; Adobe Stock is listed, with no paid licensing yet.'
+          'Writer, composer, and producer in Jacksonville, FL. FRIENDLY ROBOTS! is a children\'s coloring, activity, and storytime series begun for his nieces and nephews, with published titles on Amazon and expansions on Gumroad. Fiction: Benny, a published novella, and The Lying Liars, a fictionalized semi-autobiographical novel in editing, with chapter podcasts and companion music. SLOP!, Geoff & Maxie, and spun are underway. Cultivating Ethical AI is a sci-fi ethics podcast in season 4. Getty Images and Adobe Stock both license work.'
         ]
       },
       full: {
@@ -205,7 +225,10 @@ const modules = [
       light: {
         kicker: 'AI training & auditing',
         entries: [
-          { title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present' },
+          {
+            title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present',
+            bullets: [handshakeBullet]
+          },
           {
             title: 'Auditor | AI Model Trainer', org: 'Mercor AI', where: 'Remote', dates: '2025–2026',
             bullets: ['Audit educational, tutoring, and conversational output for accuracy, safety, and guideline fit, including multimodal review.']
@@ -215,12 +238,14 @@ const modules = [
             bullets: ['Led evaluation across two dozen+ projects: UGC and AI output, annotation, collection, and QA for LLM training.']
           },
           {
-            title: 'AI Model Trainer', org: 'Various contracts', where: 'Remote', dates: '2019–Present',
-            bullets: ['Speech collection lead, healthcare SME/QA, annotation, transcription, and safety moderation across contract projects.']
-          },
-          {
             title: 'Standardized Test Scorer', org: 'Pearson Education', where: 'Remote', dates: '2022–Present',
             bullets: ['50,000+ open-ended responses; 60+/hr at 90–95% inter-rater reliability.']
+          },
+          baptistLine,
+          centificRole,
+          {
+            title: 'AI Model Trainer', org: 'Various contracts', where: 'Remote', dates: '2019–Present', collapsed: true,
+            bullets: ['Speech collection lead, healthcare SME/QA, annotation, transcription, and safety moderation across contract projects.']
           }
         ]
       },
@@ -246,7 +271,10 @@ const modules = [
       education: {
         kicker: 'Education and healthcare lens',
         entries: [
-          { title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present' },
+          {
+            title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present',
+            bullets: [handshakeBullet]
+          },
           {
             title: 'Auditor | AI Model Trainer', org: 'Mercor AI', where: 'Remote', dates: '2025–2026',
             bullets: ['Audit educational, tutoring, and conversational output for accuracy, safety, and guideline fit, including multimodal review.']
@@ -268,10 +296,50 @@ const modules = [
           }
         ]
       },
+      trainer: {
+        kicker: 'AI training & auditing',
+        entries: [
+          {
+            title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present',
+            bullets: [handshakeBullet]
+          },
+          {
+            title: 'Auditor | AI Model Trainer', org: 'Mercor AI', where: 'Remote', dates: '2025–2026',
+            bullets: [
+              'Audit and evaluate AI educational, tutoring, and conversational content for accuracy, safety, and guideline compliance.',
+              'Rank and correct model outputs; audit for logic, tone, and learning-outcome alignment.',
+              'Multimodal review (text, image, video, speech).'
+            ]
+          },
+          {
+            title: 'Team Lead | Auditor', org: 'Appen / CrowdGen', where: 'Remote', dates: '2018–2024',
+            bullets: [
+              'UGC and AI output evaluation across two dozen+ full-time and near-full-time projects.',
+              'Annotated, collected, and QA\'d data for LLM training.'
+            ]
+          },
+          {
+            title: 'AI Model Trainer', org: 'Various contracts', where: 'Remote', dates: '2019–Present',
+            bullets: [
+              'Project Lead, Speech Collection (Neevo/DefinedCrowd); Healthcare SME/QA (Centific); Annotator (RWS Moravia, Mindrift); Transcriptionist (Lionbridge).',
+              'Safety flagging and moderation on explicit, adversarial, and distressing material across 100+ part-time and single-use projects.'
+            ]
+          },
+          {
+            title: 'Standardized Test Scorer', org: 'Pearson Education', where: 'Remote', dates: '2022–Present',
+            bullets: ['50,000+ open-ended responses; 60+/hr at 90–95% inter-rater reliability.']
+          },
+          baptistLine,
+          centificRole
+        ]
+      },
       full: {
         kicker: 'AI training & auditing',
         entries: [
-          { title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present' },
+          {
+            title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present',
+            bullets: [handshakeBullet]
+          },
           {
             title: 'Auditor | AI Model Trainer', org: 'Mercor AI', where: 'Remote', dates: '2025–2026',
             bullets: [
@@ -354,16 +422,7 @@ const modules = [
             dates: '2018–2019',
             bullets: ['ED and ICU assignments, with education, community engagement, and new-hire orientation.']
           },
-          {
-            title: 'Healthcare SME & QA Analyst',
-            org: 'Centific / Pactera Edge',
-            dates: '2022–2023',
-            bullets: [
-              'Validated AI healthcare chatbot responses against clinical standards.',
-              'Flagged hallucinated diagnoses, contraindicated treatments, and dangerous patient-facing misinformation.',
-              'Applied MSN-level clinical judgment to edge cases beyond labeling guidelines.'
-            ]
-          }
+          centificRole
         ]
       }
     }
@@ -391,7 +450,7 @@ const modules = [
             links: [{ href: 'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', label: 'Amazon author store' }]
           },
           { title: 'Musicals in progress', href: 'https://slopthemusical.com', text: 'SLOP!, Geoff & Maxie, and spun.' },
-          { title: 'Podcasts and stock photography', text: 'Cultivating Ethical AI, season 4, and The Lying Liars (novel in editing; chapter podcasts and companion music). Getty Images contributor with monthly licensing. Adobe Stock contributor, with no paid licensing yet.' }
+          { title: 'Podcasts and stock photography', text: 'Cultivating Ethical AI, season 4, and The Lying Liars (novel in editing; chapter podcasts and companion music). Getty Images contributor with monthly licensing. Adobe Stock contributor with paid licensing.' }
         ])
       },
       creative: {
@@ -552,7 +611,7 @@ const modules = [
    The full CV view always uses `full`. */
 const variantMap = {
   summary: { general: 'blend', ai: 'ai', freelance: 'freelance', health: 'health', support: 'support', creative: 'creative' },
-  'exp-ai': { general: 'light', ai: 'full', freelance: 'supporting', health: 'education', support: 'light', creative: 'light' },
+  'exp-ai': { general: 'light', ai: 'trainer', freelance: 'supporting', health: 'education', support: 'light', creative: 'light' },
   'exp-cs': { general: 'full', ai: 'full', freelance: 'select', health: 'crisis', support: 'crisis', creative: 'select' },
   clinical: { general: 'full', ai: 'full', freelance: 'full', health: 'full', support: 'full', creative: 'full' },
   projects: { general: 'light', ai: 'light', freelance: 'practice', health: 'light', support: 'light', creative: 'creative' },

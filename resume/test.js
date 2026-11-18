@@ -5,6 +5,7 @@ const CONTENT = require('./content');
 const { vcard } = require('./vcard');
 const RS = require('./state');
 const R = require('./render');
+const guard = require('./contact-guard');
 
 const catalog = { moduleIds: CONTENT.moduleIds, presets: CONTENT.presets };
 const data = Object.assign({}, CONTENT, {
@@ -156,8 +157,9 @@ assert.ok(JSON.stringify(projects.variants.creative).includes('@barrylikethefrui
 assert.ok(!/world-record nominated/i.test(JSON.stringify(projects.variants.practice)));
 assert.ok(!JSON.stringify(projects.variants.creative).includes('visual media'));
 assert.ok(!JSON.stringify(projects.variants.light).includes('SLOP!'));
-assert.ok(JSON.stringify(projects.variants.practice).includes('no paid licensing yet'));
-assert.ok(JSON.stringify(projects.variants.creative).includes('no paid licensing yet'));
+assert.ok(JSON.stringify(projects.variants.practice).includes('Adobe Stock contributor with paid licensing.'));
+assert.ok(JSON.stringify(projects.variants.creative).includes('Contributor with paid licensing.'));
+assert.ok(!/no paid licensing yet/i.test(JSON.stringify(CONTENT)));
 assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'), true);
 assert.strictEqual(hasHostname(JSON.stringify(projects.variants.practice), 'open.spotify.com'), false);
 assert.strictEqual(hasExactUrl(JSON.stringify(projects.variants.creative), 'https://friendlyrobots.online'), true);
@@ -177,9 +179,7 @@ assert.ok(JSON.stringify(projects.variants.creative).includes('DJ Staxxx'));
 assert.ok(JSON.stringify(projects.variants.creative).includes('nieces and nephews'));
 assert.ok(JSON.stringify(projects.variants.full).includes('Property assistants'));
 assert.ok(!JSON.stringify(projects).includes('160k'));
-assert.ok(!JSON.stringify(CONTENT).toLowerCase().includes('jaxdata'));
-assert.ok(!JSON.stringify(CONTENT).includes('barry.floore@gmail.com'));
-assert.ok(!JSON.stringify(CONTENT).includes('floorebarry@gmail.com'));
+assert.strictEqual(guard.personalHits(JSON.stringify(CONTENT)).length, 0);
 
 const ops = CONTENT.modules.find(function (m) { return m.id === 'skills-ops'; });
 assert.ok(ops.variants.support.items.indexOf('Crisis intervention and de-escalation') !== -1);
@@ -255,15 +255,12 @@ assert.strictEqual(CFG.person.display, 'b. floore');
 ['https://linkedin.com/in/mbfloore', 'https://www.bfloore.online'].forEach(function (url) {
   assert.strictEqual(hasExactUrl(card, url), true, 'vCard missing ' + url);
 });
-['FN:Barry Floore', 'TEL;TYPE=TEXT:+1-904-297-8201', 'Jacksonville'].forEach(function (bit) {
+['FN:Barry Floore', 'TEL;TYPE=TEXT:' + CFG.person.workPhoneE164, 'Jacksonville'].forEach(function (bit) {
   assert.ok(card.includes(bit), 'vCard missing ' + bit);
 });
 assert.ok(!card.includes('EMAIL'));
-assert.ok(!card.includes('floorebarry@gmail.com'));
-assert.ok(!card.includes('barry.floore@gmail.com'));
-assert.ok(!card.includes('904-438-1866'));
-assert.ok(!card.includes('904-600-4423'));
-assert.ok(!card.toLowerCase().includes('jaxdata'));
+assert.strictEqual(guard.personalHits(card).length, 0);
+assert.ok(guard.sealedPhoneHits(card).length > 0);
 assert.ok(!card.includes('Michael'));
 for (let i = 0; i < card.length; i++) {
   if (card[i] === '\n') assert.strictEqual(card[i - 1], '\r');
@@ -286,7 +283,7 @@ assert.strictEqual(hasHostname(gHtml, 'open.spotify.com'), false);
 assert.ok(gHtml.includes('Handshake AI'));
 assert.ok(gHtml.includes('Sigma Theta Tau'));
 assert.ok(gHtml.includes('Safety labeling and moderation'));
-assert.ok(!gHtml.includes('Baptist Health'));
+assert.ok(gHtml.includes('Baptist Health'));
 assert.ok(!gHtml.includes('Direct Interactions'));
 assert.ok(!gHtml.includes('HIPAA'));
 assert.ok(!gHtml.includes('CRM familiarity'));
@@ -302,8 +299,18 @@ assert.ok(gHtml.indexOf('id="summary"') < gHtml.indexOf('id="experience"'));
 assert.ok(gHtml.indexOf('id="experience"') < gHtml.indexOf('id="education"'));
 assert.ok(gHtml.indexOf('id="education"') < gHtml.indexOf('id="projects"'));
 assert.ok(gHtml.indexOf('id="projects"') < gHtml.indexOf('id="skills"'));
-assert.ok(gHtml.includes('class="badge" aria-hidden="true">HA</span>'));
-assert.ok(gHtml.includes('class="badge" aria-hidden="true">MA</span>'));
+assert.ok(!gHtml.includes('class="badge"'));
+assert.ok(gHtml.includes('Baptist Health Jacksonville'));
+assert.ok(gHtml.includes('Staff Critical Care RN'));
+assert.ok(gHtml.includes('Centific / Pactera Edge'));
+assert.ok(gHtml.includes('Safety labeling, preference ranking, output auditing, and multimodal review'));
+const gLead = gHtml.split('<details class="more">')[0];
+const gEarlier = gHtml.split('<details class="more">')[1] || '';
+assert.ok(gLead.includes('Appen / CrowdGen'));
+assert.ok(gLead.includes('Pearson Education'));
+assert.ok(gLead.includes('Handshake AI'));
+assert.ok(!gLead.includes('Various contracts'));
+assert.ok(gEarlier.includes('Various contracts'));
 assert.ok(!gHtml.includes('Publishing and site ops'));
 assert.ok(!gHtml.includes('Skills — operator'));
 assert.ok(gHtml.includes('<summary>Earlier roles</summary>'));
@@ -325,7 +332,9 @@ assert.strictEqual(hasExactUrl(aiHtml, 'https://dataonezero.com'), true);
 assert.ok(!aiHtml.includes('visual media'));
 assert.ok(!aiHtml.includes('Brand ownership'));
 assert.ok(!aiHtml.includes('Direct Interactions'));
-assert.ok(!aiHtml.includes('Baptist Health'));
+assert.ok(aiHtml.includes('Baptist Health'));
+assert.ok(aiHtml.includes('Centific / Pactera Edge'));
+assert.ok(aiHtml.includes('Staff Critical Care RN'));
 assert.ok(!aiHtml.includes('Skills — operator'));
 
 const frHtml = htmlFor('?remix=freelance');
@@ -366,7 +375,7 @@ assert.ok(!frHtml.includes('Crisis intervention and de-escalation'));
 assert.ok(frHtml.includes('visual media'));
 assert.strictEqual(hasHostname(frHtml, 'friendlyrobots.online'), true);
 assert.ok(frHtml.includes('SLOP!'));
-assert.ok(frHtml.includes('no paid licensing yet'));
+assert.ok(frHtml.includes('Adobe Stock contributor with paid licensing.'));
 assert.ok(frHtml.includes('Listed on the hub.'));
 
 const healthHtml = htmlFor('?remix=health');
@@ -497,7 +506,8 @@ assert.strictEqual(hasExactUrl(creativeHtml, 'https://tiktok.com/@b_floore'), tr
 assert.strictEqual(hasExactUrl(creativeHtml, 'https://barryfloore.substack.com'), true);
 assert.strictEqual(hasExactUrl(creativeHtml, 'https://medium.com/@bfloore'), true);
 assert.ok(creativeHtml.includes('active monthly licensing'));
-assert.ok(creativeHtml.includes('no paid licensing yet'));
+assert.ok(creativeHtml.includes('Contributor with paid licensing.'));
+assert.ok(creativeHtml.includes('Getty Images and Adobe Stock both license work.'));
 assert.strictEqual(hasExactUrl(creativeHtml, 'https://serialimages.vercel.app'), true);
 assert.ok(creativeHtml.includes('Merch on Etsy and downloads on Gumroad'));
 assert.ok(creativeHtml.includes('Sigma Theta Tau'));
@@ -552,7 +562,7 @@ assert.ok(cvHtml.includes('@barrylikethefruit. Photography.'));
 assert.ok(cvHtml.includes('<summary>Show all</summary>'));
 assert.strictEqual(hasExactUrl(cvHtml, 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'), true);
 assert.strictEqual(hasExactUrl(cvHtml, 'https://friendlyrobots.online'), true);
-assert.ok(cvHtml.includes('no paid licensing yet'));
+assert.ok(cvHtml.includes('Contributor with paid licensing.'));
 assert.ok(cvHtml.includes('Skills — creative'));
 assert.ok(cvHtml.includes('Crisis intervention and de-escalation'));
 assert.ok(cvHtml.includes('visual media'));
@@ -568,9 +578,8 @@ assert.strictEqual(opened.tel, CFG.person.workPhoneE164.replace(/-/g, ''));
 assert.strictEqual(opened.email, undefined);
 assert.strictEqual(opened.sms, undefined);
 const sealedDump = JSON.stringify(sealed);
-[CFG.person.workPhone, CFG.person.workPhoneE164, '9042978201', 'floorebarry@gmail.com', '904-438-1866', '904-600-4423'].forEach(function (bit) {
-  assert.ok(!sealedDump.includes(bit), 'sealed contact still has ' + bit);
-});
+assert.strictEqual(guard.personalHits(sealedDump).length, 0);
+assert.strictEqual(guard.sealedPhoneHits(sealedDump).length, 0);
 const sealedData = Object.assign({}, data, { person: sealed });
 const who = R.whoHtml(sealedData);
 assert.ok(who.includes('Barry Floore'));
@@ -582,13 +591,13 @@ assert.ok(who.includes('Copy link'));
 assert.ok(who.includes('M.S. Nursing (Jacksonville University, Cum Laude)'));
 assert.ok(who.includes('AI training and auditing, 5+ years (Handshake AI, Mercor)'));
 assert.ok(who.includes('Critical Care RN, Baptist Health Jacksonville'));
+assert.ok(who.includes('AI trainer and evaluator. MSN, former critical care RN. Writer and composer.'));
 assert.strictEqual(hasExactUrl(who, 'https://calendly.com/barryfloore'), true);
 assert.ok(!who.includes('>Email</a>'));
 assert.ok(!who.includes('>Call</a>'));
 assert.ok(!who.includes('>Text</a>'));
-assert.ok(!who.includes('floorebarry@gmail.com'));
-assert.ok(!who.includes('904-438-1866'));
-assert.ok(!who.includes('904-297-8201'));
+assert.strictEqual(guard.personalHits(who).length, 0);
+assert.strictEqual(guard.sealedPhoneHits(who).length, 0);
 assert.ok(!who.includes('mailto:'));
 assert.ok(!who.includes('tel:'));
 assert.ok(!who.includes('sms:'));
@@ -598,14 +607,12 @@ assert.ok(contact.includes('id="contact-form"'));
 assert.ok(contact.includes('name="company"'));
 assert.ok(contact.includes('Book a time'));
 assert.ok(contact.includes('id="contact-send" disabled'));
-assert.ok(!contact.includes('floorebarry@gmail.com'));
-assert.ok(!contact.includes('904-438-1866'));
-assert.ok(!contact.includes('904-297-8201'));
+assert.strictEqual(guard.personalHits(contact).length, 0);
+assert.strictEqual(guard.sealedPhoneHits(contact).length, 0);
 assert.ok(!contact.includes('>Call</a>'));
 assert.ok(!contact.includes('>Text</a>'));
 assert.ok(!contact.includes('mailto:'));
 assert.ok(!contact.includes('tel:'));
-assert.ok(!contact.includes('barry.floore@gmail.com'));
 const linkedPorts = Object.assign({}, data, { portfolios: { getty: 'https://example.com/getty-portfolio', adobeStock: '' } });
 const linkedHtml = R.sectionsHtml(linkedPorts, RS.parseState('?remix=creative', catalog));
 assert.strictEqual(hasExactUrl(linkedHtml, 'https://example.com/getty-portfolio'), true);
@@ -614,17 +621,15 @@ const blankHtml = R.sectionsHtml(blankPorts, RS.parseState('?remix=creative', ca
 assert.ok(!blankHtml.includes('Getty Images portfolio'));
 assert.ok(!blankHtml.includes('Adobe Stock contributor portfolio'));
 assert.ok(blankHtml.includes('active monthly licensing'));
-assert.ok(blankHtml.includes('no paid licensing yet'));
+assert.ok(blankHtml.includes('Contributor with paid licensing.'));
 assert.strictEqual(R.contactCard(sealedData), card);
 assert.ok(!/download full/i.test(R.deckText(data, { view: 'cv', remix: 'general', on: CONTENT.moduleIds })));
 
 const fs = require('fs');
 const path = require('path');
-['app.js', 'render.js', 'state.js', 'contact-core.mjs', 'functions/api/contact.js', 'site.config.js', 'vcard.js', 'content.js'].forEach(function (rel) {
-  const text = fs.readFileSync(path.join(__dirname, rel), 'utf8').toLowerCase();
-  ['barry.floore@gmail.com', 'floorebarry@gmail.com', 'jaxdata', '904-438-1866', '9044381866', '904-600-4423', '9046004423'].forEach(function (bit) {
-    assert.ok(text.indexOf(bit) === -1, rel + ' contains ' + bit);
-  });
+['app.js', 'render.js', 'state.js', 'contact-core.mjs', 'functions/api/contact.js', 'site.config.js', 'vcard.js', 'content.js', 'build.js', 'test.js', 'README.md', 'contact-guard.js'].forEach(function (rel) {
+  const text = fs.readFileSync(path.join(__dirname, rel), 'utf8');
+  assert.strictEqual(guard.personalHits(text).length, 0, rel + ' contains a personal contact');
 });
 
 function contactRequest(method, body, headers) {

@@ -14,7 +14,7 @@ The page does not show a personal email address or a personal phone number. Book
 
 Static resume with six remixes (General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, Content creation). The remix chips and the section toggles sit in a side panel (a sticky rail on a wide screen, a slide-over on a narrow one). Copy link keeps the view in the URL. Full CV shows every section's long form. Download PDF opens the print dialog and expands Earlier roles and Show all.
 
-The default page is the general resume: summary, Handshake AI and Mercor in Experience (earlier roles closed), education, six projects, and the core AI skills. Clinical work, customer service, and the extra skill tracks turn on from the versions panel.
+The default page is the general resume. Experience opens on Handshake AI, Mercor, Appen / CrowdGen, and Pearson, plus a one-line Baptist Health role and the Centific healthcare QA role. Various contracts stays under Earlier roles. Education, six projects, and the core AI skills follow. Customer service and the extra skill tracks turn on from the versions panel. The longer clinical writeup stays on the health, support, and full CV views.
 
 Contact:
 
@@ -47,7 +47,7 @@ DNS for bfloore.online stays at Namecheap. Mail uses [Resend](https://resend.com
 2. **Cloudflare Turnstile.** Create a widget (managed) whose domains include `resume.bfloore.online`. The widget’s client action is `contact`. Turnstile does not require the zone to be proxied. For local `wrangler pages dev` only, localhost may be on the widget and in `.dev.vars`. Do not put `localhost` or `127.0.0.1` in the production hostname list.
 3. **Pages project `bfloore-resume`**, production environment:
    - `RESEND_API_KEY` — secret
-   - `CONTACT_TO` — secret, exactly `barry.floore@gmail.com,floorebarry@gmail.com`
+   - `CONTACT_TO`: secret. The recipient list lives only in the Pages environment. Do not put those addresses in the repo.
    - `CONTACT_FROM` — secret, for example `Barry Floore <resume@bfloore.online>` after the domain verifies
    - `TURNSTILE_SECRET` — secret
    - `TURNSTILE_SITE_KEY` — the public site key

@@ -11,6 +11,7 @@ const CONTENT = require('./content');
 const { vcard } = require('./vcard');
 const RS = require('./state');
 const R = require('./render');
+const guard = require('./contact-guard');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, 'dist');
@@ -60,7 +61,7 @@ function page({ title, desc, canonical, body, jsonld, boot }) {
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>${fs.readFileSync(path.join(ROOT, 'style.css'), 'utf8')}</style>
 ${jsonld || ''}
 </head>
@@ -178,24 +179,8 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   CONTENT.remixes.forEach(function (remix) {
     if (!html.includes('data-remix="' + remix.id + '"')) throw new Error('Missing remix chip ' + remix.id);
   });
-  [
-    'floorebarry@gmail.com',
-    'barry.floore@gmail.com',
-    '904-438-1866',
-    '9044381866',
-    '+1-904-438-1866',
-    '904-600-4423',
-    '9046004423',
-    '+1-904-600-4423',
-    CFG.person.workPhone,
-    CFG.person.workPhoneE164,
-    String(CFG.person.workPhone).replace(/-/g, '')
-  ].forEach(function (bit) {
-    if (bit && html.indexOf(bit) !== -1) throw new Error('Page source still contains plaintext contact: ' + bit);
-  });
-  ['barry.floore@gmail.com', 'jaxdata'].forEach(function (bit) {
-    if (html.toLowerCase().indexOf(bit) !== -1) throw new Error('Page source still contains retired contact');
-  });
+  if (guard.personalHits(html).length) throw new Error('Page source still contains a personal contact.');
+  if (guard.sealedPhoneHits(html).length) throw new Error('Page source still contains the business line in plaintext.');
 
   rmrf(OUT);
   fs.mkdirSync(OUT, { recursive: true });
@@ -236,27 +221,14 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     fs.copyFileSync(src, path.join(OUT, name));
   });
 
-  const banned = [
-    'barry.floore@gmail.com',
-    'floorebarry@gmail.com',
-    'jaxdata',
-    '904-438-1866',
-    '9044381866',
-    '904-600-4423',
-    '9046004423',
-    '904-297-8201',
-    '9042978201',
-    '+1-904-297-8201'
-  ];
   function scanTree(dir) {
     fs.readdirSync(dir, { withFileTypes: true }).forEach(function (ent) {
       const file = path.join(dir, ent.name);
       if (ent.isDirectory()) { scanTree(file); return; }
       if (/\.(png|jpg|jpeg|ico|woff2?)$/i.test(ent.name)) return;
-      const text = fs.readFileSync(file).toString('utf8').toLowerCase();
-      banned.forEach(function (bit) {
-        if (text.indexOf(bit) !== -1) throw new Error(file + ' contains plaintext contact: ' + bit);
-      });
+      const text = fs.readFileSync(file).toString('utf8');
+      if (guard.personalHits(text).length) throw new Error(file + ' contains a personal contact');
+      if (guard.sealedPhoneHits(text).length) throw new Error(file + ' contains the business line in plaintext');
     });
   }
   scanTree(OUT);
