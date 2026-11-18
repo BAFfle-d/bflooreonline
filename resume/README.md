@@ -14,7 +14,7 @@ The page does not show a personal email address or a personal phone number. Book
 
 Static resume with six remixes (General, AI trainer, Business owner / freelancer, Health / education, Remote support / crisis, Content creation). The remix chips and the section toggles sit in a side panel (a sticky rail on a wide screen, a slide-over on a narrow one). Copy link keeps the view in the URL. Full CV shows every section's long form. Download PDF opens the print dialog and expands Earlier roles and Show all.
 
-The default page is the general resume. Experience opens on Handshake AI, Mercor, Appen / CrowdGen, and Pearson, plus a one-line Baptist Health role and the Centific healthcare QA role. Various contracts stays under Earlier roles. Education, six projects, and the core AI skills follow. Customer service and the extra skill tracks turn on from the versions panel. The longer clinical writeup stays on the health, support, and full CV views.
+The default Experience section has three parent entries: AI Model Trainer (Appen, Outlier, Handshake, Centific, and Neevo, then Mercor and other contracts), Standardized Test Scorer at Pearson, and Freelance / business owner. A one-line Baptist Health role follows. Projects sit after Skills. The longer clinical writeup stays on the health and full CV views. Centific is no longer in the Clinical module.
 
 Contact:
 

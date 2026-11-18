@@ -223,30 +223,40 @@ const modules = [
     kind: 'roles',
     variants: {
       light: {
-        kicker: 'AI training & auditing',
         entries: [
           {
-            title: 'Auditor | AI Model Trainer (SME)', org: 'Handshake AI', where: 'Remote', dates: '2025–Present',
-            bullets: [handshakeBullet]
+            title: 'AI Model Trainer',
+            lines: [
+              { org: 'Appen / CrowdGen', text: 'Team lead and auditor, remote, 2018–2024. Led evaluation across two dozen+ projects: UGC and AI output, annotation, collection, and QA for LLM training.' },
+              { org: 'Outlier' },
+              { org: 'Handshake AI', text: 'Auditor and AI model trainer (SME), remote, 2025–Present. ' + handshakeBullet },
+              { org: 'Centific / Pactera Edge', text: 'Healthcare SME and QA analyst, 2022–2023. Validated AI healthcare chatbot responses against clinical standards. Flagged hallucinated diagnoses, contraindicated treatments, and dangerous patient-facing misinformation. Applied MSN-level clinical judgment to edge cases beyond labeling guidelines.' },
+              { org: 'Neevo / DefinedCrowd', text: 'Project lead, speech collection.' },
+              { org: 'Mercor AI and other contracts', text: 'Mercor AI, remote, 2025–2026. Audits educational, tutoring, and conversational output for accuracy, safety, and guideline fit, including multimodal review. Other contracts, 2019–Present, include RWS Moravia, Mindrift, and Lionbridge.' }
+            ]
           },
           {
-            title: 'Auditor | AI Model Trainer', org: 'Mercor AI', where: 'Remote', dates: '2025–2026',
-            bullets: ['Audit educational, tutoring, and conversational output for accuracy, safety, and guideline fit, including multimodal review.']
-          },
-          {
-            title: 'Team Lead | Auditor', org: 'Appen / CrowdGen', where: 'Remote', dates: '2018–2024',
-            bullets: ['Led evaluation across two dozen+ projects: UGC and AI output, annotation, collection, and QA for LLM training.']
-          },
-          {
-            title: 'Standardized Test Scorer', org: 'Pearson Education', where: 'Remote', dates: '2022–Present',
+            title: 'Standardized Test Scorer',
+            org: 'Pearson Education',
+            where: 'Remote',
+            dates: '2022–Present',
             bullets: ['50,000+ open-ended responses; 60+/hr at 90–95% inter-rater reliability.']
           },
-          baptistLine,
-          centificRole,
           {
-            title: 'AI Model Trainer', org: 'Various contracts', where: 'Remote', dates: '2019–Present', collapsed: true,
-            bullets: ['Speech collection lead, healthcare SME/QA, annotation, transcription, and safety moderation across contract projects.']
-          }
+            title: 'Freelance / business owner',
+            lines: [
+              { org: 'bad.associates', text: 'Formerly bfloore&after. Closed profitably. The most profitable division was URL resale. Also graphic design and asset management.' },
+              { org: 'ACD Direct for PBS/NPR', text: 'Donor services, remote, 2019–2022. Phone-based donor support and inbound fundraising.' },
+              { org: 'ChowNow', text: 'B2B SaaS startup, food ordering.' },
+              { org: 'Pizza Hut', text: 'Food ordering.' },
+              { org: 'Samsung.com Mobile via ibbu', text: 'Live chat sales agent, remote, 2021–Present.' },
+              { org: 'HotelPlanner.com', text: 'Reservationist and group sales, remote, 2020–2023.' },
+              { org: 'BusPatrol' },
+              { org: 'Direct Interactions', text: 'Crisis and service referral specialist, remote, 2021–2022.' },
+              { org: 'Omaha Steaks; Ubisoft & Pole-to-Win', text: 'Seasonal support, and player support.' }
+            ]
+          },
+          baptistLine
         ]
       },
       supporting: {
@@ -293,7 +303,8 @@ const modules = [
               'Trauma-informed scoring and rubric calibration on open-ended responses.',
               '50,000+ responses; 60+/hr at 90–95% inter-rater reliability.'
             ]
-          }
+          },
+          centificRole
         ]
       },
       trainer: {
@@ -365,7 +376,8 @@ const modules = [
           {
             title: 'Standardized Test Scorer', org: 'Pearson Education', where: 'Remote', dates: '2022–Present',
             bullets: ['50,000+ open-ended responses; 60+/hr at 90–95% inter-rater reliability.']
-          }
+          },
+          centificRole
         ]
       }
     }
@@ -421,8 +433,7 @@ const modules = [
             org: 'FlexCare',
             dates: '2018–2019',
             bullets: ['ED and ICU assignments, with education, community engagement, and new-hire orientation.']
-          },
-          centificRole
+          }
         ]
       }
     }

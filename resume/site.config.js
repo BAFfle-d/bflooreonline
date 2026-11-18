@@ -12,11 +12,11 @@ module.exports = {
   reviewsUrl: 'https://reviews.bfloore.online',
   calendlyUrl: 'https://calendly.com/barryfloore',
   author: 'b. floore',
-  /* Empty portfolio strings render no link. Fill a real https URL to show it. */
+  /* An empty portfolio string renders no link. */
   portfolios: {
     instagram: 'https://www.instagram.com/barrylikethefruit/',
-    adobeStock: '',
-    getty: ''
+    adobeStock: 'https://stock.adobe.com/contributor/210767491/Barry',
+    getty: 'https://www.istockphoto.com/portfolio/BFloore'
   },
   person: {
     given: 'Barry',

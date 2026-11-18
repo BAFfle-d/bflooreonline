@@ -184,19 +184,29 @@
     { id: 'summary', title: 'Summary', ids: ['summary'] },
     { id: 'experience', title: 'Experience', ids: ['exp-ai', 'exp-cs', 'clinical'] },
     { id: 'education', title: 'Education', ids: ['education'] },
-    { id: 'projects', title: 'Projects', ids: ['projects'] },
-    { id: 'skills', title: 'Skills', ids: ['skills-ai', 'skills-ops', 'skills-health', 'skills-creative'] }
+    { id: 'skills', title: 'Skills', ids: ['skills-ai', 'skills-ops', 'skills-health', 'skills-creative'] },
+    { id: 'projects', title: 'Projects', ids: ['projects'] }
   ];
+
+  function renderLines(lines) {
+    return '<ul class="nested">' + lines.map(function (line) {
+      var label = esc(line.org || line.title || '');
+      var text = line.text ? '<span>' + esc(line.text) + '</span>' : '';
+      return '<li><strong>' + label + '</strong>' + text + '</li>';
+    }).join('') + '</ul>';
+  }
 
   function renderRole(job) {
     var meta = [job.dates, job.where].filter(Boolean).join(' · ');
     var bullets = (job.bullets || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
+    var lines = (job.lines && job.lines.length) ? renderLines(job.lines) : '';
     return '<article class="role"><div class="role-body">' +
       '<div class="role-top"><h3>' + esc(job.title) + '</h3>' +
         (meta ? '<p class="meta">' + esc(meta) + '</p>' : '') +
       '</div>' +
       (job.org ? '<p class="org">' + esc(job.org) + '</p>' : '') +
       (bullets ? '<ul>' + bullets + '</ul>' : '') +
+      lines +
       '</div></article>';
   }
 
