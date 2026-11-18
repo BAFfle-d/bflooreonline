@@ -6,7 +6,7 @@ He is in Jacksonville, Florida, and the resume says the work is 100% remote. The
 
 The hub’s About panel describes the same person as someone in AI who published the children’s series FRIENDLY ROBOTS!, with earlier work in urban planning and emergency and critical-care nursing, then language models, fiction, musicals, and essays. The dated record below is the resume, not a second set of figures.
 
-The resume does not publish an email address or phone number on the page. A recruiter can use the [Book a time](https://calendly.com/barryfloore) link, the contact form on [resume.bfloore.online](https://resume.bfloore.online/), the LinkedIn profile linked there (`linkedin.com/in/mbfloore`), or the vCard / QR on that page.
+The resume does not publish a personal email address or a personal phone number. A recruiter can use the [Book a time](https://calendly.com/barryfloore) link, the contact form on [resume.bfloore.online](https://resume.bfloore.online/), or the LinkedIn profile linked there (`linkedin.com/in/mbfloore`). The vCard and QR carry the business line and the website.
 
 ## Summary
 
@@ -66,9 +66,9 @@ Creative work on the resume:
 - The Lying Liars Who Lied When They Said They Loved You — fictionalized semi-autobiographical novel in editing, with chapter podcasts and companion music. Music credit on the resume: lyrics by DJ Staxxx; arrangement and production by B. Floore; AI-assisted instrumentation via Suno. Marked adult.
 - Musicals in progress: SLOP!, Geoff & Maxie, and spun.
 - Cultivating Ethical AI — sci-fi ethics podcast, season 4, produced by Barry Floore and built with free AI tools. Also on Apple Podcasts and iHeart. The resume says the show claims an Apple Podcasts number-one ranking for ethical AI, and that the ranking is the show’s claim.
-- Instagram (`@barrylikethefruit`) — the resume calls it a world-record nominated channel.
+- Instagram (`@barrylikethefruit`), photography. The resume links `https://www.instagram.com/barrylikethefruit/`.
 - YouTube (`@bfloore_online`), TikTok (`@b_floore`), Substack, and Medium.
-- Getty Images contributor with active monthly licensing. Adobe Stock contributor, listed, with no paid licensing yet.
+- Getty Images contributor with active monthly licensing. Adobe Stock contributor with paid licensing.
 - Serial Images, an app listed on the hub. Merch on Etsy and downloads on Gumroad, linked from the hub.
 
 Operator skills on the full CV include publishing and site ops, affiliate hygiene, multi-channel client delivery, CRM familiarity, content systems, brand ownership, sales conversion, remote reliability, crisis intervention, trauma-informed communication, and night-shift reliability.

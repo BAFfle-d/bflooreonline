@@ -11,6 +11,7 @@ const CONTENT = require('./content');
 const { vcard } = require('./vcard');
 const RS = require('./state');
 const R = require('./render');
+const guard = require('./contact-guard');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, 'dist');
@@ -51,7 +52,7 @@ function page({ title, desc, canonical, body, jsonld, boot }) {
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${esc(CFG.siteUrl + '/og.png')}">
 <meta name="twitter:image:alt" content="b. floore">
-<meta name="theme-color" content="#07090a">
+<meta name="theme-color" content="#050607">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -60,16 +61,16 @@ function page({ title, desc, canonical, body, jsonld, boot }) {
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>${fs.readFileSync(path.join(ROOT, 'style.css'), 'utf8')}</style>
 ${jsonld || ''}
 </head>
 <body>
 <a class="skip" href="#name">Skip to resume</a>
-<header class="top">
-  <a class="brand" href="/"><span class="b">b</span><span>resume</span></a>
-  <nav><a href="#contact">Contact</a><a href="${esc(CFG.hubUrl)}">bfloore.online ↗</a></nav>
-</header>
+<div class="statusbar">
+  <p class="status-brand">SYS.BFLOORE // RESUME</p>
+  <nav><a href="#contact">Contact</a><a href="${esc(CFG.hubUrl)}">bfloore.online</a></nav>
+</div>
 ${body}
 <footer class="foot">
   <p>${esc(CFG.person.full)} · Jacksonville, Florida · ${esc(CFG.person.remote)}</p>
@@ -99,6 +100,8 @@ async function main() {
     calendlyUrl: CFG.calendlyUrl,
     person: R.sealPerson(CFG.person),
     identity: CONTENT.identity,
+    hero: CONTENT.hero,
+    portfolios: CFG.portfolios,
     remixes: CONTENT.remixes,
     modules: CONTENT.modules,
     variantMap: CONTENT.variantMap,
@@ -117,27 +120,28 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
 </script>`;
 
   const body = `<main class="wrap">
-  <header class="who card" id="who">${R.whoHtml(payload)}</header>
-  <div class="controls">
-    <p class="lede" id="deck">${esc(R.deckText(payload, defaultState))}</p>
-    <div class="chips" id="remixes" role="group" aria-label="Resume remix">${R.remixesHtml(payload, defaultState)}</div>
-    <div class="adjust" id="adjust" hidden></div>
-    <p class="kicker" id="sec-label">Sections</p>
-    <div class="chips" id="toggles" role="group" aria-labelledby="sec-label">${R.togglesHtml(payload, defaultState)}</div>
-    <div class="toolbar">
-      <button type="button" class="btn" id="cv" aria-pressed="false">Full CV</button>
-      <button type="button" class="btn" id="copy">Copy link</button>
-      <button type="button" class="btn primary" id="pdf" aria-describedby="pdf-hint">Download PDF</button>
-      <span class="copied" id="copied" role="status"></span>
+  <div class="layout">
+    <div class="column">
+      <header class="who card" id="who">${R.whoHtml(payload)}</header>
+      <div id="sections">${R.sectionsHtml(payload, defaultState)}</div>
+      <section class="block card" id="contact" aria-label="Contact">${R.contactHtml(payload)}</section>
     </div>
-    <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. The file matches the sections on screen. The vCard is a separate download.</p>
+    <div class="rail-backdrop" id="rail-backdrop" hidden></div>
+    <aside class="rail card" id="rail" aria-label="Resume versions">
+      <div class="rail-top">
+        <p class="kicker">Versions</p>
+        <button type="button" class="rail-close" id="versions-close">Close</button>
+      </div>
+      <p class="lede" id="deck">${esc(R.deckText(payload, defaultState))}</p>
+      <div class="chips" id="remixes" role="group" aria-label="Resume remix">${R.remixesHtml(payload, defaultState)}</div>
+      <div class="adjust" id="adjust" hidden></div>
+      <p class="kicker" id="sec-label">Sections</p>
+      <div class="chips" id="toggles" role="group" aria-labelledby="sec-label">${R.togglesHtml(payload, defaultState)}</div>
+      <button type="button" class="btn" id="cv" aria-pressed="false">Full CV</button>
+      <p class="hint" id="pdf-hint">Download PDF opens the print dialog. Choose Save as PDF and turn off headers and footers for a clean page. Earlier roles and Show all are expanded in the file. The vCard is a separate download.</p>
+    </aside>
   </div>
-  <nav class="jump" id="jump" aria-label="On this page">${R.navHtml(payload, defaultState)}</nav>
-  <div class="stage">
-    <div id="sections" class="cards">${R.sectionsHtml(payload, defaultState)}</div>
-    <aside class="panel card" id="contact" aria-label="Contact">${R.contactHtml(payload)}</aside>
-  </div>
-  <noscript><p class="note">Remixes, PDF export, the contact form, and the vCard download use JavaScript. Book a time still works, and the QR code still adds Barry Floore to a phone.</p></noscript>
+  <noscript><p class="note">Remixes, PDF export, the contact form, and the vCard download use JavaScript. Book a time still works, and the QR code still saves a contact card.</p></noscript>
 </main>`;
 
   const jsonld = `<script type="application/ld+json">${JSON.stringify({
@@ -169,18 +173,14 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   if (!html.includes('Download PDF') || !html.includes('Download vCard') || !html.includes('Book a time') || !html.includes('id="contact-form"')) {
     throw new Error('PDF, vCard, booking, or contact form actions are missing.');
   }
-  if (html.includes('mailto:')) throw new Error('Page source still contains a mailto link.');
+  if (/mailto:|href=["']tel:|href=["']sms:/i.test(html)) {
+    throw new Error('Page source still contains a mailto, tel, or sms link.');
+  }
   CONTENT.remixes.forEach(function (remix) {
     if (!html.includes('data-remix="' + remix.id + '"')) throw new Error('Missing remix chip ' + remix.id);
   });
-  [CFG.person.email, CFG.person.phone, CFG.person.phoneE164, CFG.person.sms, CFG.person.smsE164,
-    String(CFG.person.phoneE164).replace(/-/g, ''), String(CFG.person.smsE164).replace(/-/g, '')
-  ].forEach(function (bit) {
-    if (html.indexOf(bit) !== -1) throw new Error('Page source still contains plaintext contact');
-  });
-  ['barry.floore@gmail.com', 'jaxdata'].forEach(function (bit) {
-    if (html.toLowerCase().indexOf(bit) !== -1) throw new Error('Page source still contains retired contact');
-  });
+  if (guard.personalHits(html).length) throw new Error('Page source still contains a personal contact.');
+  if (guard.sealedPhoneHits(html).length) throw new Error('Page source still contains the business line in plaintext.');
 
   rmrf(OUT);
   fs.mkdirSync(OUT, { recursive: true });
@@ -209,8 +209,8 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
       { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' }
     ],
-    theme_color: '#07090a',
-    background_color: '#07090a',
+    theme_color: '#050607',
+    background_color: '#050607',
     display: 'standalone'
   }, null, 2) + '\n');
 
@@ -221,24 +221,14 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     fs.copyFileSync(src, path.join(OUT, name));
   });
 
-  const banned = [
-    'barry.floore@gmail.com',
-    'floorebarry@gmail.com',
-    'jaxdata',
-    '904-438-1866',
-    '9044381866',
-    '904-600-4423',
-    '9046004423'
-  ];
   function scanTree(dir) {
     fs.readdirSync(dir, { withFileTypes: true }).forEach(function (ent) {
       const file = path.join(dir, ent.name);
       if (ent.isDirectory()) { scanTree(file); return; }
       if (/\.(png|jpg|jpeg|ico|woff2?)$/i.test(ent.name)) return;
-      const text = fs.readFileSync(file).toString('utf8').toLowerCase();
-      banned.forEach(function (bit) {
-        if (text.indexOf(bit) !== -1) throw new Error(file + ' contains plaintext contact: ' + bit);
-      });
+      const text = fs.readFileSync(file).toString('utf8');
+      if (guard.personalHits(text).length) throw new Error(file + ' contains a personal contact');
+      if (guard.sealedPhoneHits(text).length) throw new Error(file + ' contains the business line in plaintext');
     });
   }
   scanTree(OUT);
