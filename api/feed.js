@@ -92,14 +92,14 @@ async function build(limit = 160) {
   const results = await Promise.all(SOURCES.map(pull));
   /* cross-posts (Substack mirrors Medium): keep the first source's copy */
   const seen = new Set();
-  const items = results.flatMap((r) => r.items).concat(ARCHIVE)
+  const items = results.flatMap((r) => r.items)
     .filter((i) => { const k = i.title.toLowerCase().replace(/[^a-z0-9]+/g, ''); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit);
   return {
     updated: new Date().toISOString(),
-    sources: SOURCES.map((s, i) => ({ id: s.id, label: s.label, home: s.home, kind: s.kind, ok: results[i].ok, count: items.filter((x) => x.source === s.id).length }))
-      .concat([{ id: 'archive', label: 'Archive · 2008–09', home: 'https://cincywestsidequeer.blogspot.com', kind: 'archive', ok: true, count: ARCHIVE.length }]),
+    sources: SOURCES.map((s, i) => ({ id: s.id, label: s.label, home: s.home, kind: s.kind, ok: results[i].ok, count: items.filter((x) => x.source === s.id).length })),
+    archive: { id: 'archive', label: 'Archive 2008-09', home: 'https://cincywestsidequeer.blogspot.com', count: ARCHIVE.length },
     items
   };
 }
