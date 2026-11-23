@@ -10,9 +10,10 @@ const SOURCES = [
   { id: 'substack', label: 'Substack',              url: 'https://barryfloore.substack.com/feed',             home: 'https://barryfloore.substack.com',               kind: 'dispatch'},
   { id: 'gaslight', label: 'American Gaslighter',   url: 'https://americangaslightercom.wordpress.com/feed/', home: 'https://americangaslightercom.wordpress.com',    kind: 'blog'    },
   { id: 'ceai',     label: 'Cultivating Ethical AI',url: 'https://anchor.fm/s/eed77758/podcast/rss',          home: 'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9', kind: 'episode' },
-  { id: 'liars',    label: 'The Lying Liars',       url: 'https://media.rss.com/the-lying-liars/feed.xml',    home: 'https://thelyingliars.online',                   kind: 'episode' },
-  { id: 'reviews',  label: 'Reviews',               url: 'https://reviews.bfloore.online/rss.xml',          home: 'https://reviews.bfloore.online',                 kind: 'review'  },
+  { id: 'liars',    label: 'The Lying Liars',       url: 'https://media.rss.com/the-lying-liars/feed.xml',    home: 'https://thelyingliars.online',                   kind: 'episode' }
 ];
+/* Buying guides stay off this feed. They are commerce, listed at /shop/
+   from reviews.bfloore.online/rss.xml via /api/reviews. */
 /* titles that are platform placeholders, not posts */
 const SKIP = /^(coming soon|welcome to|hello world)/i;
 /* boilerplate the hosts inject; scrubbed from titles and excerpts */
@@ -88,12 +89,31 @@ async function pull(src) {
 
 const ARCHIVE = require('./_archive.js');
 
+/* Review posts and StashAndSet catalog links do not belong in the writing feed. */
+function commerceHost(url) {
+  try {
+    const host = new URL(url).hostname.toLowerCase().replace(/\.$/, '').replace(/^www\./, '');
+    return host === 'reviews.bfloore.online' || host === 'stashandset.com' || host.endsWith('.stashandset.com');
+  } catch (e) {
+    return false;
+  }
+}
+function isReviewPost(item) {
+  return !!item && (item.source === 'reviews' || item.kind === 'review' || commerceHost(item.url));
+}
+
 async function build(limit = 160) {
   const results = await Promise.all(SOURCES.map(pull));
   /* cross-posts (Substack mirrors Medium): keep the first source's copy */
   const seen = new Set();
   const items = results.flatMap((r) => r.items)
-    .filter((i) => { const k = i.title.toLowerCase().replace(/[^a-z0-9]+/g, ''); if (seen.has(k)) return false; seen.add(k); return true; })
+    .filter((i) => {
+      if (isReviewPost(i)) return false;
+      const k = i.title.toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    })
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit);
   return {
@@ -112,3 +132,4 @@ module.exports = async function handler(req, res) {
   res.status(200).send(JSON.stringify(data));
 };
 module.exports.build = build;
+module.exports.pull = pull;

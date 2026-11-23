@@ -439,6 +439,7 @@ body.open .panel:hover{
 .p-tiles svg{width:26px;height:26px;fill:none;stroke:var(--neon);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--neon) 50%,transparent))}
 .t-name{font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase}
 .t-tag{font-family:var(--mono);font-size:8.5px;color:var(--dim);text-align:center;line-height:1.3}
+.p4 .shop-guides{margin-top:10px;flex:none}
 
 /* ---------- blogroll rows (card 03) ---------- */
 .p-feed{list-style:none;display:flex;flex-direction:column;gap:1px;flex:1;padding-left:2px}
@@ -864,6 +865,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       <li><a href="https://saintelmo.online">Geoff &amp; Maxie</a>. A musical parody.</li>
       <li><a href="https://thelyingliars.online">The Lying Liars</a>. Stories released as a podcast.</li>
       <li><a href="https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH">Books by B. Floore</a> on Amazon.</li>
+      <li><a href="/shop/">Shopping and buying guides</a>. Amazon, Etsy, Gumroad, and the reviews on reviews.bfloore.online.</li>
       <li><a href="/about/">About Barry Floore</a>.</li>
     </ul>
   </section>
@@ -943,7 +945,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     <ul class="p-feed" id="cardFeed">
       <li class="f-wait">SYNCING FEEDS…</li>
     </ul>
-    <div class="p-foot"><span id="feedCount">// 06 sources</span><button class="live" data-fx="shift" aria-label="Activate pink live effect">&#9679; live</button></div>
+    <div class="p-foot"><span id="feedCount">// 05 sources</span><button class="live" data-fx="shift" aria-label="Activate pink live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 04 · SHOPPING & MERCH ============ -->
@@ -964,7 +966,10 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4.5 15.5v3A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></svg>
         <span class="t-name">Gumroad</span><span class="t-tag">downloads</span></a></li>
     </ul>
-    <div class="p-foot"><span>// 03 storefronts</span><button class="live" data-fx="shuffle" aria-label="Activate yellow live effect">&#9679; live</button></div>
+    <ul class="p-links shop-guides">
+      <li><a href="/shop/"><span class="l-name">Reviews</span><span class="l-tag">buying guides</span><span class="l-arrow">-&gt;</span></a></li>
+    </ul>
+    <div class="p-foot"><span>// 03 stores · guides</span><button class="live" data-fx="shuffle" aria-label="Activate yellow live effect">&#9679; live</button></div>
   </section>
 
   <!-- ============ 05 · SITES & APPS ============ -->
@@ -1024,8 +1029,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
     substack: {label:'Substack',               color:'#ff8a3d', home:'https://barryfloore.substack.com'},
     gaslight: {label:'American Gaslighter',    color:'#ffd500', home:'https://americangaslightercom.wordpress.com'},
     ceai:     {label:'Cultivating Ethical AI', color:'#00e0ff', home:'https://open.spotify.com/show/2nGTlVMwCufnCq4NUssGT9'},
-    liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'},
-    reviews:  {label:'Reviews',                color:'#ffd500', home:'https://reviews.bfloore.online'}
+    liars:    {label:'The Lying Liars',        color:'#ff2fd6', home:'https://thelyingliars.online'}
   };
   var ARCHIVE_HOME = 'https://cincywestsidequeer.blogspot.com';
 
@@ -1123,7 +1127,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
       status:'LIVE · AUTHOR STORE', art:'https://m.media-amazon.com/images/I/71uO6uQvW0L._SY342_.jpg', artFit:'contain',
       body:['Two very different shelves in one store: FRIENDLY ROBOTS! for young readers — six books and counting — and Benny: A Family Tragedy, an adult novel with nothing to do with the robots.'],
       links:[
-        {label:'Reviews & buying guides', url:'https://reviews.bfloore.online', note:'reviews site'},
+        {label:'Reviews & buying guides', url:'/shop/', note:'shop'},
         {label:'The RoboPets', url:'https://www.amazon.com/stores/B.-Floore/author/B0D2DBX9BH', note:'coloring'},
         {label:'Rex and Billy', url:'https://www.amazon.com/dp/B0HNSF83SM', note:'new story'},
         {label:'The Adventures of Robo', url:'https://www.amazon.com/dp/B0D8WGBQQ4', note:'storytime'},
@@ -1182,6 +1186,7 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
         {label:'spuncalliope.wordpress.com', url:'https://spuncalliope.wordpress.com', note:'spun'},
         {label:'friendlyrobots.online', url:'https://friendlyrobots.online', note:'kids'},
         {label:'serialimages.vercel.app', url:'https://serialimages.vercel.app', note:'app'},
+        {label:'Shopping and buying guides', url:'/shop/', note:'shop'},
         {label:'reviews.bfloore.online', url:'https://reviews.bfloore.online', note:'reviews'},
         {label:'resume.bfloore.online', url:'https://resume.bfloore.online/', note:'resume'},
         {label:'About Barry Floore', url:'/about/', note:'about'},
@@ -1456,9 +1461,17 @@ body.lights-out .core-hint{display:block;color:#fff;animation:none}
   var FEED = null, feedFilter = 'all';
   function fdate(iso){ var d = new Date(iso); return {d:d.getDate(), n:d.getMonth()+1, m:MONTHS[d.getMonth()], y:d.getFullYear()}; }
   function srcOf(id){ return FEED_SRC[id] || {label:id, color:'#888', home:'#'}; }
+  function isReviewItem(it){
+    if(!it) return false;
+    if(it.source === 'reviews' || it.kind === 'review') return true;
+    try {
+      var host = new URL(it.url).hostname.toLowerCase().replace(/\.$/, '').replace(/^www\./, '');
+      return host === 'reviews.bfloore.online' || host === 'stashandset.com' || host.endsWith('.stashandset.com');
+    } catch (e) { return false; }
+  }
   function liveItems(){
     if(!FEED || !FEED.items) return [];
-    return FEED.items.filter(function(it){ return it.source !== 'archive'; });
+    return FEED.items.filter(function(it){ return it.source !== 'archive' && !isReviewItem(it); });
   }
 
   function renderCardFeed(){
