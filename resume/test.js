@@ -250,6 +250,9 @@ assert.strictEqual(CFG.portfolios.instagram, 'https://www.instagram.com/barrylik
 assert.strictEqual(CFG.portfolios.adobeStock, 'https://stock.adobe.com/contributor/210767491/Barry');
 assert.strictEqual(CFG.portfolios.getty, 'https://www.istockphoto.com/portfolio/BFloore');
 assert.deepStrictEqual(CFG.person.alternateName, ['b. floore', 'Michael Floore']);
+assert.strictEqual(typeof CFG.chatWidget, 'object');
+assert.strictEqual(typeof CFG.chatWidget.enabled, 'boolean');
+assert.ok(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(CFG.chatWidget.widgetId));
 assert.strictEqual(CFG.person.full, 'Barry Floore');
 assert.strictEqual(CFG.person.display, 'b. floore');
 ['https://linkedin.com/in/mbfloore', 'https://www.bfloore.online'].forEach(function (url) {
@@ -642,6 +645,15 @@ const path = require('path');
   const text = fs.readFileSync(path.join(__dirname, rel), 'utf8');
   assert.strictEqual(guard.personalHits(text).length, 0, rel + ' contains a personal contact');
 });
+
+const css = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+const printAt = css.indexOf('@media print');
+assert.ok(printAt > 0);
+const printCss = css.slice(printAt);
+assert.ok(printCss.includes('button[aria-controls="wajo-widget-frame"]'));
+assert.ok(printCss.includes('#wajo-widget-frame'));
+assert.ok(printCss.includes('iframe[src*="wajo.ai"]'));
+assert.ok(css.includes('z-index:20 !important'));
 
 function contactRequest(method, body, headers) {
   const init = { method: method, headers: headers || {} };

@@ -27,7 +27,17 @@ function safeInline(js) {
   return js.replace(/<\/script/gi, '<\\/script');
 }
 
-function page({ title, desc, canonical, body, jsonld, boot }) {
+function chatWidgetTag() {
+  const widget = CFG.chatWidget;
+  if (!widget || widget.enabled !== true) return '';
+  const id = String(widget.widgetId || '');
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) {
+    throw new Error('chatWidget.widgetId must be a UUID while the chat widget is enabled.');
+  }
+  return '<script defer src="https://wajo.ai/widget/loader.js" data-wajo-widget="' + id + '"></script>';
+}
+
+function page({ title, desc, canonical, body, jsonld, boot, end }) {
   const full = title ? title + ' · ' + CFG.siteTitle : CFG.siteTitle;
   return `<!DOCTYPE html>
 <html lang="en">
@@ -77,6 +87,7 @@ ${body}
   <p><a href="/#contact">Contact</a> · <a href="${esc(CFG.calendlyUrl)}">Book a time</a> · <a href="${esc(CFG.person.linkedin)}">LinkedIn</a> · <a href="${esc(CFG.hubUrl)}">bfloore.online</a></p>
 </footer>
 ${boot || ''}
+${end || ''}
 </body>
 </html>`;
 }
@@ -160,13 +171,15 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
     description: CFG.siteTagline
   }).replace(/</g, '\\u003c')}</script>`;
 
+  const widgetTag = chatWidgetTag();
   const html = page({
     title: 'Barry Floore — resume',
     desc: CFG.siteTagline,
     canonical: '/',
     body: body,
     jsonld: jsonld,
-    boot: boot
+    boot: boot,
+    end: widgetTag
   });
 
   if (/download full cv/i.test(html)) throw new Error('The page must not offer a full-CV download.');
@@ -181,16 +194,28 @@ bootResume(JSON.parse(document.getElementById('resume-data').textContent));
   });
   if (guard.personalHits(html).length) throw new Error('Page source still contains a personal contact.');
   if (guard.sealedPhoneHits(html).length) throw new Error('Page source still contains the business line in plaintext.');
+  if (widgetTag) {
+    if (html.split(widgetTag).length !== 2) throw new Error('The chat widget loader should appear once on the resume page.');
+    if (html.indexOf(widgetTag) < html.lastIndexOf('bootResume(')) {
+      throw new Error('The chat widget loader must follow the resume boot script.');
+    }
+    if (!html.includes(widgetTag + '\n</body>')) throw new Error('The chat widget loader must sit at the end of the body.');
+  }
 
   rmrf(OUT);
   fs.mkdirSync(OUT, { recursive: true });
-  write('index.html', html);
-  write('404.html', page({
+  const missing = page({
     title: 'Not found',
     desc: 'That page does not exist.',
     canonical: '/404',
     body: '<main class="page-hero"><p class="kicker">// 404</p><h1>Nothing here.</h1><p class="lede"><a href="/">Back to the resume →</a></p></main>'
-  }));
+  });
+  if (missing.includes('widget/loader.js') || missing.includes('data-wajo-widget')) {
+    throw new Error('The chat widget must load on the resume page only.');
+  }
+
+  write('index.html', html);
+  write('404.html', missing);
   write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${CFG.siteUrl}/sitemap.xml\n`);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
