@@ -112,7 +112,7 @@ button,input,textarea{font:inherit;color:inherit}
 .empty{font-family:var(--serif);font-size:18px;color:var(--soft);padding:8px 0 4px}
 
 .rail{
-  position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;
+  position:sticky;top:16px;z-index:30;max-height:calc(100vh - 32px);overflow:auto;
   padding:16px 16px 18px;
 }
 .rail-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
@@ -200,7 +200,7 @@ button,input,textarea{font:inherit;color:inherit}
   .contact-line{margin-top:8px}
   .block{margin-top:40px;padding:4px 16px 16px}
   .block > h2{font-size:28px}
-  .versions-btn{display:inline-flex}
+  .versions-btn{display:inline-flex;position:relative;z-index:22}
   .rail{
     position:fixed;top:0;right:0;bottom:0;z-index:30;width:min(100%,22rem);
     max-height:none;border-radius:0;transform:translateX(105%);
@@ -225,11 +225,34 @@ button,input,textarea{font:inherit;color:inherit}
   *{transition:none !important}
 }
 
+/* Wajo's loader paints a fixed launcher and frame with inline styles (bottom-right,
+   z-index 2147483000). Keep both under the versions rail, and park them on the left
+   once that rail is a right-hand column so the open panel does not cover it. */
+button[aria-controls="wajo-widget-frame"],
+#wajo-widget-frame{
+  z-index:20 !important;
+}
+@media (min-width:861px){
+  button[aria-controls="wajo-widget-frame"],
+  #wajo-widget-frame{
+    right:auto !important;
+    left:20px !important;
+  }
+}
+@media (max-width:860px){
+  /* The Versions control sits in the header. The loader's open panel is tall
+     enough to reach it, so cap the panel to the lower part of the screen. */
+  #wajo-widget-frame{
+    max-height:calc(100vh - 500px) !important;
+  }
+}
+
 @media print{
   :root{color-scheme:light}
   @page{size:letter;margin:0.6in 0.7in}
   html,body{background:#fff !important;color:#161616 !important}
-  .skip,.statusbar,.foot,.rail,.rail-backdrop,.toolbar,.versions-btn,#contact,noscript,.who .kicker{display:none !important}
+  .skip,.statusbar,.foot,.rail,.rail-backdrop,.toolbar,.versions-btn,#contact,noscript,.who .kicker,
+  button[aria-controls="wajo-widget-frame"],#wajo-widget-frame,iframe[src*="wajo.ai"]{display:none !important}
   .wrap{max-width:none;padding:0}
   .layout,.column{display:block;max-width:none}
   .card,.who,.block{border:0;background:transparent !important;box-shadow:none;border-radius:0;padding:0;margin:0 0 16px}

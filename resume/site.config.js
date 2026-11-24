@@ -35,5 +35,10 @@ module.exports = {
     remote: '100% remote',
     linkedin: 'https://linkedin.com/in/mbfloore',
     linkedinLabel: 'linkedin.com/in/mbfloore'
+  },
+  /* Owner's Wajo chat. Set enabled to false to stop injecting the loader. */
+  chatWidget: {
+    enabled: true,
+    widgetId: 'a539cde4-a449-4d06-8b9f-ca187f789c7e'
   }
 };
